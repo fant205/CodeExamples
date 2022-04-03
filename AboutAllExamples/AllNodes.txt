@@ -1,0 +1,73 @@
+Maven:
+	xport M2_HOME=/usr/local/apache-maven/apache-maven-3.8.4
+	export M2=$M2_HOME/bin
+	export MAVEN_OPTS="-Xms256m -Xmx512m"
+	export PATH=$M2:$PATH          
+	source ~/.profile
+	mvn --version
+
+
+
+Postfix:
+	server1.example.com
+	
+	
+Linux:	
+
+	Jenkins:
+		sudo systemctl start jenkins
+		sudo systemctl status jenkins
+	
+	Nexus:
+		sudo systemctl stop nexus
+
+	Zip:
+		unzip file.zip -d destination_folder
+		unzip file.zip
+	
+	Java:
+		Запуск jar:
+			java -cp allClasses.jar Class1
+			
+		Список установленных Java:
+			sudo update-alternatives --config java
+	
+		Установка oracle Java:
+			sudo apt install oracle-java11-installer-local
+	
+
+Git:
+	.gitignore
+		Что бы игнорировать файл или папку, необходимо добавить его в файл .gitignore, лучше всего его разместить в корне репозитория.
+		Папка **\<имя папки> будет игнорироваться, где бы она не была.
+		Для игнорирования, файл или папка должы быть исключены из индекса. Если файл раньше коммитился, то надо его убрать из индекса 
+			Пример:
+				$ echo debug.log >> .gitignore  
+				$ git rm --cached debug.log
+				$ git commit -m "Start ignoring debug.log"
+		Официальный мануал https://www.atlassian.com/git/tutorials/saving-changes/gitignore
+
+Spring:
+	Версии Spring - совместимость библиотек
+		grep -A 1 hibernate- ~/.m2/repository/org/springframework/spring-orm/4.3.12.RELEASE/spring-orm-4.3.12.RELEASE.pom
+
+
+PostgreSQL:
+
+	Admin commands:
+		sudo service postgresql status
+		sudo service postgresql stop
+		sudo service postgresql start
+
+	Сonnect к PosrtgreSQL через программу терминал psql:
+		sudo -u postgres psql - здесь -u это указание юзера, логин posrgres, и сама программа psql
+			
+	psql:
+		\d - список таблиц
+		\d <table name> - структура таблицы
+		\h - список всех команд SQL
+		\h CREATE TABLE - выводит описание команды CREATE TABLE
+		\l - db list
+		\c - к какой бд сейчас подключены
+		\? - справка
+		chcp 1251 - установка русской раскладки
