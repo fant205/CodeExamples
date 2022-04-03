@@ -1,0 +1,10 @@
+#folders#
+**/target
+
+#IntelliJ specific
+**/.idea
+
+#specific file types
+*.iml
+
+**/.mvn
