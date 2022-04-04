@@ -1,10 +1,17 @@
 Maven:
-	xport M2_HOME=/usr/local/apache-maven/apache-maven-3.8.4
-	export M2=$M2_HOME/bin
-	export MAVEN_OPTS="-Xms256m -Xmx512m"
-	export PATH=$M2:$PATH          
-	source ~/.profile
-	mvn --version
+	make current maven 3.8.4:
+		xport M2_HOME=/usr/local/apache-maven/apache-maven-3.8.4
+		export M2=$M2_HOME/bin
+		export MAVEN_OPTS="-Xms256m -Xmx512m"
+		export PATH=$M2:$PATH          
+		source ~/.profile
+		mvn --version
+	
+	make jar:
+		mvn package
+		
+	watch dependency tree:
+		mvn dependency:tree
 
 
 
@@ -34,6 +41,9 @@ Linux:
 	
 		Установка oracle Java:
 			sudo apt install oracle-java11-installer-local
+			
+	file operations:
+		mv <source> <targer>
 	
 
 Git:
