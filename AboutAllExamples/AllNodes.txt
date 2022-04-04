@@ -44,6 +44,7 @@ Linux:
 			
 	file operations:
 		mv <source> <targer>
+		mv dist1/* dist2 - все файлы из папки 1 переедут в папку 2
 	
 
 Git:
@@ -56,6 +57,20 @@ Git:
 				$ git rm --cached debug.log
 				$ git commit -m "Start ignoring debug.log"
 		Официальный мануал https://www.atlassian.com/git/tutorials/saving-changes/gitignore
+		
+	
+	Команды:
+		git push -u origin master - отправить закомиченные изменения на GitHub
+		git pull origin master - скачать актуальную версию с GitHub
+		git branch - список веток
+		git branch newBranch - создать ветку newBranch		
+		git checkout -b newBranch - создать ветку и переключиться на нее
+		git status
+		git add . - добавить все измененные файлы в индекс
+		git commit -m "some message"
+		git log - расширенный список логов
+		git log --oneline - краткий список логов репозитория
+	
 
 Spring:
 	Версии Spring - совместимость библиотек
