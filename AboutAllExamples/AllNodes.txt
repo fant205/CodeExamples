@@ -27,6 +27,14 @@ Linux:
 	
 	Nexus:
 		sudo systemctl stop nexus
+		
+	NGINX:
+		sudo killall apache2
+		sudo fuser -k 443/tcp
+		sudo service nginx start
+		
+	Отключение по умолчанию сервера из списка автостарта:
+		sudo systemctl disable apache2
 
 	Zip:
 		unzip file.zip -d destination_folder
@@ -105,7 +113,4 @@ PostgreSQL:
 		\? - справка
 		chcp 1251 - установка русской раскладки
 
-NGINX:
-	sudo killall apache2
-	sudo fuser -k 443/tcp
-	sudo service nginx start
+
