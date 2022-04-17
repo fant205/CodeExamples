@@ -33,6 +33,7 @@ Linux:
 		unzip file.zip
 		
 		zip 1.zip * - зипуем все файлы в текущей папке в архив с именем 1.zip
+		zip -r archivename.zip directory_name - зипуем все внутри папки
 	
 	Java:
 		Запуск jar:
