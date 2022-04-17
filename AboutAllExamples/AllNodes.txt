@@ -104,3 +104,8 @@ PostgreSQL:
 		\c - к какой бд сейчас подключены
 		\? - справка
 		chcp 1251 - установка русской раскладки
+
+NGINX:
+	sudo killall apache2
+	sudo fuser -k 443/tcp
+	sudo service nginx start
