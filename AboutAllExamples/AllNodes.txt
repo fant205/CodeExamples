@@ -86,6 +86,11 @@ PostgreSQL:
 
 	Сonnect к PosrtgreSQL через программу терминал psql:
 		sudo -u postgres psql - здесь -u это указание юзера, логин posrgres, и сама программа psql
+		
+	Получить структуру БД в SQL:
+		sudo -u postgres pg_dump --schema-only --no-owner GeekBrainsDBLessons > create_the_tables.sql
+		  --комменты
+		    пишем сначала sudo -u postgres - этим говорим, что запуск программы pg_dump будет из под УЗ postgres
 			
 	psql:
 		\d - список таблиц
