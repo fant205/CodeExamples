@@ -56,6 +56,10 @@ Linux:
 	file operations:
 		mv <source> <targer>
 		mv dist1/* dist2 - все файлы из папки 1 переедут в папку 2
+		
+	Закрыть программу:
+		pgrep <имя программы> - вернет PID
+		kill <PID> - закрыть программу
 	
 
 Git:
