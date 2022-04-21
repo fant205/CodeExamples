@@ -56,7 +56,8 @@ Linux:
 	file operations:
 		mv <source> <targer>
 		mv dist1/* dist2 - все файлы из папки 1 переедут в папку 2		
-		cp -r /home/alexey/Downloads/dump/dump . - скопировать файлы из папки 1 в текущую папку
+		cp -r /home/alexey/Downloads/dump/dump . - скопировать папку 1 в текущую папку
+		cp -r /home/alexey/Downloads/dump/dump/* . - скопировать все файлы из папки 1 в текущую папку
 		readlink -f _countries.sql или realpath _countries.sql - путь до файла
 
 		
