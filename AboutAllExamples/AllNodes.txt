@@ -55,7 +55,9 @@ Linux:
 			
 	file operations:
 		mv <source> <targer>
-		mv dist1/* dist2 - все файлы из папки 1 переедут в папку 2
+		mv dist1/* dist2 - все файлы из папки 1 переедут в папку 2		
+		cp -r /home/alexey/Downloads/dump/dump . - скопировать файлы из папки 1 в текущую папку
+
 		
 	Закрыть программу:
 		pgrep <имя программы> - вернет PID
