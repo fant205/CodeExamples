@@ -120,5 +120,12 @@ PostgreSQL:
 		\c - к какой бд сейчас подключены
 		\? - справка
 		chcp 1251 - установка русской раскладки
+		
+	Загрузка файла sql:
+		sudo cp /home/alexey/GeekBrains/DBLessons/Lesson3/eml_full.sql . - копируем файл в папку Postgres что бы были полномочия на чтение
+		realpath file.sql - узнаем реальный путь до файла
+		psql -h localhost -U postgres -d employees -f <path_to_file.sql> - импорт файла
+
+
 
 
