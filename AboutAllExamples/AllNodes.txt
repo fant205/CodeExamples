@@ -122,7 +122,7 @@ PostgreSQL:
 		chcp 1251 - установка русской раскладки
 		
 	Загрузка файла sql:
-		sudo cp <path to file.sql> <postgresql folder> - копируем файл в папку Postgres что бы были полномочия на чтение
+		sudo cp <path to file.sql> </usr/lib/postgresql/9.3/bin/postgres> - копируем файл в папку Postgres что бы были полномочия на чтение
 		realpath file.sql - узнаем реальный путь до файла
 		psql -h localhost -U postgres -d employees -f <path_to_file.sql> - импорт файла
 
