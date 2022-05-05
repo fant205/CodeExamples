@@ -188,6 +188,9 @@ select * from _countries;
 		--индекс 		
 			create index idx_cities_title on _cities (title);
 			
+			drop index idx_cities_title;
+
+			
 			
 	--Поле country_id			
 		--NOT NULL						
