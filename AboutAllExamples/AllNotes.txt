@@ -1,10 +1,17 @@
 Maven:
-	xport M2_HOME=/usr/local/apache-maven/apache-maven-3.8.4
-	export M2=$M2_HOME/bin
-	export MAVEN_OPTS="-Xms256m -Xmx512m"
-	export PATH=$M2:$PATH          
-	source ~/.profile
-	mvn --version
+	make current maven 3.8.4:
+		xport M2_HOME=/usr/local/apache-maven/apache-maven-3.8.4
+		export M2=$M2_HOME/bin
+		export MAVEN_OPTS="-Xms256m -Xmx512m"
+		export PATH=$M2:$PATH          
+		source ~/.profile
+		mvn --version
+	
+	make jar:
+		mvn package
+		
+	watch dependency tree:
+		mvn dependency:tree
 
 
 
@@ -20,10 +27,21 @@ Linux:
 	
 	Nexus:
 		sudo systemctl stop nexus
+		
+	NGINX:
+		sudo killall apache2
+		sudo fuser -k 443/tcp
+		sudo service nginx start
+		
+	Отключение по умолчанию сервера из списка автостарта:
+		sudo systemctl disable apache2
 
 	Zip:
 		unzip file.zip -d destination_folder
 		unzip file.zip
+		
+		zip 1.zip * - зипуем все файлы в текущей папке в архив с именем 1.zip
+		zip -r archivename.zip directory_name - зипуем все внутри папки
 	
 	Java:
 		Запуск jar:
@@ -34,6 +52,18 @@ Linux:
 	
 		Установка oracle Java:
 			sudo apt install oracle-java11-installer-local
+			
+	file operations:
+		mv <source> <targer>
+		mv dist1/* dist2 - все файлы из папки 1 переедут в папку 2		
+		cp -r /home/alexey/Downloads/dump/dump . - скопировать папку 1 в текущую папку
+		cp -r /home/alexey/Downloads/dump/dump/* . - скопировать все файлы из папки 1 в текущую папку
+		readlink -f _countries.sql или realpath _countries.sql - путь до файла
+
+		
+	Закрыть программу:
+		pgrep <имя программы> - вернет PID
+		kill <PID> - закрыть программу
 	
 
 Git:
@@ -46,6 +76,20 @@ Git:
 				$ git rm --cached debug.log
 				$ git commit -m "Start ignoring debug.log"
 		Официальный мануал https://www.atlassian.com/git/tutorials/saving-changes/gitignore
+		
+	
+	Команды:
+		git push -u origin master - отправить закомиченные изменения на GitHub
+		git pull origin master - скачать актуальную версию с GitHub
+		git branch - список веток
+		git branch newBranch - создать ветку newBranch		
+		git checkout -b newBranch - создать ветку и переключиться на нее
+		git status
+		git add . - добавить все измененные файлы в индекс
+		git commit -m "some message"
+		git log - расширенный список логов
+		git log --oneline - краткий список логов репозитория
+	
 
 Spring:
 	Версии Spring - совместимость библиотек
@@ -61,11 +105,11 @@ PostgreSQL:
 
 	Сonnect к PosrtgreSQL через программу терминал psql:
 		sudo -u postgres psql - здесь -u это указание юзера, логин posrgres, и сама программа psql
-
+		
 	Получить структуру БД в SQL:
 		sudo -u postgres pg_dump --schema-only --no-owner GeekBrainsDBLessons > create_the_tables.sql
-		--Комменты
-
+		  --комменты
+		    пишем сначала sudo -u postgres - этим говорим, что запуск программы pg_dump будет из под УЗ postgres
 			
 	psql:
 		\d - список таблиц
@@ -76,3 +120,12 @@ PostgreSQL:
 		\c - к какой бд сейчас подключены
 		\? - справка
 		chcp 1251 - установка русской раскладки
+		
+	Загрузка файла sql:
+		sudo cp <path to file.sql> </usr/lib/postgresql/9.3/bin/postgres> - копируем файл в папку Postgres что бы были полномочия на чтение
+		realpath file.sql - узнаем реальный путь до файла
+		psql -h localhost -U postgres -d employees -f <path_to_file.sql> - импорт файла
+
+
+
+
