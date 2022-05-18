@@ -64,6 +64,10 @@ public class JavaCodeExamples {
 //          Вывод:00001
         }
 
-
+//      date
+        Date date = new Date();
+        System.out.println(date.toString());
+        
+        
     }
 }
