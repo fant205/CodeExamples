@@ -61,6 +61,11 @@ PostgreSQL:
 
 	Сonnect к PosrtgreSQL через программу терминал psql:
 		sudo -u postgres psql - здесь -u это указание юзера, логин posrgres, и сама программа psql
+
+	Получить структуру БД в SQL:
+		sudo -u postgres pg_dump --schema-only --no-owner GeekBrainsDBLessons > create_the_tables.sql
+		--Комменты
+
 			
 	psql:
 		\d - список таблиц
@@ -71,7 +76,3 @@ PostgreSQL:
 		\c - к какой бд сейчас подключены
 		\? - справка
 		chcp 1251 - установка русской раскладки
-		
-GeekBrtains:
-	Chat:
-		/auth login1 password1
