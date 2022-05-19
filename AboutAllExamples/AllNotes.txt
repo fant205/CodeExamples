@@ -20,6 +20,25 @@ Postfix:
 	
 	
 Linux:	
+	
+	OS:
+		Версия ОС
+			lsb_release -dc
+
+		Отключение по умолчанию сервера из списка автостарта
+			sudo systemctl disable apache2 - 
+
+		file operations:
+			mv <source> <targer>
+			mv dist1/* dist2 - все файлы из папки 1 переедут в папку 2		
+			cp -r /home/alexey/Downloads/dump/dump . - скопировать папку 1 в текущую папку
+			cp -r /home/alexey/Downloads/dump/dump/* . - скопировать все файлы из папки 1 в текущую папку
+			readlink -f _countries.sql или realpath _countries.sql - путь до файла
+
+			
+		Закрыть программу:
+			pgrep <имя программы> - вернет PID
+			kill <PID> - закрыть программу
 
 	Jenkins:
 		sudo systemctl start jenkins
@@ -33,8 +52,6 @@ Linux:
 		sudo fuser -k 443/tcp
 		sudo service nginx start
 		
-	Отключение по умолчанию сервера из списка автостарта:
-		sudo systemctl disable apache2
 
 	Zip:
 		unzip file.zip -d destination_folder
@@ -53,17 +70,6 @@ Linux:
 		Установка oracle Java:
 			sudo apt install oracle-java11-installer-local
 			
-	file operations:
-		mv <source> <targer>
-		mv dist1/* dist2 - все файлы из папки 1 переедут в папку 2		
-		cp -r /home/alexey/Downloads/dump/dump . - скопировать папку 1 в текущую папку
-		cp -r /home/alexey/Downloads/dump/dump/* . - скопировать все файлы из папки 1 в текущую папку
-		readlink -f _countries.sql или realpath _countries.sql - путь до файла
-
-		
-	Закрыть программу:
-		pgrep <имя программы> - вернет PID
-		kill <PID> - закрыть программу
 	
 
 Git:
@@ -89,6 +95,7 @@ Git:
 		git commit -m "some message"
 		git log - расширенный список логов
 		git log --oneline - краткий список логов репозитория
+		git diff - просмотр изменений в файлах
 	
 
 Spring:
