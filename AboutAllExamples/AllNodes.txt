@@ -127,5 +127,7 @@ PostgreSQL:
 		psql -h localhost -U postgres -d employees -f <path_to_file.sql> - импорт файла
 
 
+	
+	
 
 
