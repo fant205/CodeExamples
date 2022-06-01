@@ -35,6 +35,11 @@ Linux:
 			cp -r /home/alexey/Downloads/dump/dump/* . - скопировать все файлы из папки 1 в текущую папку
 			readlink -f _countries.sql или realpath _countries.sql - путь до файла
 
+		Список процессов:
+			ps -eF - список процессов
+			ps -efH - список деревом
+			ps -efL - список с потоками
+
 			
 		Закрыть программу:
 			pgrep <имя программы> - вернет PID
@@ -46,6 +51,9 @@ Linux:
 	
 	Nexus:
 		sudo systemctl stop nexus
+
+
+
 		
 	NGINX:
 		sudo killall apache2
@@ -134,5 +142,26 @@ PostgreSQL:
 		psql -h localhost -U postgres -d employees -f <path_to_file.sql> - импорт файла
 
 
+
+        Создание пользователя для geodata:
+        	CREATE ROLE user_group;
+		CREATE ROLE user_db WITH LOGIN ENCRYPTED PASSWORD 'passdb';
+		GRANT user_group TO user_db;
+		GRANT CONNECT ON DATABASE geodata TO user_group;
+		grant all privileges on database geodata to user_db;
+		
+		 
+
+
+
+
+MongoDB:
+	mongo - управляющая программа
+	mongo -u <user> -p <pass> --authenticationDatabase admin
+	mongoimport --db restaurants --collection MyCollection --file primer-dataset.json - 		импорт файла в бд (запросы надо делать через db.<collection>.<оператор>)
+	show dbs - все бд
+	use restaurants - переключение на бд
+	show collections - показать коллекции в текущей бд
+	db.<имя коллекии>.find() - вызов оператора find
 
 
