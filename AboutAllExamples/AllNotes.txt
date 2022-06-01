@@ -142,6 +142,8 @@ PostgreSQL:
 		psql -h localhost -U postgres -d employees -f <path_to_file.sql> - импорт файла
 
 
+	
+	
 
         Создание пользователя для geodata:
         	CREATE ROLE user_group;
