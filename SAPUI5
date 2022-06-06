@@ -290,3 +290,71 @@ UI5 Code Examples
 		var req = rec[0];
 		var path = req.getBindingContextPath();
 		var requestId = this.getView().getModel("uer").getProperty(path).requestId; //вытащили у нужного элемента свойство requestId
+
+
+//Form
+
+	//how to add formElement ("recordDetailContainer" - is a FormContainer)
+	var formElement = new sap.ui.layout.form.FormElement(
+		{
+			"label": "Атрибут 1",
+			"fields": [
+				new sap.m.Input({
+					"value": "",
+					"type": "Text",
+					"placeholder": "Класс МТР"
+				})
+			]
+		}
+	);
+	var recordDetailContainer = this.getView().byId("recordDetailContainer");
+	recordDetailContainer.addFormElement(formElement);
+	
+	
+	
+//Создать динамические объекты
+	var formElement = new sap.ui.layout.form.FormElement(
+		{
+			"label": item,
+			"fields": [
+				new sap.m.Input({
+					id: "attr" + index,
+					value: "",
+					type: "Text",
+					placeholder: "Введите значение",
+					textFormatMode: "KeyValue",
+					showSuggestion: true,
+					showTableSuggestionValueHelp: true,
+					showValueHelp: true,
+					valueHelpRequest: function (oEvent) {
+						that.attrValueHelp(oEvent);
+					},
+					suggestionRows: "{path:'attrs>/values'}",
+					suggestionItemSelected: function (oEvent) {
+						that.attrSelect(oEvent);
+					},
+					suggestionColumns: [
+						new sap.m.Column({
+							"hAlign": "Begin",
+							"popinDisplay": "Inline",
+							"demandPopin": true,
+							"header": new sap.m.Label({
+								"text": "Значение"
+							})
+						})
+					],
+					suggestionRows: [
+						new sap.m.ColumnListItem(
+							{
+								cells: [
+									new sap.m.Label({ text: "{attrs>value}" })]
+							}
+						)
+					],
+					suggestionRowValidator: function (oEvent) {
+						that.attrSuggestionRowValidator(oEvent);
+					}
+				})
+			]
+		}
+	);
