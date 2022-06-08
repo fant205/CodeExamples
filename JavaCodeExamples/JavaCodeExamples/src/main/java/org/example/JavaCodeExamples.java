@@ -90,15 +90,22 @@ public class JavaCodeExamples {
 				o2.apply(1,2);
 				o3.apply(1,2);
 				
+				//Передача в функцию:
+				calc(1, 2, o1);
+				calc(1, 2, o2);
+				calc(1, 2, o3);
+				
+				
 			}
 			
 			//делаем метод который имеет такие же входные параметры и выходные и можно его использовать как method reference
 			public static int go(int t, int z){
 				return t / z;
 			}
-				
 			
-        
-        
+			//В жизни используется для передачи в функции
+			public static int calc(int x, int y, Operation o){
+				return o.apply(x, y);
+			}			                
     }
 }
