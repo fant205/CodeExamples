@@ -67,6 +67,37 @@ public class JavaCodeExamples {
 //      date
         Date date = new Date();
         System.out.println(date.toString());
+		
+		//Lambda
+			//Объявляем интерфейс с 1 методом, аннотация @FunctionalInterface делает проверку что в интерейсе только 1 метод (можно создавать другие методы, но тогда они должны быть default)
+			@FunctionalInterface
+			public interface Operation {				
+				int apply(int x, int y);				
+			}
+			
+			public static void main(String[] args){
+				//lambda
+				Operation o1 = (x, y) -> x + y;
+				
+				//Method reference
+					//1.
+					Operation o2 = Integer::sum;
+					//2.
+					Operation o3 = Main::go;
+				
+				//Делаем вызов
+				o1.apply(1,2);
+				o2.apply(1,2);
+				o3.apply(1,2);
+				
+			}
+			
+			//делаем метод который имеет такие же входные параметры и выходные и можно его использовать как method reference
+			public static int go(int t, int z){
+				return t / z;
+			}
+				
+			
         
         
     }
