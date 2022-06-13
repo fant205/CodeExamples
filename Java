@@ -84,3 +84,75 @@
 	SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 	result = format.format(((DateTimeValue) value).getDate());
 	
+//Lambda
+	//Объявляем интерфейс с 1 методом, аннотация @FunctionalInterface делает проверку что в интерейсе только 1 метод (можно создавать другие методы, но тогда они должны быть default)
+	@FunctionalInterface
+	public interface Operation {				
+		int apply(int x, int y);				
+	}
+	
+	public static void main(String[] args){
+		//lambda
+		Operation o1 = (x, y) -> x + y;
+		
+		//Method reference
+			//1.
+			Operation o2 = Integer::sum;
+			//2.
+			Operation o3 = Main::go;
+		
+		//Делаем вызов
+		o1.apply(1,2);
+		o2.apply(1,2);
+		o3.apply(1,2);
+		
+		//Передача в функцию:
+		calc(1, 2, o1);
+		calc(1, 2, o2);
+		calc(1, 2, o3);
+		
+		
+	}
+	
+	//делаем метод который имеет такие же входные параметры и выходные и можно его использовать как method reference
+	public static int go(int t, int z){
+		return t / z;
+	}
+	
+	//В жизни используется для передачи в функции
+	public static int calc(int x, int y, Operation o){
+		return o.apply(x, y);
+	}	
+
+//Stream API
+
+	//Базовые интерфейсы
+		//forEach, peek
+		Consumer<String> printer = System.out::println;
+		printer.accept("Hello");
+		
+		//filter, anyMatch, allMatch, noneMatch	
+		Predicate<Integer> isOdd = x -> x % 2 != 0;
+		
+		//map, FlatMap
+		Function<String, Integer> length = String::length;
+		System.out.pringln("length.apply("123"));
+		
+		//collect
+		Supplier<Integer> supplier = () -> 1;
+		Supplier<Map<String, Map<Integer, Set<Long>>>> supplier = HashMap::new;
+	
+	//Пример использования
+	
+		//filter odd and print
+		Stream.of(1,2,3,4,5,6,7,8,9)
+		.filter(x -> x % 2 == 0)
+		.forEach(System.out::println);
+		
+		//increment all values by 1 and collect to list
+		List<Integer> list = Stream.of(1,2,3,4,5)
+			.map(x -> x + 2)
+			.toList();
+			
+		System.out.println(list.toString());
+	
