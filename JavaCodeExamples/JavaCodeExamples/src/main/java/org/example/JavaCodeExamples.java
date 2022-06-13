@@ -106,6 +106,38 @@ public class JavaCodeExamples {
 			//В жизни используется для передачи в функции
 			public static int calc(int x, int y, Operation o){
 				return o.apply(x, y);
-			}			                
-    }
+			}	
+
+			//Stream API
+			
+				//Базовые интерфейсы
+					//forEach, peek
+					Consumer<String> printer = System.out::println;
+					printer.accept("Hello");
+					
+					//filter, anyMatch, allMatch, noneMatch	
+					Predicate<Integer> isOdd = x -> x % 2 != 0;
+					
+					//map, FlatMap
+					Function<String, Integer> length = String::length;
+					System.out.pringln("length.apply("123"));
+					
+					//collect
+					Supplier<Integer> supplier = () -> 1;
+					Supplier<Map<String, Map<Integer, Set<Long>>>> supplier = HashMap::new;
+				
+				//Пример использования
+				
+					//filter odd and print
+					Stream.of(1,2,3,4,5,6,7,8,9)
+					.filter(x -> x % 2 == 0)
+					.forEach(System.out::println);
+					
+					//increment all values by 1 and collect to list
+					List<Integer> list = Stream.of(1,2,3,4,5)
+						.map(x -> x + 2)
+						.toList();
+						
+					System.out.println(list.toString());
+	}
 }
