@@ -155,4 +155,9 @@
 			.toList();
 			
 		System.out.println(list.toString());
+		
+		//calculate sum
+		Integer result = Stream.of(1,2,3)
+			.reduce(0, Integer::sum);
+		System.out.pringln(result);
 	
