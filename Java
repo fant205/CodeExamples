@@ -160,4 +160,30 @@
 		Integer result = Stream.of(1,2,3)
 			.reduce(0, Integer::sum);
 		System.out.pringln(result);
+		
+		//words counter
+		Map<String, Integer> words = Files.lines(Path.of("folder", "1.txt")) //вытащили текстовый файл по строчкам в Stream
+			.flatMap(s -> Stream.of(s.split(" +"))) //разбили каждую строчку в Stream и с помощью flatMap собрали все в один Stream
+			.map(String::toLowerCase) //каждый элемент привели в нижний регистр
+			.map(s -> s.replaceAll("\\W\\d", "")) //каждый элемент - убрали не букву и не цифру
+			.filter(StringUtils::isNoneBlank) //убрали пустые элементы
+			//.forEach(System.out.println); //вывод каждого элемента
+			.collect(Collectors.toMap( //собираем результат в map, что бы показать сколько раз какое слово попадается в тексте
+				Function.identity(), // возвращаем саму себя, т.е. слово будет ключом map
+				value -> 1, // говорим что со значением, говорим что когда клю попался первый раз, то кладем 1
+				Integer::sum // говорим что делать со значением, если уже был такой ключ - говорим складывать старое и новое значение 
+			));
+			
+		//counter rate
+		words.entrySet().stream()
+			.sorted((e1, e2) -> e2.getValue - e1.getValue) //передаем comparator, что бы показать как сортировать entrySet
+			.forEach(entry -> System.out.println(entry.getKey() + " : " + entry.getValue()));
+			
+		//классическая задача flat 
+		int[][] array = new int[][]{ {1,2}, {1,2,3}, {1,2,3,4}};
+		Arrays.stream(array)
+			.flatMap(Stream::of)
+			.toList();
+			
+		System.out.println();
 	
