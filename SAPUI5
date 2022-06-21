@@ -254,6 +254,9 @@ UI5 Code Examples
 	sapUiNoMarginEnd
 
 	sapUiSmallPaddingBottom
+	sapUiNoContentPadding
+	sapUiContentPadding
+	sapUiResponsiveContentPadding
 
 //Model
 
@@ -312,7 +315,7 @@ UI5 Code Examples
 	
 	
 	
-//Создать динамические объекты
+//Создать динамически объекты
 	var formElement = new sap.ui.layout.form.FormElement(
 		{
 			"label": item,
@@ -358,3 +361,11 @@ UI5 Code Examples
 			]
 		}
 	);
+	
+	
+//url до приложения
+	/name.ru~nsi~uer~prt/index.html
+	src="/sapui5/resources/sap-ui-core.js"
+	src="/sapui5-1.71/resources/sap-ui-core.js"
+	src="https://sapui5.hana.ondemand.com/1.71.40/resources/sap-ui-core.js"
+	/nornick.ru~nsi~uer~prt/app/index.html
