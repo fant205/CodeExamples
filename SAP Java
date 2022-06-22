@@ -54,3 +54,29 @@
 			}
 			SimpleLogger.log(Severity.INFO, Category.APPLICATIONS, loc, "MtrSync", msg);
 		}
+		
+		
+// regexp
+		{
+			String s = "S";
+			String p = "[A-Z]";
+			System.out.println(s.matches(p));
+		}
+
+		{
+			String s = "SSS";
+			String p = "[A-Z]+";
+			System.out.println(s.matches(p));
+		}
+		
+		{
+			String s = "ВАПЕ";
+			String p = "[А-Я]+";
+			System.out.println(s.matches(p));
+		}
+		
+		{
+			String s = "фыва";
+			String p = "[^А-Я]+";
+			System.out.println(s.matches(p));
+		}
