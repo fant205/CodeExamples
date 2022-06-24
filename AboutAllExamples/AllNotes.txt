@@ -159,6 +159,8 @@ PostgreSQL:
 
 
 
+
+
 MongoDB:
 	mongo - управляющая программа
 	mongo -u <user> -p <pass> --authenticationDatabase admin
@@ -167,5 +169,7 @@ MongoDB:
 	use restaurants - переключение на бд
 	show collections - показать коллекции в текущей бд
 	db.<имя коллекии>.find() - вызов оператора find
+
+asdf
 
 
