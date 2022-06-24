@@ -72,7 +72,33 @@
 	   --('GID15', N'Зеленый автомобиль'),
 	   --('GID17', N'Зеленая машина')
 
+--Слово содержит смешанную раскладку клавиатуры
+		select *
+		from demo
+		where 
+			name like N'%[A-Z][А-Я][A-Z]%'
+			or name like N'%[А-Я][A-Z][А-Я]%'
+			or name like N'%[А-Я][A-Z][ ]%'
+			or name like N'%[ ][A-Z][А-Я]%'
+			or name like N'%[A-Z][А-Я][ ]%'
+			or name like N'%[ ][А-Я][A-Z]%'
+			
+--Значение поля начинается с прилагательного или абревиатуры
+	select *
+	from
+		(select 
+			GID, 
+			substring(name, 1, CHARINDEX(' ', name)) as firstWord
+		from demo 
+		) as one
+	where 
+		firstWord like '%[A-Z][A-Z]%' collate Latin1_General_BIN --абревиатура (условие первые две буквы заглавные)
+		or upper(substring(firstWord, LEN(firstWord) - 1, LEN(firstWord))) in (N'ОЙ', N'ЫЙ', N'ИЙ', N'ЕЙ') -- поиск прилагательного (берутся последние 2 буквы первого слова в поле и проверяется на окончание. Метод требует таблицы исключений)
 		
-
+--Значения 'test' нет в поле
+	select *
+	from demo
+	where 
+		CHARINDEX('test', name) = 0
 
 
