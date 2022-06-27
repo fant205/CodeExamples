@@ -83,4 +83,11 @@
 //Format date
 	SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 	result = format.format(((DateTimeValue) value).getDate());
+
+
+
+//nio
+    //rename file
+    Path of = Path.of("storage/2.txt");
+    Files.move(of, of.getParent().resolve("2.txt"));
 	
