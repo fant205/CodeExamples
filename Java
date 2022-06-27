@@ -83,6 +83,14 @@
 //Format date
 	SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 	result = format.format(((DateTimeValue) value).getDate());
+  
+  
+
+//nio
+    //rename file
+    Path of = Path.of("storage/2.txt");
+    Files.move(of, of.getParent().resolve("2.txt"));
+=======
 	
 //Lambda
 	//Объявляем интерфейс с 1 методом, аннотация @FunctionalInterface делает проверку что в интерейсе только 1 метод (можно создавать другие методы, но тогда они должны быть default)
@@ -186,4 +194,5 @@
 			.toList();
 			
 		System.out.println();
+
 	
