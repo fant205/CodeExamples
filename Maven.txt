@@ -1,0 +1,9 @@
+ 
+ 
+	tomcat:run -запуск встроенного tomcat
+	dependency:tree - вывод дерева зависимостей
+	
+	
+ --пакетный запуск команд
+	mvn clean package tomcat:run
+	
