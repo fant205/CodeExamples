@@ -15,7 +15,7 @@
 
 	<context:annotation-config></context:annotation-config>
 
-	<context:component-scan base-package="ru.test.axel.rest" />
+	<context:component-scan base-package="ru.test" />
 
 	<mvc:resources mapping="/resources/**" location="/resources/" />
 
@@ -23,6 +23,6 @@
 
 	<mvc:default-servlet-handler />
 	
-	<bean class="ru.test.axel.rest.WebConfig" />
+	<bean class="ru.config.WebConfig" />
 
 </beans>
