@@ -83,4 +83,116 @@
 //Format date
 	SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 	result = format.format(((DateTimeValue) value).getDate());
+  
+  
+
+//nio
+    //rename file
+    Path of = Path.of("storage/2.txt");
+    Files.move(of, of.getParent().resolve("2.txt"));
+=======
+	
+//Lambda
+	//Объявляем интерфейс с 1 методом, аннотация @FunctionalInterface делает проверку что в интерейсе только 1 метод (можно создавать другие методы, но тогда они должны быть default)
+	@FunctionalInterface
+	public interface Operation {				
+		int apply(int x, int y);				
+	}
+	
+	public static void main(String[] args){
+		//lambda
+		Operation o1 = (x, y) -> x + y;
+		
+		//Method reference
+			//1.
+			Operation o2 = Integer::sum;
+			//2.
+			Operation o3 = Main::go;
+		
+		//Делаем вызов
+		o1.apply(1,2);
+		o2.apply(1,2);
+		o3.apply(1,2);
+		
+		//Передача в функцию:
+		calc(1, 2, o1);
+		calc(1, 2, o2);
+		calc(1, 2, o3);
+		
+		
+	}
+	
+	//делаем метод который имеет такие же входные параметры и выходные и можно его использовать как method reference
+	public static int go(int t, int z){
+		return t / z;
+	}
+	
+	//В жизни используется для передачи в функции
+	public static int calc(int x, int y, Operation o){
+		return o.apply(x, y);
+	}	
+
+//Stream API
+
+	//Базовые интерфейсы
+		//forEach, peek
+		Consumer<String> printer = System.out::println;
+		printer.accept("Hello");
+		
+		//filter, anyMatch, allMatch, noneMatch	
+		Predicate<Integer> isOdd = x -> x % 2 != 0;
+		
+		//map, FlatMap
+		Function<String, Integer> length = String::length;
+		System.out.pringln("length.apply("123"));
+		
+		//collect
+		Supplier<Integer> supplier = () -> 1;
+		Supplier<Map<String, Map<Integer, Set<Long>>>> supplier = HashMap::new;
+	
+	//Пример использования
+	
+		//filter odd and print
+		Stream.of(1,2,3,4,5,6,7,8,9)
+		.filter(x -> x % 2 == 0)
+		.forEach(System.out::println);
+		
+		//increment all values by 1 and collect to list
+		List<Integer> list = Stream.of(1,2,3,4,5)
+			.map(x -> x + 2)
+			.toList();
+			
+		System.out.println(list.toString());
+		
+		//calculate sum
+		Integer result = Stream.of(1,2,3)
+			.reduce(0, Integer::sum);
+		System.out.pringln(result);
+		
+		//words counter
+		Map<String, Integer> words = Files.lines(Path.of("folder", "1.txt")) //вытащили текстовый файл по строчкам в Stream
+			.flatMap(s -> Stream.of(s.split(" +"))) //разбили каждую строчку в Stream и с помощью flatMap собрали все в один Stream
+			.map(String::toLowerCase) //каждый элемент привели в нижний регистр
+			.map(s -> s.replaceAll("\\W\\d", "")) //каждый элемент - убрали не букву и не цифру
+			.filter(StringUtils::isNoneBlank) //убрали пустые элементы
+			//.forEach(System.out.println); //вывод каждого элемента
+			.collect(Collectors.toMap( //собираем результат в map, что бы показать сколько раз какое слово попадается в тексте
+				Function.identity(), // возвращаем саму себя, т.е. слово будет ключом map
+				value -> 1, // говорим что со значением, говорим что когда клю попался первый раз, то кладем 1
+				Integer::sum // говорим что делать со значением, если уже был такой ключ - говорим складывать старое и новое значение 
+			));
+			
+		//counter rate
+		words.entrySet().stream()
+			.sorted((e1, e2) -> e2.getValue - e1.getValue) //передаем comparator, что бы показать как сортировать entrySet
+			.forEach(entry -> System.out.println(entry.getKey() + " : " + entry.getValue()));
+			
+		//классическая задача flat 
+		int[][] array = new int[][]{ {1,2}, {1,2,3}, {1,2,3,4}};
+		Arrays.stream(array)
+			.flatMap(Stream::of)
+			.toList();
+			
+		System.out.println();
+
 	

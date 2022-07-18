@@ -1,25 +1,4 @@
-Maven:
-	make current maven 3.8.4:
-		xport M2_HOME=/usr/local/apache-maven/apache-maven-3.8.4
-		export M2=$M2_HOME/bin
-		export MAVEN_OPTS="-Xms256m -Xmx512m"
-		export PATH=$M2:$PATH          
-		source ~/.profile
-		mvn --version
-	
-	make jar:
-		mvn package
-		
-	watch dependency tree:
-		mvn dependency:tree
-
-
-   
-Postfix:
-	server1.example.com
-	
-	
-Linux:	
+﻿Linux:	
 	
 	OS:
 		Версия ОС
@@ -77,7 +56,10 @@ Linux:
 	
 		Установка oracle Java:
 			sudo apt install oracle-java11-installer-local
-			
+		Spring:
+			Версии Spring - совместимость библиотек
+				grep -A 1 hibernate- ~/.m2/repository/org/springframework/spring-orm/4.3.12.RELEASE/spring-orm-4.3.12.RELEASE.pom
+	
 	
 
 Git:
@@ -108,56 +90,6 @@ Git:
 		git remote -v - проверка удаленного соединения, нужно что бы было два - fetch & push
 	
 
-Spring:
-	Версии Spring - совместимость библиотек
-		grep -A 1 hibernate- ~/.m2/repository/org/springframework/spring-orm/4.3.12.RELEASE/spring-orm-4.3.12.RELEASE.pom
-
-
-PostgreSQL:
-
-	Admin commands:
-		sudo service postgresql status
-		sudo service postgresql stop
-		sudo service postgresql start
-
-	Сonnect к PosrtgreSQL через программу терминал psql:
-		sudo -u postgres psql - здесь -u это указание юзера, логин posrgres, и сама программа psql
-		
-	Получить структуру БД в SQL:
-		sudo -u postgres pg_dump --schema-only --no-owner GeekBrainsDBLessons > create_the_tables.sql
-		  --комменты
-		    пишем сначала sudo -u postgres - этим говорим, что запуск программы pg_dump будет из под УЗ postgres
-			
-	psql:
-		\d - список таблиц
-		\d <table name> - структура таблицы
-		\h - список всех команд SQL
-		\h CREATE TABLE - выводит описание команды CREATE TABLE
-		\l - db list
-		\c - к какой бд сейчас подключены
-		\? - справка
-		chcp 1251 - установка русской раскладки
-		
-	Загрузка файла sql:
-		sudo cp <path to file.sql> </usr/lib/postgresql/9.3/bin/postgres> - копируем файл в папку Postgres что бы были полномочия на чтение
-		realpath file.sql - узнаем реальный путь до файла
-		psql -h localhost -U postgres -d employees -f <path_to_file.sql> - импорт файла
-
-
-	
-	
-
-        Создание пользователя для geodata:
-        	CREATE ROLE user_group;
-		CREATE ROLE user_db WITH LOGIN ENCRYPTED PASSWORD 'passdb';
-		GRANT user_group TO user_db;
-		GRANT CONNECT ON DATABASE geodata TO user_group;
-		grant all privileges on database geodata to user_db;
-		
-		 
-
-
-
 
 MongoDB:
 	mongo - управляющая программа
@@ -167,5 +99,3 @@ MongoDB:
 	use restaurants - переключение на бд
 	show collections - показать коллекции в текущей бд
 	db.<имя коллекии>.find() - вызов оператора find
-
-
