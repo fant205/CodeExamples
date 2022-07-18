@@ -1,9 +1,23 @@
- 
- 
-	tomcat:run -запуск встроенного tomcat
-	dependency:tree - вывод дерева зависимостей
+
+tomcat:run -запуск встроенного tomcat
+dependency:tree - вывод дерева зависимостей
 	
 	
  --пакетный запуск команд
 	mvn clean package tomcat:run
+	
+
+	make current maven 3.8.4:
+		xport M2_HOME=/usr/local/apache-maven/apache-maven-3.8.4
+		export M2=$M2_HOME/bin
+		export MAVEN_OPTS="-Xms256m -Xmx512m"
+		export PATH=$M2:$PATH          
+		source ~/.profile
+		mvn --version
+	
+	make jar:
+		mvn package
+		
+	watch dependency tree:
+		mvn dependency:tree
 	
