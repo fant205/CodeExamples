@@ -23,6 +23,10 @@
 		Закрыть программу:
 			pgrep <имя программы> - вернет PID
 			kill <PID> - закрыть программу
+			
+		curl -X POST localhost:8080/actuator/shutdown - POST вызов
+		curl localhost:8080/actuator/health - GET вызов
+
 
 	Jenkins:
 		sudo systemctl start jenkins
@@ -99,3 +103,18 @@ MongoDB:
 	use restaurants - переключение на бд
 	show collections - показать коллекции в текущей бд
 	db.<имя коллекии>.find() - вызов оператора find
+
+
+SSL Certificates:
+	keytool -list -v -keystore /path/to/cacerts  > java_cacerts.txt - получиться данные сертификатор и можно в результирующем файле поискать сертификат по Serial Number. Сертификаты обычно лежат:
+		./jdk1.6.0_24/jre/lib/security/cacerts
+		./jre1.6.0_24/lib/security/cacerts
+
+	Enter keystore password:  changeit - по умолчанию пароль такой
+	В браузере 
+
+	keytool -import -alias example -keystore  /path/to/cacerts -file example.der - команда импорта сертификата в Java хранилище
+	
+	keytool - Утилита находится ...\jdk_folder\bin
+	
+	keytool -delete -alias sms01199.npr.nornick.ru -keystore  C:\Work\Soft\jdk1.8.0_171\jre\lib\security\cacerts - удалить сертификат из keystore

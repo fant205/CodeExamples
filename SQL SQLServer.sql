@@ -1,38 +1,38 @@
 
 --Полнотекстовый поиск
 	--Настройка
-		/*-- create fulltext catalog
+		-- create fulltext catalog
 		CREATE FULLTEXT CATALOG MtrLiteCatalog
 		 WITH ACCENT_SENSITIVITY = ON
 		 AS DEFAULT
 		 AUTHORIZATION dbo
 	   GO
-	   */
+	   
 
 	   --Изменение полнотекстового каталога
-	   /*
+	   
 	   ALTER FULLTEXT CATALOG MtrLiteCatalog
 		 REBUILD WITH ACCENT_SENSITIVITY=OFF
 	   GO
-	   */
+	   
 	   
 	   --возвращаем назад
-	   /*
+	   
 	   ALTER FULLTEXT CATALOG MtrLiteCatalog
 		 REBUILD WITH ACCENT_SENSITIVITY=ON
 	   GO
-	   */
+	   
 
 	   --удалить каталог
 	   --   DROP FULLTEXT CATALOG MtrLiteCatalog;
 
 	   --Создание полнотекстового индекса
-	   /*
+	   
 	   CREATE FULLTEXT INDEX ON NSI_MATERIALS(ShortName)
 		 KEY INDEX PK_NSI_MATERIALS ON (MtrLiteCatalog)
 		 WITH (CHANGE_TRACKING AUTO)
 	   GO
-	   */
+	   
 
 	--Примеры запросов
 	   --полнотекстовый запрос пример
@@ -72,33 +72,48 @@
 	   --('GID15', N'Зеленый автомобиль'),
 	   --('GID17', N'Зеленая машина')
 
---Слово содержит смешанную раскладку клавиатуры
+--SQL 
+	--Слово содержит смешанную раскладку клавиатуры
+			select *
+			from demo
+			where 
+				name like N'%[A-Z][А-Я][A-Z]%'
+				or name like N'%[А-Я][A-Z][А-Я]%'
+				or name like N'%[А-Я][A-Z][ ]%'
+				or name like N'%[ ][A-Z][А-Я]%'
+				or name like N'%[A-Z][А-Я][ ]%'
+				or name like N'%[ ][А-Я][A-Z]%'
+				
+	--Значение поля начинается с прилагательного или абревиатуры
+		select *
+		from
+			(select 
+				GID, 
+				substring(name, 1, CHARINDEX(' ', name)) as firstWord
+			from demo 
+			) as one
+		where 
+			firstWord like '%[A-Z][A-Z]%' collate Latin1_General_BIN --абревиатура (условие первые две буквы заглавные)
+			or upper(substring(firstWord, LEN(firstWord) - 1, LEN(firstWord))) in (N'ОЙ', N'ЫЙ', N'ИЙ', N'ЕЙ') -- поиск прилагательного (берутся последние 2 буквы первого слова в поле и проверяется на окончание. Метод требует таблицы исключений)
+			
+	--Значения 'test' нет в поле
 		select *
 		from demo
 		where 
-			name like N'%[A-Z][А-Я][A-Z]%'
-			or name like N'%[А-Я][A-Z][А-Я]%'
-			or name like N'%[А-Я][A-Z][ ]%'
-			or name like N'%[ ][A-Z][А-Я]%'
-			or name like N'%[A-Z][А-Я][ ]%'
-			or name like N'%[ ][А-Я][A-Z]%'
-			
---Значение поля начинается с прилагательного или абревиатуры
-	select *
-	from
-		(select 
-			GID, 
-			substring(name, 1, CHARINDEX(' ', name)) as firstWord
-		from demo 
-		) as one
-	where 
-		firstWord like '%[A-Z][A-Z]%' collate Latin1_General_BIN --абревиатура (условие первые две буквы заглавные)
-		or upper(substring(firstWord, LEN(firstWord) - 1, LEN(firstWord))) in (N'ОЙ', N'ЫЙ', N'ИЙ', N'ЕЙ') -- поиск прилагательного (берутся последние 2 буквы первого слова в поле и проверяется на окончание. Метод требует таблицы исключений)
+			CHARINDEX('test', name) = 0
 		
---Значения 'test' нет в поле
-	select *
-	from demo
-	where 
-		CHARINDEX('test', name) = 0
+	
+--DDL
+	drop table UER;
+
+	create table [dbo].[UER](
+		id int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+		gid nvarchar(20) NULL,
+		code nvarchar(20) NULL,
+		uerName nvarchar(300) NULL,
+	);
+
+	insert into UER (gid, code, uerName)
+	values ('1', N'УЕР-06-02-01', N'Установка дверей внут-ренних (в т.ч. деревянных, ПВХ, металлических)');
 
 
