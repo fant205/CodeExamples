@@ -105,12 +105,24 @@
 	
 --DDL
 	drop table UER;
+	
+	CREATE TABLE RecordStatus (
+		id int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+		gid int not null unique,
+		statusName nvarchar(20) NOT NULL,
+		creationDate datetime NOT NULL,
+		creationAuthor nvarchar(20) NOT NULL,
+	);
+	
+	insert into RecordStatus (statusName, creationDate, modificationDate, creationAuthor, modificationAuthor)
+	values (N'Черновик', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'komarovavl', 'komarovavl'),
 
 	create table [dbo].[UER](
 		id int IDENTITY(1,1) NOT NULL PRIMARY KEY,
 		gid nvarchar(20) NULL,
 		code nvarchar(20) NULL,
 		uerName nvarchar(300) NULL,
+		recordStatus int FOREIGN KEY REFERENCES RecordStatus(id)
 	);
 
 	insert into UER (gid, code, uerName)
