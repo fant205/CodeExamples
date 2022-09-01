@@ -84,8 +84,6 @@
 		}
 		
 //deploy without NWDS
-	
-
 1. Login with sidadm on SAP NetWeaver WebAs server 
 2. Go to following directory /usr/sap/SID/InstanceNo/j2ee/deployment/scripts
 3. Find deploy.csh \ deploy.bat
@@ -99,7 +97,6 @@
 	
 	
 //	Добавление Software Component в NWDI
-
 Создаем в SLD, назначаем dependencies для контекста BuildTime (если какие то компоненты не видны при добавлении, то возможно они появятся уже добавленными в компонент), открываем CMS вкладка Landscape Configurator. 
 Там Domain Data 
 нажимаем кнопку Change - кнопка Update CMS. 

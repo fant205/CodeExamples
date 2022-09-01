@@ -129,3 +129,40 @@
 	values ('1', N'УЕР-06-02-01', N'Установка дверей внут-ренних (в т.ч. деревянных, ПВХ, металлических)');
 
 
+--TRIGGER
+	CREATE TRIGGER RequestStatus_INSERT
+	ON RequestStatus
+	AFTER INSERT
+	AS
+
+	BEGIN
+		UPDATE RequestStatus
+		set 
+			creationDate = CURRENT_TIMESTAMP,
+			modificationDate = CURRENT_TIMESTAMP,
+			creationAuthor = SYSTEM_USER,
+			modificationAuthor = SYSTEM_USER
+		where id in (select id from INSERTED)
+	END
+	
+--change tracking
+	--turn on cdc
+	--1
+	SELECT [name], database_id, is_cdc_enabled  
+	FROM sys.databases   
+
+	--2
+	EXEC sys.sp_cdc_enable_db 
+
+	--3
+	SELECT [name], is_tracked_by_cdc  
+	FROM sys.tables
+
+	--4
+	EXEC sys.sp_cdc_enable_table 
+	@source_schema = N'dbo', 
+	@source_name   = N'YourTable', 
+	@role_name     = NULL 
+
+	--5
+	SELECT * FROM cdc.dbo_YourTable_CT where id = 309

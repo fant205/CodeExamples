@@ -194,6 +194,7 @@ UI5 Code Examples
 	}
 		
 	//как взять выбранный элемент в таблице
+		//Responsive Table:
 		onItemSelected: function(oEvent) {
 			
 			//uer это название модели на что забиндена таблица, т.е. таблица обозначена так:
@@ -210,7 +211,12 @@ UI5 Code Examples
 			//---------------------//
 			//Другой способ, взять значение из конкретной ячейки
 			var gid = oEvent.getSource().getCells()[0].getText();
-	 }
+		}
+		
+		//Grid Table:
+			var path = oEvent.getParameter("rowBindingContext").sPath;
+			var row = this.getView().getModel("modelName").getProperty(path);	
+	 
 	
 	//как взять выбранные галочками элементы
 		var table = this.byId("requestsTable");
