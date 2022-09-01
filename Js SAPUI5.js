@@ -7,23 +7,26 @@ UI5 Code Examples
 	
 //Ajax:
 	GET:
+		var url = "/nornick.ru~nsi~uer~wm/uer/resumeRequest";
+
 		$.ajax({
 				url: url,
 				type: 'GET',
+				data: query,
 				contentType: "application/json; charset=utf-8",
 				async: false,
 				cache: false,
-				success: function(listMaterials){
-					console.log("success: getReports");
+				success: function(data){
+					console.log("success: " + url);
 					
 					sap.ui.core.BusyIndicator.show();
 					sap.ui.core.BusyIndicator.hide();
 					
 				},
 				error: function(e){
-					console.log("Error getReports");
+					console.log("Error " + url);
 					sap.ui.core.BusyIndicator.hide();
-					MessageToast.show("Ошибка /getReports");
+					MessageToast.show("Ошибка " + url);
 					
 				}
 			});	
@@ -191,6 +194,7 @@ UI5 Code Examples
 	}
 		
 	//как взять выбранный элемент в таблице
+		//Responsive Table:
 		onItemSelected: function(oEvent) {
 			
 			//uer это название модели на что забиндена таблица, т.е. таблица обозначена так:
@@ -207,7 +211,12 @@ UI5 Code Examples
 			//---------------------//
 			//Другой способ, взять значение из конкретной ячейки
 			var gid = oEvent.getSource().getCells()[0].getText();
-	 }
+		}
+		
+		//Grid Table:
+			var path = oEvent.getParameter("rowBindingContext").sPath;
+			var row = this.getView().getModel("modelName").getProperty(path);	
+	 
 	
 	//как взять выбранные галочками элементы
 		var table = this.byId("requestsTable");
@@ -369,3 +378,54 @@ UI5 Code Examples
 	src="/sapui5-1.71/resources/sap-ui-core.js"
 	src="https://sapui5.hana.ondemand.com/1.71.40/resources/sap-ui-core.js"
 	/nornick.ru~nsi~uer~prt/app/index.html
+	
+	
+//Navigation and Routind SAP Router
+	this.getRouter().navTo("recordsSearch", {
+				// query: {
+				// 	"gid": gid
+				// }
+				//или так:
+				query: params
+	}, true /*no history*/);
+			
+	getRouter: function () {
+			return this.getOwnerComponent().getRouter();
+	},
+	
+	// в методе onInit:
+	this.getRouter().getRoute("имя target опеределенного в манифесте").attachPatternMatched(this._onRouteSearch, this);
+	
+	//Пример из манифеста
+	"routes": [
+				{
+					"pattern": "",
+					"name": "appHome",
+					"target": "home"
+				},
+				{
+					"pattern": ":?query:",
+					"name": "recordsSearch",
+					"target": "recordsFilter"
+				}
+			],
+			"targets": {
+				"home": {
+					"viewId": "home",
+					"viewPath": "sap.cc.view",
+					"viewName": "record",
+					"viewLevel": 1
+				},
+				"notFound": {
+					"viewId": "notFound",
+					"viewPath": "sap.cc.view",
+					"viewName": "NotFound",
+					"transition": "show"
+				},
+				"recordsFilter": {
+					"viewId": "home",
+					"viewPath": "sap.cc.view",
+					"viewName": "record",
+					"viewLevel": 2
+				}
+			}

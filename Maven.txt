@@ -21,3 +21,13 @@ dependency:tree - вывод дерева зависимостей
 	watch dependency tree:
 		mvn dependency:tree
 	
+управелние зависимостями:
+	Пример как указать конкретный jar библиотеки на своем ПК:
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>sqljdbc</artifactId>
+			<version>6.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/com.microsoft.sqlserver/sqljdbc/6.0/sqljdbc42.jar</systemPath>
+			<optional>true</optional>
+		</dependency>
