@@ -8,7 +8,7 @@ UI5 Code Examples
 //Ajax:
 	GET:
 		var url = "/nornick.ru~nsi~uer~wm/uer/resumeRequest";
-
+		sap.ui.core.BusyIndicator.show();
 		$.ajax({
 				url: url,
 				type: 'GET',
@@ -17,15 +17,13 @@ UI5 Code Examples
 				async: false,
 				cache: false,
 				success: function(data){
-					console.log("success: " + url);
-					
-					sap.ui.core.BusyIndicator.show();
+					console.log("success: " + url);					
 					sap.ui.core.BusyIndicator.hide();
 					
 				},
 				error: function(e){
-					console.log("Error " + url);
 					sap.ui.core.BusyIndicator.hide();
+					console.log("Error " + url);
 					MessageToast.show("Ошибка " + url);
 					
 				}
@@ -34,6 +32,7 @@ UI5 Code Examples
 				
 				
 	POST:
+		sap.ui.core.BusyIndicator.show();
 		$.ajax({
 					url: url,
 					type: "POST",
@@ -43,16 +42,14 @@ UI5 Code Examples
 					async: true,
 					cache: false,
 					success: function (response) {
-						console.log("success: getMaterials");
-
-						sap.ui.core.BusyIndicator.show();
+						console.log("success: " + url);
 						sap.ui.core.BusyIndicator.hide();
 
 
 					},
 					error: function (e) {
-						busy.close();
-						console.log("Error getMaterials: " + e);
+						sap.ui.core.BusyIndicator.hide();
+						console.log("Error " + url);
 						MessageToast.show("Ошибка при получении данных таблицы");
 					}
 				});
@@ -137,6 +134,7 @@ UI5 Code Examples
 	sapUiNoContentPadding
 	
 //таблица
+//	sap.m.table:
 	<Table items="{path:'uer>/basicTechnologicalOperations'}" width="900px" mode="Delete" delete="onDeleteRow" alternateRowColors="true">
 		<headerToolbar>
 			<OverflowToolbar>
@@ -222,6 +220,45 @@ UI5 Code Examples
 		var table = this.byId("requestsTable");
 		var rec = table.getSelectedItems();
 	 
+	 
+	//sap.ui.table:
+	<Table id="mtrTable" items="{path:'uer>/mtr'}" delete="onDeleteRowMTR" alternateRowColors="false">
+		<columns>
+			<Column hAlign="Center" width="80px">
+				<header>
+					<Text text="ГИД" />
+				</header>
+			</Column>
+			<Column hAlign="Begin">
+				<header>
+					<Text text="Наименование полное МТР" />
+				</header>
+			</Column>
+			<Column hAlign="Center" width="80px">
+				<header>
+					<Text text="ЕИ" />
+				</header>
+			</Column>
+			<Column hAlign="Center" width="200px">
+				<header>
+					<Text text="Норма потерь и отходов материалов" />
+				</header>
+			</Column>
+		</columns>
+		<ColumnListItem vAlign="Middle" type="Active" press="onRecordSelected">
+			<ObjectIdentifier title="{uer>mtrGid}" />
+			<Input value="{uer>mtrFullName}" editable="false" enabled="false" />
+			<Input value="{uer>mtrMu}" editable="false" enabled="false" />
+			<Input value="{uer>mtrNorm}" editable="false" enabled="false" />
+		</ColumnListItem>
+	</Table> -->
+	
+	//взять строку 
+	var path = oEvent.getParameter("rowBindingContext").sPath;
+	
+	//выбранный галочкой
+	var index = table.getSelectedIndex();
+	table.getSelectedIndices()
 
 
 //padding
@@ -429,3 +466,28 @@ UI5 Code Examples
 					"viewLevel": 2
 				}
 			}
+
+
+//serialize map
+	var jsonFromMap = JSON.stringify(Object.fromEntries(map));
+	
+//deserialize map (jsonFromCookie - это json строкой)
+	var map = new Map(Object.entries(JSON.parse(jsonFromCookie)));
+	
+	
+//fetch
+	var options = {
+		method: "POST",
+		body: formData,
+	};
+
+	sap.ui.core.BusyIndicator.show();
+	fetch(url, options).then((response) => {
+		sap.ui.core.BusyIndicator.hide();
+		if (response.ok) {
+			console.log("success post: " + url);
+			that.loadDocs();
+		} else {
+			console.log("При загрузке файла произошла ошибка!");
+		}
+	});
