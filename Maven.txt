@@ -1,26 +1,22 @@
 
-tomcat:run -запуск встроенного tomcat
-dependency:tree - вывод дерева зависимостей
+
+mvn package - сделать jar или war, в зависимости что указано в pom.xml
+mvn tomcat:run -запуск встроенного tomcat
+mvn dependency:tree - вывод дерева зависимостей
+mvn dependency:analyze -DignoreNonCompile - вывод не используемых зависимостей
+mvn clean package tomcat:run --пакетный запуск команд
 	
-	
- --пакетный запуск команд
-	mvn clean package tomcat:run
+mvn --version - вывод версии Maven:
+	make current maven 3.8.4:
+	xport M2_HOME=/usr/local/apache-maven/apache-maven-3.8.4
+	export M2=$M2_HOME/bin
+	export MAVEN_OPTS="-Xms256m -Xmx512m"
+	export PATH=$M2:$PATH          
+	source ~/.profile
 	
 
-	make current maven 3.8.4:
-		xport M2_HOME=/usr/local/apache-maven/apache-maven-3.8.4
-		export M2=$M2_HOME/bin
-		export MAVEN_OPTS="-Xms256m -Xmx512m"
-		export PATH=$M2:$PATH          
-		source ~/.profile
-		mvn --version
-	
-	make jar:
-		mvn package
-		
-	watch dependency tree:
-		mvn dependency:tree
-	
+
+
 управелние зависимостями:
 	Пример как указать конкретный jar библиотеки на своем ПК:
 		<dependency>
