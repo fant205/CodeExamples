@@ -128,3 +128,20 @@ SSL Certificates:
 	keytool - Утилита находится ...\jdk_folder\bin
 	
 	keytool -delete -alias sms01199.npr.nornick.ru -keystore  C:\Work\Soft\jdk1.8.0_171\jre\lib\security\cacerts - удалить сертификат из keystore
+	
+IDEA:
+	debug from idea to SAP Portal:
+		- go to Run -> Debug
+		- Select Edit Configurations
+		- Expand Template section
+		- Select "Remote"
+		- Make settings:
+			Debugger mode: Attache to remote JVM
+			Transport: Socket
+			Host: <your host>
+			Port: 50021
+			Use module classpath: <select your java module>
+		- Push button in right up "Create configuration"
+		- You will see in debug dropdown list or in Debug settings section "Remote" and there your configuration
+		- Now you can push "Debug"
+		- Check that you turned on debug on SAP Portal
