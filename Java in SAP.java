@@ -104,3 +104,12 @@
 Далее заходим в Track Data, 
 нажимаем  Change – нажимаем Sinchronize SC Dependencies – в появившемся окне видим компоненты, необходимо посмотреть подтянулись ли все DC и нажимаем кнопку, в названии которой есть SLD(она вторая слева). Для добавления нового SC нужно нажать кнопку Add SC и в ней выбрать свой SC и нажать кнопку «Save» другие не нажимать (всякие save and reimport).
 
+
+//deploy JPA provider:
+	- Put all jars to directory
+	- Connect to NetWeaver using telnet <netweaver-host> 50008
+	- execute command: add orpersistence
+	- execute command: deploy_provider <your dir> -vendor org.hibernate -name hibernate4221 (<your dir > - should be inside istallution folder of sap ep)
+	
+// generate ear acrhetype java project
+	mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-j2ee-simple -DarchetypeVersion=1.4
