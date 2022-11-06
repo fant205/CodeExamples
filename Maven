@@ -28,3 +28,6 @@ Maven:
 			<version>31.0.1-jre</version>
 		</dependency>
 
+	settings.xml:
+		${maven.home}/conf/settings.xml - maven home можно узнать командой mvn -v
+		${user.home}/.m2/settings.xml
