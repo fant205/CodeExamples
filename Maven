@@ -1,0 +1,33 @@
+Maven:
+	Команды:
+		mvn clean - чистка в проекте всего что было сгенерировано
+		mvn package - прогон билда, тестов, подтягивание зависимостей, если указал в pom.xml, паковка в jar файл
+		mvn install - все что и package и еще копирование в локальный репозиторий сформированного jar, и можно будет в других проектах локально юзать этот jar как либу через dependencies
+		mvn dependencies:tree - покажет в текущем проекте дерево зависимостей
+
+	Репозитории:
+		Local - локальный - на компе репозиторий, находится по адресу ${userhome}/.m2 (папка .m2 скрытая). Для винды это Documents/Users, для мак или убунту корневая папка юзера
+		Central - Центральный (https://mvnrepository.com), если в локальном не нашли, ищем в центральном, если нашли, то копирование в локальный, если не нашли, то идем в remote
+		Remote - Удаленный, это репозиторий в какой-либо компании, внутри нее, и там есть какие-то свои наработки. Можно в maven настроить как Remote какой то сервер компании, и maven будет работать с ним. Если нашли в remote, то копирование в локальный, если нет, то ошибка что такой библиотеки нет
+	
+	
+	Полезные зависимости:
+		//Дает готовые решения для частых простых задач
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.12.0</version>
+		</dependency>
+
+		//как и apache дает много решений для простых вещей (кеш, RateLimiter, если нужно сделать что бы был 5 запросов в секунду и не больше)
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>31.0.1-jre</version>
+		</dependency>
+
+	settings.xml:
+		${maven.home}/conf/settings.xml - maven home можно узнать командой mvn -v
+		${user.home}/.m2/settings.xml
