@@ -83,6 +83,14 @@
 //Format date
 	SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 	result = format.format(((DateTimeValue) value).getDate());
+  
+  
+
+//nio
+    //rename file
+    Path of = Path.of("storage/2.txt");
+    Files.move(of, of.getParent().resolve("2.txt"));
+=======
 	
 //Lambda
 	//Объявляем интерфейс с 1 методом, аннотация @FunctionalInterface делает проверку что в интерейсе только 1 метод (можно создавать другие методы, но тогда они должны быть default)
@@ -142,7 +150,20 @@
 		Supplier<Integer> supplier = () -> 1;
 		Supplier<Map<String, Map<Integer, Set<Long>>>> supplier = HashMap::new;
 	
+	
+	
 	//Пример использования
+	
+		//вытащить только поле из листа объектов и собрать в лист
+		//1
+			List<String> names = 
+			personList.stream()
+              .map(Person::getName)
+              .collect(Collectors.toList());
+		//2
+			u.getRequestProcessor().stream().map(RequestProcessor::getUser_id).map(UerUser::getFio).collect(Collectors.toList()).toString(),
+	
+	
 	
 		//filter odd and print
 		Stream.of(1,2,3,4,5,6,7,8,9)
@@ -186,4 +207,5 @@
 			.toList();
 			
 		System.out.println();
+
 	
