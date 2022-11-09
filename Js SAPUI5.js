@@ -65,6 +65,11 @@ UI5 Code Examples
 
 //Create model from JSON:
 
+	1. 
+	var model = new JSONModel(sap.ui.require.toUrl("sap/cc") + "/json/workType.json");
+    this.getView().setModel(model, "workType");
+
+	2.
 	var rows = [];
 	var listRows = {};
 	
@@ -85,6 +90,12 @@ UI5 Code Examples
 	var oJsonModelListRows = new JSONModel(listRows);
 	that.getView().setModel(oJsonModelListRows, listName);
 	that.getView().getModel(listName).refresh();
+	
+	
+//Load model event
+	oModel.attachRequestCompleted(function() {
+		console.log("handler: " + oModel.getData());
+	});
 	
 //Load JSON from file (sap/cc - namespace):
 	var muModel = new JSONModel(sap.ui.require.toUrl("sap/cc") + "/json/mu.json");
@@ -491,3 +502,82 @@ UI5 Code Examples
 			console.log("При загрузке файла произошла ошибка!");
 		}
 	});
+	
+	
+	
+//create object via JavaScript
+new sap.m.CustomListItem({
+	content: [
+		new sap.m.HBox({
+			items: [
+				new sap.m.ObjectIdentifier({ title: "{news>title}", text: "", titleActive: false }),
+				new sap.m.Label({ text: "test" }),
+				
+			],
+			// width: "100%",
+			fitContainer: true,
+		}).addStyleClass("sapUiTinyMargin"),
+	],
+	// type: sap.m.ListType.Active,
+	press: function () {
+		// alert("Clicked the list item");
+	},
+}),
+
+
+
+//Create dialog via JS:
+	var oDialog = new Dialog({
+	title: "News",
+	contentWidth: "50%",
+	contentHeight: "50%",
+	resizable: true,
+	draggable: true,
+	content: new List({
+		items: {
+			path: "news>/",
+			template: new sap.m.CustomListItem({
+				content: [
+					new sap.m.HBox({
+						items: [new sap.m.ObjectIdentifier({ title: "{news>title}", text: "", titleActive: false })],
+						// width: "100%",
+						fitContainer: true,
+					}).addStyleClass("sapUiTinyMargin"),
+					new sap.m.HBox({
+						items: [new sap.ui.core.HTML({ content: "{news>text}" })],
+						// width: "100%",
+						fitContainer: true,
+					}).addStyleClass("sapUiTinyMargin"),
+				],
+				// type: sap.m.ListType.Active,
+				press: function () {
+					// alert("Clicked the list item");
+				},
+			}),
+		},
+		infoToolbar: {
+			content: new sap.m.OverflowToolbar({
+				active: true,
+				press: function (){
+					alert("Clicked");
+				},
+				content : new sap.m.Label({
+					text: "This is the"
+				}),
+			}),
+		}
+	}),
+	beginButton: new Button({
+		type: ButtonType.Emphasized,
+		text: "Ok",
+		press: function () {
+			oDialog.close();
+		},
+	}),
+	});
+
+	//to get access to the global model
+	this.getView().addDependent(this.pressDialog);
+
+	oDialog.setModel(oModel, "news");
+	oDialog.open();
