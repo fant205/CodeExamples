@@ -332,3 +332,14 @@
 		
 		
 ## JPA Примеры запросов
+	### JPQL:
+		SELECT a FROM Article a
+		SELECT a FROM Article a WHERE a.id = 2
+		SELECT a.firstname, a.lastname FROM Author a
+		SELECT a.firstname, a.lastname FROM Author a WHERE a.id = ?1
+		SELECT a.firstname, a.lastname FROM Author a WHERE a.id = :id
+		SELECT NEW com.geekbrains.Person(a.firstname, a.lastname) FROM Author a
+	
+	### In Java:
+		List<Author> authors = em.createQuery("SELECT a FROM Author a", Author.class).getResultList();
+		Author author = em.createQuery("SELECT a FROM Author a WHERE a.id = 1", Author.class).getSingleResult();
