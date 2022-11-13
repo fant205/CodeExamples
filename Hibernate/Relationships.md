@@ -154,3 +154,49 @@
 		private List<Product> products;
 		// ...
 	}
+
+## Cascade Types
+    ● CascadeType.ALL — каскадирование будет применяться ко всем операциям;
+    ● CascadeType.REMOVE — только к методу удаления;
+    ● CascadeType.PERSIST — только к методу сохранения;
+    ● CascadeType.MERGE — к методу обновления;
+    ● CascadeType.REFRESH — к методу синхронизации с БД;
+    ● CascadeType.DETACH — каскадирование применяется к методу удаления сущности из
+    контекста постоянства (но не из БД).
+
+## Annotations JPA
+    @Entity - показывает что класс является сущностью
+
+    Описание таблицы:
+        @Table(name = "demo_annotated", indexes = {
+            @Index(name = "name_idx", columnList = "name"),
+            @Index(name = "id_name_idx", columnList = "id, name"),
+            @Index(name = "unique_name_idx", columnList = "name", unique = true)
+        })
+ 
+    @OneToOne, @OneToMany, @ManyToOne, @ManyToMany - Виды связей
+    @Column - описание колонки:
+        @Column(name = "manual_def_str", columnDefinition = "VARCHAR(50) NOT NULL
+        UNIQUE CHECK (NOT substring(lower(manual_def_str), 0, 5) = 'admin')")
+        String manualDefinedString;
+        @Column(name = "short_str", nullable = false, length = 10) // varchar(10)
+        String shortString;
+        @Column(name = "created_at", updatable = false)
+        LocalDateTime createdAt;
+    @CreationTimestamp и @UpdateTimestamp - Для автогенерации времени создания объекта 
+    в базе данных и времени его обновления используются аннотации;
+
+    @ManyToOne (описание таблицы меппинга для многие ко многим)
+    @JoinColumn(
+        name = "product_id",
+        nullable = false,
+        foreignKey = @ForeignKey(name = "FK_PRODUCT_ID")
+    )
+    Product product;
+
+    @Id (Любая сущность должна иметь поле id с аннотацией @Id)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) (Указываем что значение будет генерироваться автоматически)
+    @Column(name = "id")
+    Long id;
+
+    @Version поле используется для версионирования
