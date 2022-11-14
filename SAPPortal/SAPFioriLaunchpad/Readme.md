@@ -16,3 +16,12 @@
 	Custom SAPUI5 Module Plugin Name: <your plugin name, which you setup in the js code like jQuery.sap.declare("my.custom.plugins.TestPlugin");> (for example value will be: my.custom.plugins.TestPlugin)
 	SAPUI5 Library Source: <should be JAVA>
 13. Go and check it
+
+
+# Setup SAPUI5 version on SAP Portal
+
+1. In SAP NetWeaver Administrator, go to Start of the navigation path Configuration Next navigation step Application Modules End of the navigation path. Under the Modules List, search for com.sap.portal.design.ui5designdataless and select it. 
+2. Under Portal Service Details, change the value to what you have on your SAP Portal   
+3. Restart your system
+
+Warning: you cannot revert back to older version 

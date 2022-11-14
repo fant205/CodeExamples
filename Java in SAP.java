@@ -41,11 +41,11 @@
 	
 	
 //sap log
-	private static final Location sapLog = Location.getLocation(Location.getLocation("MtrSyncLog.log"));
+	private static final Location sl = Location.getLocation(Location.getLocation("XXX.log"));
 
 	//mini
 		public void sapLog(String msg, Object... args) {
-			SimpleLogger.log(Severity.INFO, Category.APPLICATIONS, sapLog, "EoBe", String.format(msg, args));
+			SimpleLogger.log(Severity.INFO, Category.APPLICATIONS, sl, "XXX", String.format(msg, args));
 		}
 
 

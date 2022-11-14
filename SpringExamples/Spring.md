@@ -2,7 +2,7 @@ Spring аннотации:
 	@SpringBootApplication - указывается для класса запускающего spring boot приложение. Обычно оно находится на самом верхнем уровне, и по умолчанию spring сканирует все классы на этом же уровне и все дочерние пакеты. Поэтому можно не указывать @ComponentScan. Аннотация в числе прочих наследуется от аннотаций @Configuration,@ComponentScan, @EnableAutoConfiguration.
 	@ComponentScan("package.name") - указывается для класса с @Configuration или @SpringBootApplication какие пакеты нужно сканировать
 	@PostConstruct - вызов для бина после вызова конструктора
-	@RequiredArgsConstructor - makes constructor and fill non-initialized fields with final and fill fields with @NonNull, make check for NullPointerException
+	
 	
 	@Controller - указывает что класс Java является контроллером, т.е. является спринг-бином и значит что будет принимать вызовы веб-методов GET, POST и т.д. Так же если не указывать аннотацию @RequestBody, то автоматом подключается Thymeleaf и ищет страницу для ответа на запрос, если указать @RequestBody то, в ответ будет отправлен объект.
 	@RestController - тоже самое что @Controller, но на каждом метода автоматически будет учтена аннотация @ResponseBody, и ее не надо каждый раз писать.
@@ -52,6 +52,7 @@ Spring Boot отладка:
 		  
 Lombok:
 	@Data - generate setters and getters when compile, if you use it in IDEA, you should use Lombok plugin, to use generated setters and getters
-	@AllArgsConstructor------------       
+	@AllArgsConstructor
 	@NoArgsConstructor
-	@RequiredArgsConstructor - делает конструктор с полями которые объявлены как final и какие то еще
+	@RequiredArgsConstructor - makes constructor and fill non-initialized fields with final and fill fields with @NonNull, make check for NullPointerException
+
