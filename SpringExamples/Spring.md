@@ -54,3 +54,4 @@ Lombok:
 	@Data - generate setters and getters when compile, if you use it in IDEA, you should use Lombok plugin, to use generated setters and getters
 	@AllArgsConstructor------------       
 	@NoArgsConstructor
+	@RequiredArgsConstructor - делает конструктор с полями которые объявлены как final и какие то еще
