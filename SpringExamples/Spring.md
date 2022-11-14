@@ -55,3 +55,4 @@ Lombok:
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@RequiredArgsConstructor - makes constructor and fill non-initialized fields with final and fill fields with @NonNull, make check for NullPointerException
+
