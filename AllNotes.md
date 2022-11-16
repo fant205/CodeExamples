@@ -145,3 +145,8 @@ IDEA:
 		- You will see in debug dropdown list or in Debug settings section "Remote" and there your configuration
 		- Now you can push "Debug"
 		- Check that you turned on debug on SAP Portal
+
+
+
+Chrome:
+	сброк кэша: Shift + F5
