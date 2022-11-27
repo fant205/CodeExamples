@@ -393,103 +393,125 @@ Spring:
 		● spring-boot-starter-jdbc — реализует пул соединений JDBC, основан на реализации пула JDBC Tomcat.
 
 	Spring Boot Security:
-		Опередяем конфиг:
-			@Configuration
-			@EnableWebSecurity
-			@EnableGlobalMethodSecurity(securedEnabled = true)
-			public class SecurityConfig extends WebSecurityConfigurerAdapter {
-				// ...
-			}
 
-		Аннотации:
-			@EnableWebSecurity - отключает стандартные настройки безопасности Spring Security и начинает использовать правила, прописанные в SecurityConfig. 
-			@EnableGlobalMethodSecurity - активирует возможность ставить защиту на уровне методов (для этого над методами ставятся аннотации @Secured и @PreAuthorized).
-
-		Пример конфига когда мы сами определяем как будем искать юзера и полномочия, исползуется: DaoAuthenticationProvider и UserService, который будет искать юзера, его пароль, его роли и будет хешировать пароль с помощью BCryptPasswordEncoder:
-			@Configuration
-			@EnableWebSecurity
-			@EnableGlobalMethodSecurity(securedEnabled = true)
-			public class SecurityConfig extends WebSecurityConfigurerAdapter {
-				private UserService userService;
-
-				@Autowired
-				public void setUserService(UserService userService) {
-					this.userService = userService;
-				}
-
-				@Bean
-				public BCryptPasswordEncoder passwordEncoder() {
-					return new BCryptPasswordEncoder();
-				}
-
-				@Bean
-				public DaoAuthenticationProvider authenticationProvider() {
-					DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
-					auth.setUserDetailsService(userService);
-					auth.setPasswordEncoder(passwordEncoder());
-					return auth;
-				}
-
-				@Override
-				protected void configure(HttpSecurity http) throws Exception {
-					http.authorizeRequests()				
-					.antMatchers("/").hasAnyRole("USER")
-					.antMatchers("/admin/**").hasRole("ADMIN")
-					.and()
-					.formLogin()
-					.loginPage("/login")
-					.loginProcessingUrl("/authenticateTheUser")
-					.permitAll();
-				}
-
-				//пояснение:
-				● Метод configure(HttpSecurity http) отвечает за настройку защиты на уровне запросов и конфигурирование процессов авторизации.
-				● antMatchers — с помощью данного метода указывается http-метод и URL (или шаблон URL), доступ к которому необходимо ограничить.
-				● hasRole(String role), hasAnyRole(String... roles) — в нем указывается одна роль или набор ролей, необходимых пользователю для доступа к данному ресурсу.
-				● formLogin() — дает возможность настроить форму для авторизации.
-				● loginPage — URL формы авторизации.
-				● loginProcessingUrl — URL, на который будут отправляться данные формы (методом POST).
-				● * logout() — позволяет настроить правила выхода из учетной записи.
-				● * failureUrl — адрес для перенаправления пользователя в случае неудачной авторизации.
-				● * logoutSuccessUrl — URL, на который будет перенаправлен пользователь при выходе из аккаунта автора.
-				● * usernameParameter и passwordParameter — имена полей формы, содержащие логин и пароль, если не используются стандартные имена username и password;
-
-			}
-
-			Пример реализации UserService:
-				@Service
-				public class UserService implements UserDetailsService {
-					private UserRepository userRepository;
-					private RoleRepository roleRepository;
-
-					@Autowired
-					public void setUserRepository(UserRepository userRepository) {
-						this.userRepository = userRepository;
+		Есть два способа настройки security:
+				1. Через WebSecurityConfigurerAdapter - объявлен устаревшим
+				2. Через SecurityConfig, в котором надо создать бин SecurityFilterChain и сделать сразу его настройку.
+					Пример с SecurityFilterChain (по новому):
+					@Configuration
+					public class SecurityConfig {
+					    @Bean
+					    public SecurityFilterChain mySecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
+					        return httpSecurity.authorizeRequests()
+					                .antMatchers("/app/admin-page").hasRole("ADMIN")
+					                .antMatchers("/app/user-page").hasAnyRole("USER", "ADMIN")
+					                .antMatchers("/app/home").authenticated()
+					                .antMatchers("/app/guest").permitAll()
+					                .and()
+					                .formLogin()
+					                .and()
+					                .build();
+					    }
 					}
 
-					@Autowired
-					public void setRoleRepository(RoleRepository roleRepository) {
-						this.roleRepository = roleRepository;
-					}
+				Пример по старому (через WebSecurityConfigurerAdapter)
+					Опередяем конфиг:
+						@Configuration
+						@EnableWebSecurity
+						@EnableGlobalMethodSecurity(securedEnabled = true)
+						public class SecurityConfig extends WebSecurityConfigurerAdapter {
+							// ...
+						}
 
-					public User findByUsername(String username) {
-						return userRepository.findOneByUsername(username);
-					}
+					Аннотации:
+						@EnableWebSecurity - отключает стандартные настройки безопасности Spring Security и начинает использовать правила, прописанные в SecurityConfig. 
+						@EnableGlobalMethodSecurity - активирует возможность ставить защиту на уровне методов (для этого над методами ставятся аннотации @Secured и @PreAuthorized).
 
-					@Override
-					public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-						User user = userRepository.findOneByUsername(username);
-						if (user == null) {
-							throw new UsernameNotFoundException("Invalid username or password");
-						}					
-						return new org.springframework.security.core.userdetails.User(user.getPhone(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
-					}
+					Пример конфига когда мы сами определяем как будем искать юзера и полномочия, исползуется: DaoAuthenticationProvider и UserService, который будет искать юзера, его пароль, его роли и будет хешировать пароль с помощью BCryptPasswordEncoder:
+						@Configuration
+						@EnableWebSecurity
+						@EnableGlobalMethodSecurity(securedEnabled = true)
+						public class SecurityConfig extends WebSecurityConfigurerAdapter {
+							private UserService userService;
 
-					private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
-						return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
-					}
+							@Autowired
+							public void setUserService(UserService userService) {
+								this.userService = userService;
+							}
 
-				}
+							@Bean
+							public BCryptPasswordEncoder passwordEncoder() {
+								return new BCryptPasswordEncoder();
+							}
+
+							@Bean
+							public DaoAuthenticationProvider authenticationProvider() {
+								DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
+								auth.setUserDetailsService(userService);
+								auth.setPasswordEncoder(passwordEncoder());
+								return auth;
+							}
+
+							@Override
+							protected void configure(HttpSecurity http) throws Exception {
+								http.authorizeRequests()				
+								.antMatchers("/").hasAnyRole("USER")
+								.antMatchers("/admin/**").hasRole("ADMIN")
+								.and()
+								.formLogin()
+								.loginPage("/login")
+								.loginProcessingUrl("/authenticateTheUser")
+								.permitAll();
+							}
+
+							//пояснение:
+							● Метод configure(HttpSecurity http) отвечает за настройку защиты на уровне запросов и конфигурирование процессов авторизации.
+							● antMatchers — с помощью данного метода указывается http-метод и URL (или шаблон URL), доступ к которому необходимо ограничить.
+							● hasRole(String role), hasAnyRole(String... roles) — в нем указывается одна роль или набор ролей, необходимых пользователю для доступа к данному ресурсу.
+							● formLogin() — дает возможность настроить форму для авторизации.
+							● loginPage — URL формы авторизации.
+							● loginProcessingUrl — URL, на который будут отправляться данные формы (методом POST).
+							● * logout() — позволяет настроить правила выхода из учетной записи.
+							● * failureUrl — адрес для перенаправления пользователя в случае неудачной авторизации.
+							● * logoutSuccessUrl — URL, на который будет перенаправлен пользователь при выходе из аккаунта автора.
+							● * usernameParameter и passwordParameter — имена полей формы, содержащие логин и пароль, если не используются стандартные имена username и password;
+
+						}
+
+						Пример реализации UserService:
+							@Service
+							public class UserService implements UserDetailsService {
+								private UserRepository userRepository;
+								private RoleRepository roleRepository;
+
+								@Autowired
+								public void setUserRepository(UserRepository userRepository) {
+									this.userRepository = userRepository;
+								}
+
+								@Autowired
+								public void setRoleRepository(RoleRepository roleRepository) {
+									this.roleRepository = roleRepository;
+								}
+
+								public User findByUsername(String username) {
+									return userRepository.findOneByUsername(username);
+								}
+
+								@Override
+								public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+									User user = userRepository.findOneByUsername(username);
+									if (user == null) {
+										throw new UsernameNotFoundException("Invalid username or password");
+									}					
+									return new org.springframework.security.core.userdetails.User(user.getPhone(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
+								}
+
+								private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
+									return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+								}
+
+							}
 
 
 		Пример конфига для стандартной парs таблиц: users и authorities. Все что нужно, это заинжектить DataSource, создать таблицы в базе, и добавить туда пользователей. 
