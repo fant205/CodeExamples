@@ -42,11 +42,10 @@
 	
 //sap log
 	private static final Location sl = Location.getLocation(Location.getLocation("XXX.log"));
-
-	//mini
-		public void sapLog(String msg, Object... args) {
-			SimpleLogger.log(Severity.INFO, Category.APPLICATIONS, sl, "XXX", String.format(msg, args));
-		}
+	
+	public void sapLog(String msg, Object... args) {
+		SimpleLogger.log(Severity.INFO, Category.APPLICATIONS, sl, "XXX", String.format(msg, args));
+	}
 
 
 	//full
@@ -113,3 +112,9 @@
 	
 // generate ear acrhetype java project
 	mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-j2ee-simple -DarchetypeVersion=1.4
+	
+	
+	
+	
+//SAP JPA
+	@TransactionAttribute(value=TransactionAttributeType.REQUIRES_NEW) - для класса или для метода, дает открытие новой транзакции при каждом вызове метода класса. Можно ставить на класс или на метод.
