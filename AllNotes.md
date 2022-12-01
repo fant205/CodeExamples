@@ -397,22 +397,25 @@ Spring:
 		Есть два способа настройки security:
 				1. Через WebSecurityConfigurerAdapter - объявлен устаревшим
 				2. Через SecurityConfig, в котором надо создать бин SecurityFilterChain и сделать сразу его настройку.
-					Пример с SecurityFilterChain (по новому):
-					@Configuration
-					public class SecurityConfig {
-					    @Bean
-					    public SecurityFilterChain mySecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
-					        return httpSecurity.authorizeRequests()
-					                .antMatchers("/app/admin-page").hasRole("ADMIN")
-					                .antMatchers("/app/user-page").hasAnyRole("USER", "ADMIN")
-					                .antMatchers("/app/home").authenticated()
-					                .antMatchers("/app/guest").permitAll()
-					                .and()
-					                .formLogin()
-					                .and()
-					                .build();
-					    }
-					}
+						Пример с SecurityFilterChain (по новому):
+						@Configuration
+						public class SecurityConfig {
+						    @Bean
+						    public SecurityFilterChain mySecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
+						        return httpSecurity.authorizeRequests()
+						                .antMatchers("/app/admin-page").hasRole("ADMIN")
+						                .antMatchers("/app/user-page").hasAnyRole("USER", "ADMIN")
+						                .antMatchers("/app/home").authenticated()
+						                .antMatchers("/app/guest").permitAll()
+						                .and()
+						                .formLogin()
+						                .and()
+						                .build();
+						    }
+						}
+					В данном способе можно инициализиваровать правила для нужны ссылок через аннотации:
+						- ставим над методом в RestController аннотацию @Secured("ROLE_ADMIN")
+						- в файле конфигурации безопасности SecurityConfig аннотацию @EnableGlobalMethodSecurity(securedEnabled = true)
 
 				Пример по старому (через WebSecurityConfigurerAdapter)
 					Опередяем конфиг:
