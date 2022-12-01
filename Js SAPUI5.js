@@ -581,3 +581,12 @@ new sap.m.CustomListItem({
 
 	oDialog.setModel(oModel, "news");
 	oDialog.open();
+	
+	
+	
+formatter:
+	<Text 
+		text="{
+			path: 'jpd>status',
+			formatter: '.formatter.jpd'
+		}"/>  
