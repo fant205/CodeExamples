@@ -212,6 +212,11 @@ Java:
 Date:
     Date date = new Date();
     System.out.println(date.toString());
+
+	LocalDateTime:
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime date = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, now.getSecond() + offsetDays);
+		return new Timestamp(date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
 		
 Logging:
 	log.debugT(method, "Xml for Import manager: {0}", new Object[] { importXmlName });
@@ -1194,6 +1199,48 @@ SQL:
 			grant all privileges on database geodata to user_db;
 				
 				 
+	Пример даты '2022-10-06 10:23:37.043'
+	
+	SQL Server:
+	
+		ALTER TABLE:
+			alter table ProjectCategory
+			add	codeCategory nvarchar(50) not null default 'XXX',
+				creationDate datetime not null default '2022-10-06 10:23:37.043',
+				modificationDate datetime not null default '2022-10-06 10:23:37.043',
+				creationUser nvarchar (50) not null default 'XXX',
+				modificationUser nvarchar (50) not null default 'XXX'
+				
+				
+		UPDATE
+			Sales_Import
+		SET
+			Sales_Import.AccountNumber = RAN.AccountNumber
+		FROM
+			Sales_Import SI
+		INNER JOIN
+			RetrieveAccountNumber RAN
+		ON 
+			SI.LeadID = RAN.LeadID;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1202,6 +1249,910 @@ SQL:
 Пример задач по Java:
 	Полноценное клиент-серверное приложение + второе приложение, которое общается с первым через брокер сообщений. Я использовала Spring MVC, Spring Security, Spring Data, для маппинга классов в бд и обратно Hibernate, базу данных MySQL, брокер сообщений RabbitMq, WebSocket, контейнер сервлетов Tomcat, Log4j для логирования, Java Mail для отправки сообщений на email из приложения. Для UI части использовала шаблонизатор страничек Thymeleaf. Для тестирования JUnit и Mockito. Получилось довольно сложное и интересное приложение - онлайн магазин с раздельным функционалом для клиентов и админа. С корзиной товаров, оформлением заказа, фильтрацией каталога товаров и прочим. Для админа - возможность добавления товаров, работа с заказами, изменения статусов оплаты, доставки и прочее, а также различные метрики, например - валовая выручка магаза за выбранный период времени. Вторым приложением был рекламный стенд с категориями-бестселлерами магазина, стенд обновлялся в режиме реального времени через брокер сообщений и вебсокеты, когда происходили покупки на основном сайте магазина. 
 
+	
+
+	
+
+Regexp - Регулярные выражения:
+
+	@.* - строка начинается с @ и любые символы повторяются любой количество раз
+	(handle.*)(Search) - начинается на handle далее любое количество символов и заканчивается Search, пример: _handleValueHelpSearch	
+	.+([0-9] ) - удаление всех цифр в начале строки с до пробела вместе с ним
+	".*?" - ищет от первой кавычки до следующей первой
+	
+	
+	
+	
+	
+SAP:
+	Java:
+		Шаблоны кода:
+
+		//MultiTupleValue by values
+			MdmValue[] values = mtv.getValues();
+			for (int i = 0; i < values.length; i++) {
+				TupleValue t = (TupleValue) values[i];
+				...
+			}
+			
+
+			
+		//SAP Logging:
+			//log debug
+			if(log.beDebug()) {
+				log.debugT(method, "");
+			}
+			
+			//log method
+			String method = "loadAnalogs";
+			boolean result = false;
+			try {
+				
+				if (log.bePath()) {
+					log.entering(method);
+				}
+				
+				return result;
+				
+			} finally {
+				if(log.bePath()){
+					log.exiting(method);
+				}
+			}
+			
+			
+		//sap log
+			private static final Location sl = Location.getLocation(Location.getLocation("XXX.log"));
+			
+			public void sapLog(String msg, Object... args) {
+				SimpleLogger.log(Severity.INFO, Category.APPLICATIONS, sl, "XXX", String.format(msg, args));
+			}
+
+
+			//full
+				public void logDebug(String method, String msg) {
+					if (log.beDebug()) {
+						log.debugT(method, msg);
+					}
+					SimpleLogger.log(Severity.INFO, Category.APPLICATIONS, loc, "MtrSync", msg);
+				}
+				
+				
+		// regexp
+				{
+					String s = "S";
+					String p = "[A-Z]";
+					System.out.println(s.matches(p));
+				}
+
+				{
+					String s = "SSS";
+					String p = "[A-Z]+";
+					System.out.println(s.matches(p));
+				}
+				
+				{
+					String s = "ВАПЕ";
+					String p = "[А-Я]+";
+					System.out.println(s.matches(p));
+				}
+				
+				{
+					String s = "фыва";
+					String p = "[^А-Я]+";
+					System.out.println(s.matches(p));
+				}
+				
+		//deploy without NWDS
+		1. Login with sidadm on SAP NetWeaver WebAs server 
+		2. Go to following directory /usr/sap/SID/InstanceNo/j2ee/deployment/scripts
+		3. Find deploy.csh \ deploy.bat
+		4. Execute following command to deploy - it will show you how to execute command.
+		5. Example of deploy command: deploy username:password@host:port file_location
+			
+			
+			
+		//jpa sql
+			SELECT COUNT(t) FROM MaterialEntity t WHERE t.id IN (SELECT u.material.id FROM AreasEntity u WHERE(u.name = :name1));
+			
+			
+		//	Добавление Software Component в NWDI
+		Создаем в SLD, назначаем dependencies для контекста BuildTime (если какие то компоненты не видны при добавлении, то возможно они появятся уже добавленными в компонент), открываем CMS вкладка Landscape Configurator. 
+		Там Domain Data 
+		нажимаем кнопку Change - кнопка Update CMS. 
+		Ждем. 
+		Далее заходим в Track Data, 
+		нажимаем  Change – нажимаем Sinchronize SC Dependencies – в появившемся окне видим компоненты, необходимо посмотреть подтянулись ли все DC и нажимаем кнопку, в названии которой есть SLD(она вторая слева). Для добавления нового SC нужно нажать кнопку Add SC и в ней выбрать свой SC и нажать кнопку «Save» другие не нажимать (всякие save and reimport).
+
+
+		//deploy JPA provider:
+			- Put all jars to directory
+			- Connect to NetWeaver using telnet <netweaver-host> 50008
+			- execute command: add orpersistence
+			- execute command: deploy_provider <your dir> -vendor org.hibernate -name hibernate4221 (<your dir > - should be inside istallution folder of sap ep)
+			
+		// generate ear acrhetype java project
+			mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-j2ee-simple -DarchetypeVersion=1.4
+			
+			
+			
+			
+		//SAP JPA
+			@TransactionAttribute(value=TransactionAttributeType.REQUIRES_NEW) - для класса или для метода, дает открытие новой транзакции при каждом вызове метода класса. Можно ставить на класс или на метод.
+			@TransactionManagement(TransactionManagementType.BEAN)
+			
+			
+SAP:
+	JavaScript - js:
+		UI5 Code Examples:
+
+			//BusyIndicator:
+				sap.ui.core.BusyIndicator.show();
+				sap.ui.core.BusyIndicator.hide();
+				
+				
+			//Ajax:
+				GET:
+					var url = "/nornick.ru~nsi~uer~wm/uer/resumeRequest";
+					sap.ui.core.BusyIndicator.show();
+					$.ajax({
+							url: url,
+							type: 'GET',
+							data: query,
+							contentType: "application/json; charset=utf-8",
+							async: false,
+							cache: false,
+							success: function(data){
+								console.log("success: " + url);					
+								sap.ui.core.BusyIndicator.hide();
+								
+							},
+							error: function(e){
+								sap.ui.core.BusyIndicator.hide();
+								console.log("Error " + url);
+								MessageToast.show("Ошибка " + url);
+								
+							}
+						});	
+							
+							
+							
+				POST:
+					sap.ui.core.BusyIndicator.show();
+					$.ajax({
+								url: url,
+								type: "POST",
+								contentType: "application/json; charset=utf-8",
+								dataType: "json",
+								data: JSON.stringify(dataFilterMap),
+								async: true,
+								cache: false,
+								success: function (response) {
+									console.log("success: " + url);
+									sap.ui.core.BusyIndicator.hide();
+
+
+								},
+								error: function (e) {
+									sap.ui.core.BusyIndicator.hide();
+									console.log("Error " + url);
+									MessageToast.show("Ошибка при получении данных таблицы");
+								}
+							});
+				
+				
+				
+							
+			//DateFormat:
+				var options = { year: 'numeric', month: 'long' };
+				var date = new Date(item.creationDate);
+				var dateStr = date.toLocaleDateString("ru-RU", options);
+
+
+			//Create model from JSON:
+
+				1. 
+				var model = new JSONModel(sap.ui.require.toUrl("sap/cc") + "/json/workType.json");
+				this.getView().setModel(model, "workType");
+
+				2.
+				var rows = [];
+				var listRows = {};
+				
+				var row = {		  "id" : item.id,
+								  "nameAbsolute": item.nameAbsolute,
+								  "procedureName": item.procedureName,
+								  "creationDate": that.getFormatDate(item.creationDate,false) ,//+ postfix
+								  "absoluteCount": item.absoluteCount,
+								  "relativeCount": that.cropNumber(item.relativeCount),
+								  "item": item.item,
+								  "ButtonId" : ""+item.id,
+								  "ButtonVisible" : that.hideSupportInterface ? false : visibleButton
+							};
+
+				rows.push(row)
+				listRows.rows = rows;
+
+				var oJsonModelListRows = new JSONModel(listRows);
+				that.getView().setModel(oJsonModelListRows, listName);
+				that.getView().getModel(listName).refresh();
+				
+				
+			//Load model event
+				oModel.attachRequestCompleted(function() {
+					console.log("handler: " + oModel.getData());
+				});
+				
+			//Load JSON from file (sap/cc - namespace):
+				var muModel = new JSONModel(sap.ui.require.toUrl("sap/cc") + "/json/mu.json");
+				
+				//namespace
+				data-sap-ui-resourceroots='{
+							"sap.cc": "/nornick.ru~nsi~uer~prt/app"				
+							}'>
+							
+			//suggestion field
+				initMuSearchField: function (){
+						
+					var muModel = new JSONModel(sap.ui.require.toUrl("sap/cc") + "/json/mu.json");
+
+					var mu = this.byId("mu");
+					mu.bindAggregation("suggestionItems", {
+						path:"/ProductCollection",
+						template: new sap.ui.core.Item({
+							text: '{Name}'
+						})
+					});
+					
+					mu.setModel(muModel);
+					
+					this.byId("mu").setFilterFunction(function(sTerm, oItem) {
+						return oItem.getText().match(new RegExp(sTerm, "i"));
+					});
+					
+
+				},
+							
+							
+							
+			//cookie
+				 jQuery.sap.storage.get, 
+				 jQuery.sap.storage.put, 
+				 jQuery.sap.storage.remove, 
+				 jQuery.sap.storage.clear, 
+				 jQuery.sap.storage.getType and 
+				 jQuery.sap.storage.removeAll
+				 
+				alert( jQuery.sap.storage.get("example") );
+				jQuery.sap.storage.put("example", "foo");
+				 
+			 
+			//paddings
+				sapUiNoContentPadding
+				
+			//таблица
+			//	sap.m.table:
+				<Table items="{path:'uer>/basicTechnologicalOperations'}" width="900px" mode="Delete" delete="onDeleteRow" alternateRowColors="true">
+					<headerToolbar>
+						<OverflowToolbar>
+							<content>
+								<Button icon="sap-icon://add" type="Accept" press="onAddRow"/>
+							</content>
+						</OverflowToolbar>
+					</headerToolbar>
+					<columns>
+						<Column hAlign="Center">
+							<header>
+								<Text text="ГИД" />
+							</header>
+						</Column>
+						<Column hAlign="Center">
+							<header>
+								<Text text="Код" />
+							</header>
+						</Column>
+						<Column hAlign="Center">
+							<header>
+								<Text text="Основные технологические операции" />
+							</header>
+						</Column>
+					</columns>
+					<ColumnListItem vAlign="Middle" type="Active" press="onRecordSelected">
+						<Input value="{uer>gid}" />
+						<Input value="{uer>code}" />
+						<Input value="{uer>operations}" />
+					</ColumnListItem>
+				</Table>
+				
+				//добавить строку в таблицу
+				onAddRow: function (oEvent) {
+							console.log("onAddRow");
+							this.getView().getModel("uer").getProperty('/basicTechnologicalOperations').push({
+								"gid": "",
+								"code": "",
+								"operations": ""
+							});
+							this.getView().getModel("uer").refresh();
+
+							
+						},
+
+				//удалить строку
+				onDeleteRow: function(oEvent){
+					console.log("onDeleteRow");
+
+					var path = oEvent.getParameter("listItem").getBindingContextPath()
+					var index = path.replace("/basicTechnologicalOperations/", "");			
+					this.getView().getModel("uer").getProperty('/basicTechnologicalOperations').splice(index, 1);
+					this.getView().getModel("uer").refresh();
+
+				}
+					
+				//как взять выбранный элемент в таблице
+					//Responsive Table:
+					onItemSelected: function(oEvent) {
+						
+						//uer это название модели на что забиндена таблица, т.е. таблица обозначена так:
+						//<Table items="{path:'uer>/records'}">
+						var path = oEvent.getSource().getBindingContext("uer").getPath()
+						//path содержит путь в модели до выбранного элемента		
+						
+						//дальше берем нужный нам элемент из вьюшки по id, 
+						//и биндим к нему по указанному элемент из нашей модели
+						var oProductDetailPanel = this.getView().byId("productDetailsPanel");
+						oProductDetailPanel.bindElement({ path: sPath, model: "products" });
+						
+						
+						//---------------------//
+						//Другой способ, взять значение из конкретной ячейки
+						var gid = oEvent.getSource().getCells()[0].getText();
+					}
+					
+					//Grid Table:
+						var path = oEvent.getParameter("rowBindingContext").sPath;
+						var row = this.getView().getModel("modelName").getProperty(path);	
+				 
+				
+				//как взять выбранные галочками элементы
+					var table = this.byId("requestsTable");
+					var rec = table.getSelectedItems();
+				 
+				 
+				//sap.ui.table:
+				<Table id="mtrTable" items="{path:'uer>/mtr'}" delete="onDeleteRowMTR" alternateRowColors="false">
+					<columns>
+						<Column hAlign="Center" width="80px">
+							<header>
+								<Text text="ГИД" />
+							</header>
+						</Column>
+						<Column hAlign="Begin">
+							<header>
+								<Text text="Наименование полное МТР" />
+							</header>
+						</Column>
+						<Column hAlign="Center" width="80px">
+							<header>
+								<Text text="ЕИ" />
+							</header>
+						</Column>
+						<Column hAlign="Center" width="200px">
+							<header>
+								<Text text="Норма потерь и отходов материалов" />
+							</header>
+						</Column>
+					</columns>
+					<ColumnListItem vAlign="Middle" type="Active" press="onRecordSelected">
+						<ObjectIdentifier title="{uer>mtrGid}" />
+						<Input value="{uer>mtrFullName}" editable="false" enabled="false" />
+						<Input value="{uer>mtrMu}" editable="false" enabled="false" />
+						<Input value="{uer>mtrNorm}" editable="false" enabled="false" />
+					</ColumnListItem>
+				</Table> -->
+				
+				//взять строку 
+				var path = oEvent.getParameter("rowBindingContext").sPath;
+				
+				//выбранный галочкой
+				var index = table.getSelectedIndex();
+				table.getSelectedIndices()
+
+
+			//padding
+				class="sapUiNoContentPadding"
+				sapUiTinyMarginTop
+				sapUiTinyMarginBottom
+				sapUiTinyMarginBegin
+				sapUiTinyMarginEnd
+				sapUiSmallMarginTop
+				sapUiSmallMarginBottom
+				sapUiSmallMarginBegin
+				sapUiSmallMarginEnd
+				sapUiMediumMarginTop
+				sapUiMediumMarginBottom
+				sapUiMediumMarginBegin
+				sapUiMediumMarginEnd
+				sapUiLargeMarginTop
+				sapUiLargeMarginBottom
+				sapUiLargeMarginBegin
+				sapUiLargeMarginEnd
+
+				sapUiTinyMargins
+				sapUiSmallMargins
+				sapUiMediumMargins
+				sapUiLargeMargins
+
+				sapUiTinyMarginBeginEnd
+				sapUiTinyMarginTopBottom
+				sapUiSmallMarginBeginEnd
+				sapUiSmallMarginTopBottom
+				sapUiMediumMarginBeginEnd
+				sapUiMediumMarginTopBottom
+				sapUiLargeMarginBeginEnd
+				sapUiLargeMarginTopBottom
+
+				sapUiNoMarginTop
+				sapUiNoMarginBottom
+				sapUiNoMarginBegin
+				sapUiNoMarginEnd
+
+				sapUiSmallPaddingBottom
+				sapUiNoContentPadding
+				sapUiContentPadding
+				sapUiResponsiveContentPadding
+
+			//Model
+
+				//инициализация модели при загрузке приложения и вставка данных в объекты на форме
+					initModel: function () {
+						var model = new JSONModel(sap.ui.require.toUrl("sap/cc") + "/json/createRecord.json");
+						this.getView().setModel(model, "uer");
+						this.getView().getModel("uer").refresh();
+
+						var rightPanel = this.getView().byId("rightPanel");
+						rightPanel.bindElement({ path: "/", model: "uer" });
+					}
+
+				//взять часть JSONModel и создать новую на ее основе
+					initModel: function (requestId) {
+						var model = new JSONModel(sap.ui.require.toUrl("sap/cc") + "/json/requests.json");
+
+						var t = this;
+						model.attachRequestCompleted(function () {
+							var m = model.getProperty("/requests/" + requestId);
+							var m2 = new JSONModel(m);
+
+							t.getView().setModel(m2, "uer");			
+							//привязываем модель к нужному элементу на странице
+							var mainPage = t.getView().byId("mainPage");
+							mainPage.bindElement({ path: "/", model: "uer" });
+						});
+
+					},
+					
+				//как из модели взять определенный элемент
+					var table = this.byId("requestsTable");  //для примера, модель забиндена на таблицу
+					var rec = table.getSelectedItems();
+					var req = rec[0];
+					var path = req.getBindingContextPath();
+					var requestId = this.getView().getModel("uer").getProperty(path).requestId; //вытащили у нужного элемента свойство requestId
+
+
+			//Form
+
+				//how to add formElement ("recordDetailContainer" - is a FormContainer)
+				var formElement = new sap.ui.layout.form.FormElement(
+					{
+						"label": "Атрибут 1",
+						"fields": [
+							new sap.m.Input({
+								"value": "",
+								"type": "Text",
+								"placeholder": "Класс МТР"
+							})
+						]
+					}
+				);
+				var recordDetailContainer = this.getView().byId("recordDetailContainer");
+				recordDetailContainer.addFormElement(formElement);
+				
+				
+				
+			//Создать динамически объекты
+				var formElement = new sap.ui.layout.form.FormElement(
+					{
+						"label": item,
+						"fields": [
+							new sap.m.Input({
+								id: "attr" + index,
+								value: "",
+								type: "Text",
+								placeholder: "Введите значение",
+								textFormatMode: "KeyValue",
+								showSuggestion: true,
+								showTableSuggestionValueHelp: true,
+								showValueHelp: true,
+								valueHelpRequest: function (oEvent) {
+									that.attrValueHelp(oEvent);
+								},
+								suggestionRows: "{path:'attrs>/values'}",
+								suggestionItemSelected: function (oEvent) {
+									that.attrSelect(oEvent);
+								},
+								suggestionColumns: [
+									new sap.m.Column({
+										"hAlign": "Begin",
+										"popinDisplay": "Inline",
+										"demandPopin": true,
+										"header": new sap.m.Label({
+											"text": "Значение"
+										})
+									})
+								],
+								suggestionRows: [
+									new sap.m.ColumnListItem(
+										{
+											cells: [
+												new sap.m.Label({ text: "{attrs>value}" })]
+										}
+									)
+								],
+								suggestionRowValidator: function (oEvent) {
+									that.attrSuggestionRowValidator(oEvent);
+								}
+							})
+						]
+					}
+				);
+				
+				
+			//url до приложения
+				/name.ru~nsi~uer~prt/index.html
+				src="/sapui5/resources/sap-ui-core.js"
+				src="/sapui5-1.71/resources/sap-ui-core.js"
+				src="https://sapui5.hana.ondemand.com/1.71.40/resources/sap-ui-core.js"
+				/nornick.ru~nsi~uer~prt/app/index.html
+				
+				
+			//Navigation and Routind SAP Router
+				this.getRouter().navTo("recordsSearch", {
+							// query: {
+							// 	"gid": gid
+							// }
+							//или так:
+							query: params
+				}, true /*no history*/);
+						
+				getRouter: function () {
+						return this.getOwnerComponent().getRouter();
+				},
+				
+				// в методе onInit:
+				this.getRouter().getRoute("имя target опеределенного в манифесте").attachPatternMatched(this._onRouteSearch, this);
+				
+				//Пример из манифеста
+				"routes": [
+							{
+								"pattern": "",
+								"name": "appHome",
+								"target": "home"
+							},
+							{
+								"pattern": ":?query:",
+								"name": "recordsSearch",
+								"target": "recordsFilter"
+							}
+						],
+						"targets": {
+							"home": {
+								"viewId": "home",
+								"viewPath": "sap.cc.view",
+								"viewName": "record",
+								"viewLevel": 1
+							},
+							"notFound": {
+								"viewId": "notFound",
+								"viewPath": "sap.cc.view",
+								"viewName": "NotFound",
+								"transition": "show"
+							},
+							"recordsFilter": {
+								"viewId": "home",
+								"viewPath": "sap.cc.view",
+								"viewName": "record",
+								"viewLevel": 2
+							}
+						}
+
+
+			//serialize map
+				var jsonFromMap = JSON.stringify(Object.fromEntries(map));
+				
+			//deserialize map (jsonFromCookie - это json строкой)
+				var map = new Map(Object.entries(JSON.parse(jsonFromCookie)));
+				
+				
+			//fetch
+				var options = {
+					method: "POST",
+					body: formData,
+				};
+
+				sap.ui.core.BusyIndicator.show();
+				fetch(url, options).then((response) => {
+					sap.ui.core.BusyIndicator.hide();
+					if (response.ok) {
+						console.log("success post: " + url);
+						that.loadDocs();
+					} else {
+						console.log("При загрузке файла произошла ошибка!");
+					}
+				});
+				
+				
+				
+			//create object via JavaScript
+			new sap.m.CustomListItem({
+				content: [
+					new sap.m.HBox({
+						items: [
+							new sap.m.ObjectIdentifier({ title: "{news>title}", text: "", titleActive: false }),
+							new sap.m.Label({ text: "test" }),
+							
+						],
+						// width: "100%",
+						fitContainer: true,
+					}).addStyleClass("sapUiTinyMargin"),
+				],
+				// type: sap.m.ListType.Active,
+				press: function () {
+					// alert("Clicked the list item");
+				},
+			}),
+
+
+
+			//Create dialog via JS:
+				var oDialog = new Dialog({
+				title: "News",
+				contentWidth: "50%",
+				contentHeight: "50%",
+				resizable: true,
+				draggable: true,
+				content: new List({
+					items: {
+						path: "news>/",
+						template: new sap.m.CustomListItem({
+							content: [
+								new sap.m.HBox({
+									items: [new sap.m.ObjectIdentifier({ title: "{news>title}", text: "", titleActive: false })],
+									// width: "100%",
+									fitContainer: true,
+								}).addStyleClass("sapUiTinyMargin"),
+								new sap.m.HBox({
+									items: [new sap.ui.core.HTML({ content: "{news>text}" })],
+									// width: "100%",
+									fitContainer: true,
+								}).addStyleClass("sapUiTinyMargin"),
+							],
+							// type: sap.m.ListType.Active,
+							press: function () {
+								// alert("Clicked the list item");
+							},
+						}),
+					},
+					infoToolbar: {
+						content: new sap.m.OverflowToolbar({
+							active: true,
+							press: function (){
+								alert("Clicked");
+							},
+							content : new sap.m.Label({
+								text: "This is the"
+							}),
+						}),
+					}
+				}),
+				beginButton: new Button({
+					type: ButtonType.Emphasized,
+					text: "Ok",
+					press: function () {
+						oDialog.close();
+					},
+				}),
+				});
+
+				//to get access to the global model
+				this.getView().addDependent(this.pressDialog);
+
+				oDialog.setModel(oModel, "news");
+				oDialog.open();
+				
+				
+				
+			formatter:
+				<Text 
+					text="{
+						path: 'jpd>status',
+						formatter: '.formatter.jpd'
+					}"/>  
+					
+					
+					
+					
+					
+SQL Server:	
+					
+
+	--Полнотекстовый поиск
+		--Настройка
+			-- create fulltext catalog
+			CREATE FULLTEXT CATALOG MtrLiteCatalog
+			 WITH ACCENT_SENSITIVITY = ON
+			 AS DEFAULT
+			 AUTHORIZATION dbo
+		   GO
+		   
+
+		   --Изменение полнотекстового каталога
+		   
+		   ALTER FULLTEXT CATALOG MtrLiteCatalog
+			 REBUILD WITH ACCENT_SENSITIVITY=OFF
+		   GO
+		   
+		   
+		   --возвращаем назад
+		   
+		   ALTER FULLTEXT CATALOG MtrLiteCatalog
+			 REBUILD WITH ACCENT_SENSITIVITY=ON
+		   GO
+		   
+
+		   --удалить каталог
+		   --   DROP FULLTEXT CATALOG MtrLiteCatalog;
+
+		   --Создание полнотекстового индекса
+		   
+		   CREATE FULLTEXT INDEX ON NSI_MATERIALS(ShortName)
+			 KEY INDEX PK_NSI_MATERIALS ON (MtrLiteCatalog)
+			 WITH (CHANGE_TRACKING AUTO)
+		   GO
+		   
+
+		--Примеры запросов
+		   --полнотекстовый запрос пример
+		   SELECT GID, ShortName
+		   FROM NSI_MATERIALS
+		   WHERE CONTAINS (ShortName, '"Батар*труб*"');
+		   
+
+		   --CONTAINS. Поиск слова по словоформам
+		   SELECT GID, ShortName
+		   FROM NSI_MATERIALS
+		   WHERE CONTAINS (ShortName, 'FORMSOF(INFLECTIONAL, "Красная гитара")');
+
+		   --CONTAINS. Поиск слов или фраз с учетом расположения
+		   SELECT GID, ShortName
+		   FROM NSI_MATERIALS
+		   WHERE CONTAINS (ShortName, '"ГИТАРА" NEAR "красная"');
+
+		   SELECT COUNT(*) FROM NSI_MATERIALS WHERE CONTAINS (ShortName, 'NEAR(гитара, красная)')
+
+		   --FREETEXT
+		   SELECT GID, ShortName
+		   FROM NSI_MATERIALS
+		   WHERE FREETEXT (ShortName, 'струна');
+		   
+		   
+		   INSERT INTO NSI_MATERIALS (GID, ShortName)
+		   VALUES 
+		   ('GID1', N'Красные материалы'),
+		   ('GID2', N'Гитаре красной'),
+		   ('GID3', N'Красными гитaрой (здесь в а в гитаре английская)'),
+		   ('GID4', N'красная гитара'),
+		   ('GID5', N'гитара красная'),
+		   ('GID6', N'гитаре красной'),
+		   ('GID7', N'ГИТАРОЙ КРасной'),
+		   ('GID8', N'Красная зеленая гитара')
+		   --('GID15', N'Зеленый автомобиль'),
+		   --('GID17', N'Зеленая машина')
+
+	--SQL 
+		--Слово содержит смешанную раскладку клавиатуры
+				select *
+				from demo
+				where 
+					name like N'%[A-Z][А-Я][A-Z]%'
+					or name like N'%[А-Я][A-Z][А-Я]%'
+					or name like N'%[А-Я][A-Z][ ]%'
+					or name like N'%[ ][A-Z][А-Я]%'
+					or name like N'%[A-Z][А-Я][ ]%'
+					or name like N'%[ ][А-Я][A-Z]%'
+					
+		--Значение поля начинается с прилагательного или абревиатуры
+			select *
+			from
+				(select 
+					GID, 
+					substring(name, 1, CHARINDEX(' ', name)) as firstWord
+				from demo 
+				) as one
+			where 
+				firstWord like '%[A-Z][A-Z]%' collate Latin1_General_BIN --абревиатура (условие первые две буквы заглавные)
+				or upper(substring(firstWord, LEN(firstWord) - 1, LEN(firstWord))) in (N'ОЙ', N'ЫЙ', N'ИЙ', N'ЕЙ') -- поиск прилагательного (берутся последние 2 буквы первого слова в поле и проверяется на окончание. Метод требует таблицы исключений)
+				
+		--Значения 'test' нет в поле
+			select *
+			from demo
+			where 
+				CHARINDEX('test', name) = 0
+			
+		
+	--DDL
+		drop table UER;
+		
+		CREATE TABLE RecordStatus (
+			id int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+			gid int not null unique,
+			statusName nvarchar(20) NOT NULL,
+			creationDate datetime NOT NULL,
+			creationAuthor nvarchar(20) NOT NULL,
+		);
+		
+		insert into RecordStatus (statusName, creationDate, modificationDate, creationAuthor, modificationAuthor)
+		values (N'Черновик', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'komarovavl', 'komarovavl'),
+
+		create table [dbo].[UER](
+			id int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+			gid nvarchar(20) NULL,
+			code nvarchar(20) NULL,
+			uerName nvarchar(300) NULL,
+			recordStatus int FOREIGN KEY REFERENCES RecordStatus(id)
+		);
+
+		insert into UER (gid, code, uerName)
+		values ('1', N'УЕР-06-02-01', N'Установка дверей внут-ренних (в т.ч. деревянных, ПВХ, металлических)');
+
+
+	--TRIGGER
+		CREATE TRIGGER RequestStatus_INSERT
+		ON RequestStatus
+		AFTER INSERT
+		AS
+
+		BEGIN
+			UPDATE RequestStatus
+			set 
+				creationDate = CURRENT_TIMESTAMP,
+				modificationDate = CURRENT_TIMESTAMP,
+				creationAuthor = SYSTEM_USER,
+				modificationAuthor = SYSTEM_USER
+			where id in (select id from INSERTED)
+		END
+		
+	--change tracking
+		--turn on cdc
+		--1
+		SELECT [name], database_id, is_cdc_enabled  
+		FROM sys.databases   
+
+		--2
+		EXEC sys.sp_cdc_enable_db 
+
+		--3
+		SELECT [name], is_tracked_by_cdc  
+		FROM sys.tables
+
+		--4
+		EXEC sys.sp_cdc_enable_table 
+		@source_schema = N'dbo', 
+		@source_name   = N'YourTable', 
+		@role_name     = NULL 
+
+		--5
+		SELECT * FROM cdc.dbo_YourTable_CT where id = 309
+
+
 
 Reddis:
 	Reddis - это бд в памяти NoSql, они предназначены для хранения в БД (в памяти) объекты какие-то количество времени. Хранят объекты в виде HashMap. 
@@ -1209,4 +2160,5 @@ Reddis:
 		- он заточен под хранение в HashMap, и по ключу будет искать значение максимально быстро. Он может настроить время жизни объекта, т.е. можно задать что к примеру корзина покупок юзера (ключ - логин, значение - json с описанием покупок) и задать время хранения этого объекта 2 недели
 		- легко масштабируются
 		- отказоустойчивы - т.е. если инстанс Reddis упадет, то он будет восстановлен без потерь данных
+
 
