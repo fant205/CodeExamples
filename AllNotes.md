@@ -1399,6 +1399,135 @@ SAP:
 			@TransactionManagement(TransactionManagementType.BEAN)
 			
 			
+						
+
+
+			
+			
+			
+			
+			package com.sap.example;
+			import javax.annotation.Resource;
+			import javax.ejb.Stateless;
+			import javax.ejb.TransactionManagement;
+			import javax.ejb.TransactionManagementType;
+			import javax.persistence.EntityManager;
+			import javax.persistence.PersistenceContext;
+			import javax.transaction.UserTransaction;			 
+
+			@Stateless
+			@TransactionManagement(TransactionManagementType.BEAN)
+			public class StatelessBean implements StatelessLocal {
+			 
+			   @Resource
+			   UserTransaction ut;
+
+			   @PersistenceContext
+			   EntityManager em;
+
+			   public void businessMethod() {
+
+				  ut.begin(); // Start a new transaction
+
+				  try {
+
+					 // Do work
+
+					 em.persist(myEntity);
+
+					 ut.commit(); // Commit the transaction
+
+				  } catch (Exception e) {
+
+					 ut.rollback(); // Rollback the transaction
+
+				  }
+
+			   }
+
+			}
+
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			@PersistenceContext
+			public EntityManager em;
+			
+			
+			@PersistenceUnit
+			EntityManagerFactory emf;					
+			EntityManager em = emf.createEntityManager();
+			
+			//Example 1
+			package com.sap.example;
+			import javax.annotation.Resource;
+			import javax.ejb.Stateless;
+			import javax.ejb.TransactionManagement;
+			import javax.ejb.TransactionManagementType;
+			import javax.persistence.EntityManager;
+			import javax.persistence.PersistenceContext;
+			import javax.transaction.UserTransaction;
+
+			@Stateless
+			@TransactionManagement(TransactionManagementType.BEAN)
+			public class StatelessBean implements StatelessLocal {
+
+				@Resource
+				UserTransaction ut;
+
+				@PersistenceContext
+				EntityManager em;
+
+				public void businessMethod() {
+					ut.begin(); // Start a new transaction
+					try {
+						// Do work
+						em.persist(myEntity);
+						ut.commit(); // Commit the transaction
+					} catch (Exception e) {
+						ut.rollback(); // Rollback the transaction
+					}
+				}
+			}
+			
+			
+			
+			//Example 2
+			package com.sap.example;
+			import javax.ejb.Stateless;
+			import javax.ejb.TransactionAttribute;
+			import javax.ejb.TransactionAttributeType;
+			import javax.ejb.TransactionManagement;
+			import javax.ejb.TransactionManagementType;
+			import javax.persistence.EntityManager;
+			import javax.persistence.PersistenceContext;
+
+			@Stateless
+			@TransactionManagement(TransactionManagementType.CONTAINER)
+			public class StatelessBean implements StatelessLocal {
+
+				@PersistenceContext EntityManager em; 
+
+				@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+
+				public void businessMethod() {
+
+				// Work in transaction
+
+				}
+			}
+			
+			
+			
 SAP:
 	JavaScript - js:
 		UI5 Code Examples:
