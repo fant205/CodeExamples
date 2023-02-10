@@ -63,6 +63,7 @@
 		Spring:
 			Версии Spring - совместимость библиотек
 				grep -A 1 hibernate- ~/.m2/repository/org/springframework/spring-orm/4.3.12.RELEASE/spring-orm-4.3.12.RELEASE.pom
+			spring_profiles_active=dev - profile dev (application-dev.yaml)
 	
 	
 
@@ -589,6 +590,9 @@ Spring:
 					('user1', 'ROLE_USER'),
 					('user2', 'ROLE_USER');
 
+	Spring transactions:
+		- Когда мы ставим аннотацию Transactional, то Spring делает прокси-классы для нашего класса, где делает старт транзацкии, ее коммит или роллбек при ошибке
+
 	Spring Exception:
 		Пример класса который объявляется перехватчиком всех исключений от всех контроллеров (класс срабатывает на исключения объявленные как входные параметры методов):
 			@ControllerAdvice		
@@ -607,7 +611,7 @@ Spring:
 			    }
 			}
 
-	Spring AOP:
+	Spring AOP (Aspects):
 		- Если в дебаге видно что бин спринга является не самим классом, а прокси классом SJLib, то это значит используются аспекты, и надо смотреть какую логику добавили в них
 		- Аспекты как теневые программы могут менять программу и данные, это приводит к усложнению поддержки программы
 
@@ -656,6 +660,7 @@ Maven:
 		mvn package - прогон билда, тестов, подтягивание зависимостей, если указал в pom.xml, паковка в jar файл
 		mvn install - все что и package и еще копирование в локальный репозиторий сформированного jar, и можно будет в других проектах локально юзать этот jar как либу через dependencies
 		mvn dependencies:tree - покажет в текущем проекте дерево зависимостей
+		mvn spring-boot:build-image - сделать образ java приложения
 
 	Репозитории:
 		Local - локальный - на компе репозиторий, находится по адресу ${userhome}/.m2 (папка .m2 скрытая). Для винды это Documents/Users, для мак или убунту корневая папка юзера
@@ -956,6 +961,18 @@ SQL:
 				like 'Ny%'
 
 
+		psql:
+			\c - connection
+			\q - quit
+			\? - help
+			\dt - tables list
+			\d tableName - table description
+			\h - help
+			\ create table - command description
+
+
+
+
 		SQL:
 
 			USE geodata;
@@ -1210,3 +1227,28 @@ Reddis:
 		- легко масштабируются
 		- отказоустойчивы - т.е. если инстанс Reddis упадет, то он будет восстановлен без потерь данных
 
+
+Docker:
+	docker images - все образы
+	
+	docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:11.1 - запустит в контейнере postgresql если его нет, то скачает его.
+	
+	docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d --network resource postgres - запуск контейнера в сети rescource
+	
+	docker run --name <containerName> -p 8080:8080 -d <imageName>:<tag/version> - запуск java приложения
+	
+	docker run --name spr -p 8080:8080 -d -e "SPRING_PROFILES_ACTIVE=dev" -e spring.datasource.url=jdbc:postgresql://postgres:5432/resource --network resource  spring-boot-docker:0.0.1-SNAPSHOT - запуск java приложения с указанием профиля (для spring) и сети rescource
+
+	docker container ls - вывод всех контейнеров
+	docker ps - вывод активных контейнеров
+	docker ps -a - вывод всех контейнеров
+	docker exec -it postgres psql -U postgres - обращаемся в контейнер postgres к программе psql и входим в терминальную сессию 	
+	docker stop <containerName> - остановка контейнера
+	docker rm <containerName> - удалить контейнер
+	docker network create <networkName> - создаем сеть
+	docker network ls - список всех сетей
+	docker system prune -af --volumes - очистка всех volumes
+	docker-compose up - поднимаем образы файла docker-compose.yaml
+	docker-compose rm - удаляем все образы
+	docker-compose down -v
+	
