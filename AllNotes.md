@@ -2199,7 +2199,7 @@ Docker:
 	docker network create <networkName> - создаем сеть
 	docker network ls - список всех сетей
 	docker system prune -af --volumes - очистка всех volumes
-	docker-compose up - поднимаем образы файла docker-compose.yaml
+	docker-compose up - поднимаем образы файла docker-compose.yml
 	docker-compose rm - удаляем все образы
 	docker-compose down -v
 	
