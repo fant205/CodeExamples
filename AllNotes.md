@@ -2334,3 +2334,208 @@ Docker:
 	docker-compose rm - удаляем все образы
 	docker-compose down -v
 	
+
+	Создание своих образов:
+		Командами:
+
+			Создание своего образа с установленным Git:
+				docker run -i -t ubuntu:18.04 /bin/bash - запуск образа на основе ubuntu 18.04 и вход в ее терминал с помощью /bin/bash и (-i -t)
+				в терминале контейнера вводим: 
+					apt-get update
+					apt-get install -y git
+				проверяем что git установлен:
+					which git
+				Выходим из контейнера:
+					exit
+				Проверяем измененные файлы:
+					docker diff 'id'
+				Делаем коммит контейнера что бы создать свой новый образ:
+					docker commit 'id' containeName
+
+
+			Создание своего образа с установленной jdk 17:
+				Вводим команду:
+					docker run -i -t ubuntu:20.04 /bin/bash - запуск образа на основе ubuntu 20.04 и вход в ее терминал с помощью /bin/bash и (-i -t)
+				Мы вошли в терминал, тут вводим:
+					apt-get update
+					apt-get install -y openjdk-17-jdk
+				Проверяем версию установленной Java:
+		    		java -version
+		    	Выходим из контейнера:
+		    		exit    	
+		    	Проверяем измененные файлы:
+		    		docker diff 'id'
+		    	Делаем коммит созданного контейнера что бы создать свой образ:
+		    		docker commit 'id' yourNewContainerName
+
+			Создание своего образа с установленной liberica jdk 17:
+				Вводим команду:
+					docker run -it ubuntu:20.04 /bin/bash - запуск образа на основе ubuntu 20.04 и вход в ее терминал с помощью /bin/bash и (-i -t)
+				Мы вошли в терминал, тут вводим:					
+					apt-get update
+					apt-get --assume-yes install wget
+					apt-get --assume-yes install gnupg
+					wget -q -O - https://download.bell-sw.com/pki/GPG-KEY-bellsoft | apt-key add -
+					echo "deb [arch=amd64] https://apt.bell-sw.com/ stable main" | tee /etc/apt/sources.list.d/bellsoft.list
+					apt-get update
+					apt-get --assume-yes install bellsoft-java17
+				Проверяем версию установленной Java:
+		    		java -version
+		    	Выходим из контейнера:
+		    		exit    	
+		    	Проверяем измененные файлы:
+		    		docker diff 'id'
+		    	Делаем коммит созданного контейнера что бы создать свой образ:
+		    		docker commit 'id' yourNewContainerName
+
+
+
+
+		Dockerfile:
+
+			Создание своего образа с помощью Dockerfile с установленной jdk:
+				Cоздаем в папке файл:
+					touch Dockerfile
+				Вписываем в него следующее содержимое:
+					FROM ubuntu:18.04
+					RUN apt-get update 
+		    		RUN apt-get install -y openjdk-8-jdk
+		    	Запускаем формирования образа:
+		    		docker build -t ubuntu_with_jdk . - точка это путь к файлу
+
+
+			Создание своего образа с помощью Dockerfile с установленной liberica jdk:
+				Cоздаем в папке файл:
+					touch Dockerfile
+				Вписываем в него следующее содержимое:
+					FROM ubuntu:20.04
+					RUN apt-get update
+					RUN apt-get --assume-yes install wget
+					RUN apt-get --assume-yes install gnupg
+					RUN wget -q -O - https://download.bell-sw.com/pki/GPG-KEY-bellsoft | apt-key add -
+					RUN echo "deb [arch=amd64] https://apt.bell-sw.com/ stable main" | tee /etc/apt/sources.list.d/bellsoft.list
+					RUN apt-get update
+					RUN apt-get --assume-yes install bellsoft-java17
+		    	Запускаем формирования образа:
+		    		docker build -t ubuntu_with_liberica . - точка это путь к файлу
+
+
+
+			Создание и запуск своего образа с java приложением на основе образа Ubuntu и jdk17:
+				Cоздаем в корне проекта файл:
+					touch Dockerfile
+				Вписываем в него следующее содержимое:
+					FROM ubuntu:20.04
+					RUN apt-get update
+					RUN apt-get install -y openjdk-17-jdk
+					COPY target/*.jar app.jar
+					ENTRYPOINT ["java","-jar","/app.jar"]
+		    	Запускаем формирования образа:
+		    		docker build -t ubuntu_with_liberica . - точка это путь к файлу
+		    	Запускаем приложение:
+					docker run -p 8080:8080 ubuntu_java_app
+
+
+    		Создание и запуск своего образа с java приложением на основе образа Ubuntu и liberica jdk17:
+				Cоздаем в корне проекта файл:
+					touch Dockerfile
+				Вписываем в него следующее содержимое:
+					FROM ubuntu:20.04
+					RUN apt-get update
+					RUN apt-get --assume-yes install wget
+					RUN apt-get --assume-yes install gnupg
+					RUN wget -q -O - https://download.bell-sw.com/pki/GPG-KEY-bellsoft | apt-key add -
+					RUN echo "deb [arch=amd64] https://apt.bell-sw.com/ stable main" | tee /etc/apt/sources.list.d/bellsoft.list
+					RUN apt-get update
+					RUN apt-get --assume-yes install bellsoft-java17
+					COPY target/*.jar app.jar
+					ENTRYPOINT ["java","-jar","/app.jar"]
+		    	Запускаем формирования образа:
+		    		docker build -t ubuntu_liberica_myapp . - точка это путь к файлу
+		    	Запускаем приложение:
+					docker run -p 8080:8080 ubuntu_liberica_myapp
+
+
+			Создание и запуск java приложения на основе Астра линукс и liberica jdk17:
+				Формирование исходного образа Астра Линукс:
+					https://wiki.astralinux.ru/pages/viewpage.action?pageId=137563067 - ссылка на инструкцию от производителя
+					build-docker-image.sh - скачиваем себе этот файл, это сценирий для формирования образа
+					chmod +x build-docker-image.sh - даем права в папке с файлом на запуск сценария (код из инструкции)
+					sudo ln -s /usr/share/debootstrap/scripts/gutsy /usr/share/debootstrap/scripts/orel - делаем это что бы запустить скрипт
+					./build-docker-image.sh - запуск скрипта, после этого на нашем компе появится образ астры, который можно брать за основу
+				Cоздаем в корне java проекта файл:
+					touch Dockerfile
+				Вписываем в него следующее содержимое:
+					FROM astra_linux_ce_2.12
+					RUN apt-get update
+					RUN apt-get --assume-yes install wget
+					RUN apt-get --assume-yes install gnupg
+					RUN wget -q -O - https://download.bell-sw.com/pki/GPG-KEY-bellsoft | apt-key add -
+					RUN echo "deb [arch=amd64] https://apt.bell-sw.com/ stable main" | tee /etc/apt/sources.list.d/bellsoft.list
+					RUN apt-get update
+					RUN apt-get --assume-yes install bellsoft-java17
+					COPY target/*.jar app.jar
+					ENTRYPOINT ["java","-jar","/app.jar"]
+				Запускаем формирования образа:
+		    		docker build -t myapp . - точка это путь к файлу
+		    	Запускаем приложение:
+					docker run -p 8080:8080 myapp
+
+
+			Делаем сборку проекта в docker образе с помощью maven:
+				Cоздаем в корне проекта файл:
+					touch Dockerfile				
+				Вписываем в него следующее содержимое:
+					FROM maven:3.8.7-eclipse-temurin-17
+					COPY . .
+					RUN mvn clean package
+				Создаем файл build.sh со скриптом:
+					#! /bin/bash
+
+					if [ -d "./target/" ]
+					then
+						rm -r target/
+					fi
+					docker build -t build-jar-inside-docker-image .
+					docker create -it --name build-jar-inside-docker build-jar-inside-docker-image bash
+					docker cp build-jar-inside-docker:/target ./target
+					docker rm -f build-jar-inside-docker
+				Получаем в итоге готовый jar в папке ./target:
+					my_app.jar
+
+
+			Сборка и запуск java приложения на основе Астра линукс и liberica jdk17:
+				Формирование исходного образа Астра Линукс:
+					https://wiki.astralinux.ru/pages/viewpage.action?pageId=137563067 - ссылка на инструкцию от производителя
+					build-docker-image.sh - скачиваем себе этот файл, это сценирий для формирования образа
+					chmod +x build-docker-image.sh - даем права в папке с файлом на запуск сценария (код из инструкции)
+					sudo ln -s /usr/share/debootstrap/scripts/gutsy /usr/share/debootstrap/scripts/orel - делаем это что бы запустить скрипт
+					./build-docker-image.sh - запуск скрипта, после этого на нашем компе появится образ астры, который можно брать за основу
+				Cоздаем в корне java проекта файл:
+					touch Dockerfile
+				Вписываем в него следующее содержимое (первый блок FROM это сборка, второй формирование образа и запуск java приложения):
+					FROM maven:3.8.7-eclipse-temurin-17 as build
+					COPY . .
+					RUN mvn clean package
+
+					FROM astra_linux_ce_2.12
+					RUN apt-get update
+					RUN apt-get --assume-yes install wget
+					RUN apt-get --assume-yes install gnupg
+					RUN wget -q -O - https://download.bell-sw.com/pki/GPG-KEY-bellsoft | apt-key add -
+					RUN echo "deb [arch=amd64] https://apt.bell-sw.com/ stable main" | tee /etc/apt/sources.list.d/bellsoft.list
+					RUN apt-get update
+					RUN apt-get --assume-yes install bellsoft-java17
+					COPY --from=build target/*.jar app.jar
+					ENTRYPOINT ["java","-jar","/app.jar"]
+				Запускаем формирования образа:
+		    		docker build -t myapp . - точка это путь к файлу
+		    	Запускаем приложение:
+					docker run -p 8080:8080 myapp
+
+
+
+		
+
+
+
