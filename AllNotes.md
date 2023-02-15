@@ -26,6 +26,8 @@
 			
 		curl -X POST localhost:8080/actuator/shutdown - POST вызов
 		curl localhost:8080/actuator/health - GET вызов
+		
+		pscp -P 22 file_name.txt login@111.22.33.44:/folder
 
 
 	Jenkins:
