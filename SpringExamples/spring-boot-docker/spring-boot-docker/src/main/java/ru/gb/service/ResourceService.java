@@ -8,10 +8,13 @@ import ru.gb.model.ResourceEntity;
 import ru.gb.repository.ResourceRepository;
 
 @Service
-@RequiredArgsConstructor
 public class ResourceService {
 
     private final ResourceRepository repository;
+
+    public ResourceService(ResourceRepository repository) {
+        this.repository = repository;
+    }
 
     public ResourceEntity getResource(Long id) {
         return repository.findById(id)
