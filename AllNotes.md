@@ -29,6 +29,9 @@
 		
 		pscp -P 22 file_name.txt login@111.22.33.44:/folder
 
+		du -sh ./Загрузки/* - подсчет размера всех папок в папке загрузки
+		du -sh * - подсчет всех папок внутри текущей папки
+
 
 	Jenkins:
 		sudo systemctl start jenkins
