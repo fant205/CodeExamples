@@ -13,6 +13,8 @@
 			cp -r /home/alexey/Downloads/dump/dump . - скопировать папку 1 в текущую папку
 			cp -r /home/alexey/Downloads/dump/dump/* . - скопировать все файлы из папки 1 в текущую папку
 			readlink -f _countries.sql или realpath _countries.sql - путь до файла
+			du -hs - размер текущей папки
+			du -hs * - размер файлов и папок в текущей папке
 
 		Список процессов:
 			ps -eF - список процессов
@@ -101,7 +103,7 @@ Git:
 		git revert <commit 1> <commit 2> - To revert a change that you have committed:
 		git clean -f - To remove untracked files (e.g., new files, generated files):
 		git clean -fd - Or untracked directories (e.g., new or automatically generated directories):
-
+		git -c http.sslVerify=false clone https_ссылка_из_гитлаба
 
 		
 		
@@ -1278,6 +1280,7 @@ Regexp - Регулярные выражения:
 	(handle.*)(Search) - начинается на handle далее любое количество символов и заканчивается Search, пример: _handleValueHelpSearch	
 	.+([0-9] ) - удаление всех цифр в начале строки с до пробела вместе с ним
 	".*?" - ищет от первой кавычки до следующей первой
+	^(.{6}) - первые 6 символов строки, если заменять на $1, - то в конце строки поставит запятую
 	
 	
 	
@@ -2509,6 +2512,7 @@ Docker:
 					https://wiki.astralinux.ru/pages/viewpage.action?pageId=137563067 - ссылка на инструкцию от производителя
 					build-docker-image.sh - скачиваем себе этот файл, это сценирий для формирования образа
 					chmod +x build-docker-image.sh - даем права в папке с файлом на запуск сценария (код из инструкции)
+					sudo apt install debootstrap - ставим себе debootstrap
 					sudo ln -s /usr/share/debootstrap/scripts/gutsy /usr/share/debootstrap/scripts/orel - делаем это что бы запустить скрипт
 					./build-docker-image.sh - запуск скрипта, после этого на нашем компе появится образ астры, который можно брать за основу
 				Cоздаем в корне java проекта файл:
@@ -2539,3 +2543,12 @@ Docker:
 
 
 
+
+IDEA:
+	Hotkeys:
+		Ctrl+Shift+U - to lower case
+		Ctrl+F12 - список методов
+		
+VCS:
+	Hotkeys:
+		Ctrl + Shift + O - Поиск метода
