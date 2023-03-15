@@ -107,7 +107,7 @@ Git:
 		git clean -f - To remove untracked files (e.g., new files, generated files):
 		git clean -fd - Or untracked directories (e.g., new or automatically generated directories):
 		git -c http.sslVerify=false clone https_ссылка_из_гитлаба
-
+		git -c http.sslVerify=false push origin master - push по https
 		
 		
 	
@@ -704,48 +704,50 @@ Maven:
 
 
 
-mvn package - сделать jar или war, в зависимости что указано в pom.xml
-mvn tomcat:run -запуск встроенного tomcat
-mvn dependency:tree - вывод дерева зависимостей
-mvn dependency:analyze -DignoreNonCompile - вывод не используемых зависимостей
-mvn clean package tomcat:run --пакетный запуск команд
-	
-mvn --version - вывод версии Maven:
-	make current maven 3.8.4:
-	xport M2_HOME=/usr/local/apache-maven/apache-maven-3.8.4
-	export M2=$M2_HOME/bin
-	export MAVEN_OPTS="-Xms256m -Xmx512m"
-	export PATH=$M2:$PATH          
-	source ~/.profile
-	
+	mvn package - сделать jar или war, в зависимости что указано в pom.xml
+	mvn tomcat:run -запуск встроенного tomcat
+	mvn dependency:tree - вывод дерева зависимостей
+	mvn dependency:analyze -DignoreNonCompile - вывод не используемых зависимостей
+	mvn clean package tomcat:run --пакетный запуск команд
+	./mvnw spring-boot:run - запуск spring boot приложения
 
-
-
-Управелние зависимостями:
-	Пример как указать конкретный jar библиотеки на своем ПК:
-		Вариант 1:
-		<dependency>
-			<groupId>com.microsoft.sqlserver</groupId>
-			<artifactId>sqljdbc</artifactId>
-			<version>6.0</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/com.microsoft.sqlserver/sqljdbc/6.0/sqljdbc42.jar</systemPath>
-			<optional>true</optional>
-		</dependency>
 		
-		Вариант 2:
-			Добавляем в свой локальный репозиторий Maven свой jar:
-				mvn install:install-file -Dfile=/C/Work/JARs/tc~je~usermanagement~api.jar -DgroupId=sap.com -DartifactId=ume.api -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
-			Добавляем в pom.xml зависимость как обычно:
-				<dependency>
-					<groupId>sap.com</groupId>
-					<artifactId>ume.api</artifactId>
-					<version>1.0</version>
-				</dependency>
+	mvn --version - вывод версии Maven:
+		make current maven 3.8.4:
+		xport M2_HOME=/usr/local/apache-maven/apache-maven-3.8.4
+		export M2=$M2_HOME/bin
+		export MAVEN_OPTS="-Xms256m -Xmx512m"
+		export PATH=$M2:$PATH          
+		source ~/.profile
+		
 
 
-	Hibernate:
-		# Relationships in JPA - Hibernate
+
+	Управелние зависимостями:
+		Пример как указать конкретный jar библиотеки на своем ПК:
+			Вариант 1:
+			<dependency>
+				<groupId>com.microsoft.sqlserver</groupId>
+				<artifactId>sqljdbc</artifactId>
+				<version>6.0</version>
+				<scope>system</scope>
+				<systemPath>${basedir}/lib/com.microsoft.sqlserver/sqljdbc/6.0/sqljdbc42.jar</systemPath>
+				<optional>true</optional>
+			</dependency>
+			
+			Вариант 2:
+				Добавляем в свой локальный репозиторий Maven свой jar:
+					mvn install:install-file -Dfile=/C/Work/JARs/tc~je~usermanagement~api.jar -DgroupId=sap.com -DartifactId=ume.api -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true
+				Добавляем в pom.xml зависимость как обычно:
+					<dependency>
+						<groupId>sap.com</groupId>
+						<artifactId>ume.api</artifactId>
+						<version>1.0</version>
+					</dependency>
+
+
+Hibernate:
+	# Relationships in JPA - Hibernate
 
 ## 1. OneToMany
 
@@ -2535,7 +2537,7 @@ Docker:
 					RUN apt-get --assume-yes install bellsoft-java17
 					COPY --from=build target/*.jar app.jar
 					ENTRYPOINT ["java","-jar","/app.jar"]
-				Запускаем формирования образа:
+				Запускаем формирование образа:
 		    		docker build -t myapp . - точка это путь к файлу
 		    	Запускаем приложение:
 					docker run -p 8080:8080 myapp
