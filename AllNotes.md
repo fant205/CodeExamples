@@ -71,6 +71,22 @@
 			Версии Spring - совместимость библиотек
 				grep -A 1 hibernate- ~/.m2/repository/org/springframework/spring-orm/4.3.12.RELEASE/spring-orm-4.3.12.RELEASE.pom
 			spring_profiles_active=dev - profile dev (application-dev.yaml)
+			
+			
+			Specification:
+				public static Specification<Uer> equalMu(String value) {
+					return (root, query, criteriaBuilder) -> {
+						Join<Mu, Uer> mu = root.join("mu");
+						return criteriaBuilder.equal(mu.get("symbol"), value);
+				};
+
+				public static Specification<Uer> equalMu(String value) {
+					return ((root, query, criteriaBuilder) -> {
+					  Mu o = new Mu();
+						o.setSymbol(value);
+						return criteriaBuilder.equal(root.get("mu"), o);
+				   });
+				}
 	
 	
 
@@ -107,7 +123,9 @@ Git:
 		git clean -f - To remove untracked files (e.g., new files, generated files):
 		git clean -fd - Or untracked directories (e.g., new or automatically generated directories):
 		git -c http.sslVerify=false clone https_ссылка_из_гитлаба
-		git -c http.sslVerify=false push origin master - push по https
+		git -c http.sslVerify=false pull origin development - push по https
+		git -c http.sslVerify=false push origin development - push по https
+		
 		
 		
 	
@@ -261,6 +279,54 @@ nio
     //rename file
     Path of = Path.of("storage/2.txt");
     Files.move(of, of.getParent().resolve("2.txt"));
+	
+	
+	
+ModellMapper:
+	
+//        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+
+//        modelMapper.getConfiguration().setAmbiguityIgnored(true);
+//        modelMapper.createTypeMap(Request.class, RequestDto.class).addMapping(Request::getUer, RequestDto::setUerDto);
+//        modelMapper.createTypeMap(Uer.class, UerDto.class);
+
+//        modelMapper.typeMap(Request.class, RequestInfo.class).addMappings(mapper -> {
+//            mapper.map(src -> src.getCreationDate(), RequestInfo::setRequestDate);
+//            mapper.map(src -> src.getId(), RequestInfo::setRequestID);
+//            mapper.map(src -> src.getUserAuthor().getUerLogin(), RequestInfo::setRequestAuthor);
+//            mapper.map(src -> src.getRequestType().getCode(), RequestInfo::setRequestTypeID);
+//        });
+//        modelMapper.typeMap(Uer.class, UER.class).addMappings(mapper -> {
+//            mapper.using(new RemoteKeysConverter()).map(Uer::getRemoteKeys, UER::setLocalID);
+//            mapper.using(new BPConverter()).map(Uer::getBp, UER::setBusinessPartner);
+//            mapper.using(new MtrConverter()).map(Uer::getMtr, UER::setMtrNorm);
+//            mapper.map(Uer::getMu, UER::setMeasureUnit);
+//            mapper.map(Uer::getClarificationMu, UER::setClarificationMeasureUnit);
+//            mapper.map(Uer::getBasicTechnologicalOperations, UER::setBasicTechnologicalOperation);
+//            mapper.map(Uer::getAdditionalOperation, UER::setAdditionalOperation);
+//        });
+//        modelMapper.typeMap(Mu.class, MeasureUnits.class).addMappings(mapper -> {
+//            mapper.map(Mu::getMuName, MeasureUnits::setName);
+//            mapper.map(Mu::getModificationDate, MeasureUnits::setUpdateTime);
+//        });
+//        modelMapper.typeMap(RecordStatus.class, RecordStatuses.class).addMappings(mapper -> {
+//            mapper.map(RecordStatus::getModificationDate, RecordStatuses::setUpdateTime);
+//        });
+//        modelMapper.typeMap(BasicTechnologicalOperation.class, ru.asupb.uer.BasicTechnologicalOperation.class)
+//                .addMapping(BasicTechnologicalOperation::getId, ru.asupb.uer.BasicTechnologicalOperation::setGID);
+//
+//        modelMapper.typeMap(AdditionalOperation.class, ru.asupb.uer.AdditionalOperation.class)
+//                .addMapping(AdditionalOperation::getId, ru.asupb.uer.AdditionalOperation::setGID);
+	
+	
+	
+JSON Mapper:
+		ObjectMapper objectMapper = new ObjectMapper();
+        String carAsString = objectMapper.writeValueAsString(requestByIdResponse.getRequest());
+	
+        RequestDto requestDto = new ObjectMapper().readValue(json, RequestDto.class);
+
+	
 =======
 	
 //Lambda
@@ -2327,7 +2393,7 @@ Docker:
 	
 	docker run --name <containerName> -p 8080:8080 -d <imageName>:<tag/version> - запуск java приложения
 	
-	docker run --name spr -p 8080:8080 -d -e "SPRING_PROFILES_ACTIVE=dev" -e spring.datasource.url=jdbc:postgresql://postgres:5432/resource --network resource  spring-boot-docker:0.0.1-SNAPSHOT - запуск java приложения с указанием профиля (для spring) и сети rescource
+	docker run --name spr -p 8080:8080 -d -e "SPRING_PROFILES_ACTIVE=dev" -e spring.datasource.url=jdbc:postgresql://postgres:5432/resource --network  resource  spring-boot-docker:0.0.1-SNAPSHOT - запуск java приложения с указанием профиля (для spring) и сети rescource
 
 	docker container ls - вывод всех контейнеров
 	docker ps - вывод активных контейнеров
@@ -2341,6 +2407,8 @@ Docker:
 	docker-compose up - поднимаем образы файла docker-compose.yml
 	docker-compose rm - удаляем все образы
 	docker-compose down -v
+	winpty docker run -i -t node:alpine - использовать в Windows winpty для интерактивного запуска образа
+	docker log -f <container name> - показать логи контейнера
 	
 
 	Создание своих образов:
@@ -2551,9 +2619,16 @@ Docker:
 
 IDEA:
 	Hotkeys:
-		Ctrl+Shift+U - to lower case
-		Ctrl+F12 - список методов
+		Ctrl + Shift + U - to lower case
+		Ctrl + F12 - список методов
+		Ctrl + Alt + L - форматирование
+		Ctrl + Alt + Shift + L - диалог форматирования
+		Ctrl + D - дубль строки
+		
+		
 		
 VCS:
 	Hotkeys:
 		Ctrl + Shift + O - Поиск метода
+		Shift + Alt + F - форматирование кода
+		Ctrl + G - переход к строке ...
