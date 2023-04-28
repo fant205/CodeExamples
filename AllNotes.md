@@ -6,7 +6,12 @@
 
 		Отключение по умолчанию сервера из списка автостарта
 			sudo systemctl disable apache2 - 
+			
+	Bash:
+	
+		ls -la \target - просмотр содержимого нужной папки
 
+	
 		file operations:
 			mv <source> <targer>
 			mv dist1/* dist2 - все файлы из папки 1 переедут в папку 2		
@@ -14,7 +19,7 @@
 			cp -r /home/alexey/Downloads/dump/dump/* . - скопировать все файлы из папки 1 в текущую папку
 			readlink -f _countries.sql или realpath _countries.sql - путь до файла
 			du -hs - размер текущей папки
-			du -hs * - размер файлов и папок в текущей папке
+			du -hs * - размер файлов и папок в текущей папке			
 
 		Список процессов:
 			ps -eF - список процессов
@@ -71,6 +76,7 @@
 			Версии Spring - совместимость библиотек
 				grep -A 1 hibernate- ~/.m2/repository/org/springframework/spring-orm/4.3.12.RELEASE/spring-orm-4.3.12.RELEASE.pom
 			spring_profiles_active=dev - profile dev (application-dev.yaml)
+			java -jar -Dspring.profiles.active=dev demo-0.0.1-SNAPSHOT.jar - запуск jar с нужным профайлом
 			
 			
 			Specification:
@@ -739,6 +745,7 @@ Maven:
 		mvn install - все что и package и еще копирование в локальный репозиторий сформированного jar, и можно будет в других проектах локально юзать этот jar как либу через dependencies
 		mvn dependencies:tree - покажет в текущем проекте дерево зависимостей
 		mvn spring-boot:build-image - сделать образ java приложения
+		mvn -X - вывод полной информации о настройках программы
 
 	Репозитории:
 		Local - локальный - на компе репозиторий, находится по адресу ${userhome}/.m2 (папка .m2 скрытая). Для винды это Documents/Users, для мак или убунту корневая папка юзера
@@ -2385,30 +2392,33 @@ Reddis:
 
 
 Docker:
-	docker images - все образы
-	
-	docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:11.1 - запустит в контейнере postgresql если его нет, то скачает его.
-	
-	docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d --network resource postgres - запуск контейнера в сети rescource
-	
-	docker run --name <containerName> -p 8080:8080 -d <imageName>:<tag/version> - запуск java приложения
-	
-	docker run --name spr -p 8080:8080 -d -e "SPRING_PROFILES_ACTIVE=dev" -e spring.datasource.url=jdbc:postgresql://postgres:5432/resource --network  resource  spring-boot-docker:0.0.1-SNAPSHOT - запуск java приложения с указанием профиля (для spring) и сети rescource
+	Команды:
+		docker images - все образы
+		
+		docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:11.1 - запустит в контейнере postgresql если его нет, то скачает его.
+		
+		docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d --network resource postgres - запуск контейнера в сети rescource
+		
+		docker run --name <containerName> -p 8080:8080 -d <imageName>:<tag/version> - запуск java приложения
+		
+		docker run --name spr -p 8080:8080 -d -e "SPRING_PROFILES_ACTIVE=dev" -e spring.datasource.url=jdbc:postgresql://postgres:5432/resource --network  resource  spring-boot-docker:0.0.1-SNAPSHOT - запуск java приложения с указанием профиля (для spring) и сети rescource
 
-	docker container ls - вывод всех контейнеров
-	docker ps - вывод активных контейнеров
-	docker ps -a - вывод всех контейнеров
-	docker exec -it postgres psql -U postgres - обращаемся в контейнер postgres к программе psql и входим в терминальную сессию 	
-	docker stop <containerName> - остановка контейнера
-	docker rm <containerName> - удалить контейнер
-	docker network create <networkName> - создаем сеть
-	docker network ls - список всех сетей
-	docker system prune -af --volumes - очистка всех volumes
-	docker-compose up - поднимаем образы файла docker-compose.yml
-	docker-compose rm - удаляем все образы
-	docker-compose down -v
-	winpty docker run -i -t node:alpine - использовать в Windows winpty для интерактивного запуска образа
-	docker log -f <container name> - показать логи контейнера
+		docker container ls - вывод всех контейнеров
+		docker ps - вывод активных контейнеров
+		docker ps -a - вывод всех контейнеров
+		docker exec -it postgres psql -U postgres - обращаемся в контейнер postgres к программе psql и входим в терминальную сессию 	
+		docker stop <containerName> - остановка контейнера
+		docker rm <containerName> - удалить контейнер
+		docker network create <networkName> - создаем сеть
+		docker network ls - список всех сетей
+		docker system prune -af --volumes - очистка всех volumes
+		docker-compose up - поднимаем образы файла docker-compose.yml
+		docker-compose rm - удаляем все образы
+		docker-compose down -v
+		winpty docker run -i -t node:alpine - использовать в Windows winpty для интерактивного запуска образа
+		docker log -f <container name> - показать логи контейнера
+		docker run -v $(pwd):/var/opt/project bash:latest \bash -c "echo Hello > /var/opt/project/file.txt" - запуск баш скрипта в контейнер при запуске
+		docker exec -ti myapp /bin/sh - зайти в java контейнер (если нет /bin/bash)
 	
 
 	Создание своих образов:
@@ -2610,7 +2620,43 @@ Docker:
 		    	Запускаем приложение:
 					docker run -p 8080:8080 myapp
 
+	docker-compose:
+		version: '3'
 
+		services:
+		  postgres:
+			image: postgres:14.7
+			domainname: postgres
+			ports:
+			  - "5432:5432"
+			environment:
+			  - POSTGRES_USER=postgres
+			  - POSTGRES_PASSWORD=postgres
+			healthcheck:
+			  test: ["CMD", "pg_isready", "-q", "-U", "postgres"]
+			  interval: 5s
+			  timeout: 1s
+			  retries: 2
+
+		  openui5:
+			image: openui5
+			ports:
+			  - "80:80"
+
+		  flyway:
+		    image: boxfuse/flyway
+		    command: -url=jdbc:postgresql://postgres:5432/postgres -schemas=public -user=postgres -password=postgres -connectRetries=30 migrate
+		    volumes:
+		      - ./flyway:/flyway/sql
+		    depends_on:
+		      - postgres
+		
+		  redis:
+		    image: 'bitnami/redis:latest'
+		    environment:
+		      - ALLOW_EMPTY_PASSWORD=yes
+		    ports:
+		      - "6379:6379"
 
 		
 
@@ -2624,6 +2670,8 @@ IDEA:
 		Ctrl + Alt + L - форматирование
 		Ctrl + Alt + Shift + L - диалог форматирования
 		Ctrl + D - дубль строки
+	Запуск разные профилей spring:
+		Cправа вверху в раскрывающемся списке выбрать Edit configuration, в поле Environment variables ввести - SPRING_PROFILES_ACTIVE=dev (для профиля application-dev.yml)
 		
 		
 		
