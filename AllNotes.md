@@ -1,85 +1,67 @@
-﻿Linux:	
+﻿# Linux	
+#### Общие	
+    lsb_release -dc - Версия ОС
+    sudo systemctl disable apache2 - Отключение по умолчанию сервера из списка автостарта
+	ls -la \target - просмотр содержимого нужной папки
+	curl -X POST localhost:8080/actuator/shutdown - POST вызов
+	curl localhost:8080/actuator/health - GET вызов
+	pscp -P 22 file_name.txt login@111.22.33.44:/folder
+	du -sh ./Загрузки/* - подсчет размера всех папок в папке загрузки
+	du -sh * - подсчет всех папок внутри текущей папки
 	
-	OS:
-		Версия ОС
-			lsb_release -dc
+#### File operations:
+	mv <source> <targer>
+	mv dist1/* dist2 - все файлы из папки 1 переедут в папку 2		
+	cp -r /home/alexey/Downloads/dump/dump . - скопировать папку 1 в текущую папку
+	cp -r /home/alexey/Downloads/dump/dump/* . - скопировать все файлы из папки 1 в текущую папку
+	readlink -f _countries.sql или realpath _countries.sql - путь до файла
+	du -hs - размер текущей папки
+	du -hs * - размер файлов и папок в текущей папке			
 
-		Отключение по умолчанию сервера из списка автостарта
-			sudo systemctl disable apache2 - 
+#### Процессы:
+	ps -eF - список процессов
+	ps -efH - список деревом
+	ps -efL - список с потоками
+	pgrep <имя программы> - вернет PID
+	kill <PID> - закрыть программу
 			
-	Bash:
 	
-		ls -la \target - просмотр содержимого нужной папки
+	
 
 	
-		file operations:
-			mv <source> <targer>
-			mv dist1/* dist2 - все файлы из папки 1 переедут в папку 2		
-			cp -r /home/alexey/Downloads/dump/dump . - скопировать папку 1 в текущую папку
-			cp -r /home/alexey/Downloads/dump/dump/* . - скопировать все файлы из папки 1 в текущую папку
-			readlink -f _countries.sql или realpath _countries.sql - путь до файла
-			du -hs - размер текущей папки
-			du -hs * - размер файлов и папок в текущей папке			
-
-		Список процессов:
-			ps -eF - список процессов
-			ps -efH - список деревом
-			ps -efL - список с потоками
-
-			
-		Закрыть программу:
-			pgrep <имя программы> - вернет PID
-			kill <PID> - закрыть программу
-			
-		curl -X POST localhost:8080/actuator/shutdown - POST вызов
-		curl localhost:8080/actuator/health - GET вызов
-		
-		pscp -P 22 file_name.txt login@111.22.33.44:/folder
-
-		du -sh ./Загрузки/* - подсчет размера всех папок в папке загрузки
-		du -sh * - подсчет всех папок внутри текущей папки
 
 
-	Jenkins:
-		sudo systemctl start jenkins
-		sudo systemctl status jenkins
-	
-	Nexus:
-		sudo systemctl stop nexus
-
-
-
-		
-	NGINX:
-		sudo killall apache2
-		sudo fuser -k 443/tcp
-		sudo service nginx start
-		
-
-	Zip:
-		unzip file.zip -d destination_folder
-		unzip file.zip
+#### Zip
+	unzip file.zip -d destination_folder
+	unzip file.zip
 		
 		zip 1.zip * - зипуем все файлы в текущей папке в архив с именем 1.zip
 		zip -r archivename.zip directory_name - зипуем все внутри папки
 	
-	Java:
-		Запуск jar:
-			java -cp allClasses.jar Class1
+# Java
+Запуск jar
+    
+    java -cp allClasses.jar Class1
+    java -jar app.jar
 			
-		Список установленных Java:
-			sudo update-alternatives --config java
+Список установленных Java:
+
+	sudo update-alternatives --config java
 	
-		Установка oracle Java:
-			sudo apt install oracle-java11-installer-local
-		Spring:
-			Версии Spring - совместимость библиотек
-				grep -A 1 hibernate- ~/.m2/repository/org/springframework/spring-orm/4.3.12.RELEASE/spring-orm-4.3.12.RELEASE.pom
+Установка oracle Java:
+		
+	sudo apt install oracle-java11-installer-local
+			
+#### Spring:
+Версии Spring - совместимость библиотек
+
+	grep -A 1 hibernate- ~/.m2/repository/org/springframework/spring-orm/4.3.12.RELEASE/spring-orm-4.3.12.RELEASE.pom
 			spring_profiles_active=dev - profile dev (application-dev.yaml)
 			java -jar -Dspring.profiles.active=dev demo-0.0.1-SNAPSHOT.jar - запуск jar с нужным профайлом
 			
 			
-			Specification:
+Specification:
+
 				public static Specification<Uer> equalMu(String value) {
 					return (root, query, criteriaBuilder) -> {
 						Join<Mu, Uer> mu = root.join("mu");
@@ -96,19 +78,21 @@
 	
 	
 
-Git:
-	.gitignore
-		Что бы игнорировать файл или папку, необходимо добавить его в файл .gitignore, лучше всего его разместить в корне репозитория.
-		Папка **\<имя папки> будет игнорироваться, где бы она не была.
-		Для игнорирования, файл или папка должы быть исключены из индекса. Если файл раньше коммитился, то надо его убрать из индекса 
-			Пример:
-				$ echo debug.log >> .gitignore  
-				$ git rm --cached debug.log
-				$ git commit -m "Start ignoring debug.log"
-		Официальный мануал https://www.atlassian.com/git/tutorials/saving-changes/gitignore
+# Git:
+.gitignore  - Что бы игнорировать файл или папку, необходимо добавить его в файл .gitignore, лучше всего его разместить в корне репозитория.
+Папка **\<имя папки> будет игнорироваться, где бы она не была.
+Для игнорирования, файл или папка должы быть исключены из индекса. Если файл раньше коммитился, то надо его убрать из индекса 
+Пример
+
+    echo debug.log >> .gitignore  
+	git rm --cached debug.log
+	git commit -m "Start ignoring debug.log"
+	
+	
+Официальный мануал https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 		
 	
-	Команды:
+#### Команды
 		git push -u origin master - отправить закомиченные изменения на GitHub
 		git pull origin master - скачать актуальную версию с GitHub
 		git branch - список веток
@@ -137,7 +121,7 @@ Git:
 	
 
 
-MongoDB:
+# MongoDB
 	mongo - управляющая программа
 	mongo -u <user> -p <pass> --authenticationDatabase admin
 	mongoimport --db restaurants --collection MyCollection --file primer-dataset.json - 		импорт файла в бд (запросы надо делать через db.<collection>.<оператор>)
@@ -147,7 +131,7 @@ MongoDB:
 	db.<имя коллекии>.find() - вызов оператора find
 
 
-SSL Certificates:
+# SSL Certificates
 	keytool -list -v -keystore /path/to/cacerts  > java_cacerts.txt - получиться данные сертификатор и можно в результирующем файле поискать сертификат по Serial Number. Сертификаты обычно лежат:
 		./jdk1.6.0_24/jre/lib/security/cacerts
 		./jre1.6.0_24/lib/security/cacerts
@@ -160,33 +144,17 @@ SSL Certificates:
 	keytool - Утилита находится ...\jdk_folder\bin
 	
 	keytool -delete -alias sms01199.npr.nornick.ru -keystore  C:\Work\Soft\jdk1.8.0_171\jre\lib\security\cacerts - удалить сертификат из keystore
-	
-IDEA:
-	debug from idea to SAP Portal:
-		- go to Run -> Debug
-		- Select Edit Configurations
-		- Expand Template section
-		- Select "Remote"
-		- Make settings:
-			Debugger mode: Attache to remote JVM
-			Transport: Socket
-			Host: <your host>
-			Port: 50021
-			Use module classpath: <select your java module>
-		- Push button in right up "Create configuration"
-		- You will see in debug dropdown list or in Debug settings section "Remote" and there your configuration
-		- Now you can push "Debug"
-		- Check that you turned on debug on SAP Portal
 
 
 
-Chrome:
+
+# Chrome:
 	сброк кэша: Shift + F5
 
 
 
 
-Java:
+# Java:
 		//fill collection
         {
             List<Integer> list = new ArrayList<Integer>();
@@ -241,7 +209,7 @@ Java:
 //          Вывод:00001
         }
 
-Date:
+#### Date
     Date date = new Date();
     System.out.println(date.toString());
 
@@ -250,10 +218,10 @@ Date:
 		LocalDateTime date = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, now.getSecond() + offsetDays);
 		return new Timestamp(date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
 		
-Logging:
+#### Logging
 	log.debugT(method, "Xml for Import manager: {0}", new Object[] { importXmlName });
 	
-Rest Controller:
+#### Rest Controller
 
 	@RestController
 	public class SupportController {
@@ -275,20 +243,20 @@ Rest Controller:
 		}
 	}
 
-Format date
+#### Format date
 	SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 	result = format.format(((DateTimeValue) value).getDate());
   
   
 
-nio
+#### Nio
     //rename file
     Path of = Path.of("storage/2.txt");
     Files.move(of, of.getParent().resolve("2.txt"));
 	
 	
 	
-ModellMapper:
+#### ModellMapper:
 	
 //        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
 
@@ -326,7 +294,7 @@ ModellMapper:
 	
 	
 	
-JSON Mapper:
+#### JSON Mapper:
 		ObjectMapper objectMapper = new ObjectMapper();
         String carAsString = objectMapper.writeValueAsString(requestByIdResponse.getRequest());
 	
@@ -335,7 +303,7 @@ JSON Mapper:
 	
 =======
 	
-//Lambda
+#### Lambda
 	//Объявляем интерфейс с 1 методом, аннотация @FunctionalInterface делает проверку что в интерейсе только 1 метод (можно создавать другие методы, но тогда они должны быть default)
 	@FunctionalInterface
 	public interface Operation {				
@@ -375,7 +343,7 @@ JSON Mapper:
 		return o.apply(x, y);
 	}	
 
-//Stream API
+#### Stream API
 
 	//Базовые интерфейсы
 		//forEach, peek
@@ -454,7 +422,7 @@ JSON Mapper:
 
 
 
-Spring: 
+#### Spring: 
 	Spring аннотации: 
 		@SpringBootApplication - указывается для класса запускающего spring boot приложение. Обычно оно находится на самом верхнем уровне, и по умолчанию spring сканирует все классы на этом же уровне и все дочерние пакеты. Поэтому можно не указывать @ComponentScan. Аннотация в числе прочих наследуется от аннотаций @Configuration,@ComponentScan, @EnableAutoConfiguration.
 		@ComponentScan("package.name") - указывается для класса с @Configuration или @SpringBootApplication какие пакеты нужно сканировать
@@ -674,10 +642,10 @@ Spring:
 					('user1', 'ROLE_USER'),
 					('user2', 'ROLE_USER');
 
-	Spring transactions:
+#### Spring transactions:
 		- Когда мы ставим аннотацию Transactional, то Spring делает прокси-классы для нашего класса, где делает старт транзацкии, ее коммит или роллбек при ошибке
 
-	Spring Exception:
+#### Spring Exception:
 		Пример класса который объявляется перехватчиком всех исключений от всех контроллеров (класс срабатывает на исключения объявленные как входные параметры методов):
 			@ControllerAdvice		
 			@Slf4j
@@ -695,16 +663,16 @@ Spring:
 			    }
 			}
 
-	Spring AOP (Aspects):
+#### Spring AOP (Aspects):
 		- Если в дебаге видно что бин спринга является не самим классом, а прокси классом SJLib, то это значит используются аспекты, и надо смотреть какую логику добавили в них
 		- Аспекты как теневые программы могут менять программу и данные, это приводит к усложнению поддержки программы
 
-	Настройки Java:
+#### Настройки Java:
 		<properties>
 			<java.version>11</java.version>
 		</properties>
 		
-	Spring Boot Maven plugin:
+#### Spring Boot Maven plugin:
 		<build>
 			<plugins>
 				<plugin>
@@ -715,7 +683,7 @@ Spring:
 		</build>
 
 
-	Настройки (application.properties):
+#### Настройки (application.properties):
 		server.port=8189
 		spring.datasource.url=jdbc:h2:~/spring.h2
 		spring.datasource.driver-class-name=org.h2.Driver
@@ -738,7 +706,7 @@ Spring:
 
 
 
-Maven:
+# Maven:
 	Команды:
 		mvn clean - чистка в проекте всего что было сгенерировано
 		mvn package - прогон билда, тестов, подтягивание зависимостей, если указал в pom.xml, паковка в jar файл
@@ -819,7 +787,7 @@ Maven:
 					</dependency>
 
 
-Hibernate:
+# Hibernate:
 	# Relationships in JPA - Hibernate
 
 ## 1. OneToMany
@@ -1026,8 +994,8 @@ Hibernate:
 
 
 
-SQL:
-	PostgreSQL:	
+# SQL
+#### PostgreSQL
 
 		SQL глубинные смыслы:
 			Процедуры используются для:
@@ -1324,35 +1292,14 @@ SQL:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Пример задач по Java:
+# Пример задач по Java:
 	Полноценное клиент-серверное приложение + второе приложение, которое общается с первым через брокер сообщений. Я использовала Spring MVC, Spring Security, Spring Data, для маппинга классов в бд и обратно Hibernate, базу данных MySQL, брокер сообщений RabbitMq, WebSocket, контейнер сервлетов Tomcat, Log4j для логирования, Java Mail для отправки сообщений на email из приложения. Для UI части использовала шаблонизатор страничек Thymeleaf. Для тестирования JUnit и Mockito. Получилось довольно сложное и интересное приложение - онлайн магазин с раздельным функционалом для клиентов и админа. С корзиной товаров, оформлением заказа, фильтрацией каталога товаров и прочим. Для админа - возможность добавления товаров, работа с заказами, изменения статусов оплаты, доставки и прочее, а также различные метрики, например - валовая выручка магаза за выбранный период времени. Вторым приложением был рекламный стенд с категориями-бестселлерами магазина, стенд обновлялся в режиме реального времени через брокер сообщений и вебсокеты, когда происходили покупки на основном сайте магазина. 
 
 	
 
 	
 
-Regexp - Регулярные выражения:
+# Regexp - Регулярные выражения:
 
 	@.* - строка начинается с @ и любые символы повторяются любой количество раз
 	(handle.*)(Search) - начинается на handle далее любое количество символов и заканчивается Search, пример: _handleValueHelpSearch	
@@ -1364,7 +1311,7 @@ Regexp - Регулярные выражения:
 	
 	
 	
-SAP:
+# SAP:
 	Java:
 		Шаблоны кода:
 
@@ -1611,8 +1558,8 @@ SAP:
 			
 			
 			
-SAP:
-	JavaScript - js:
+# SAP:
+#### JavaScript - js
 		UI5 Code Examples:
 
 			//BusyIndicator:
@@ -2210,7 +2157,7 @@ SAP:
 					
 					
 					
-SQL Server:	
+# SQL Server:	
 					
 
 	--Полнотекстовый поиск
@@ -2383,7 +2330,7 @@ SQL Server:
 
 
 
-Reddis:
+# Reddis:
 	Reddis - это бд в памяти NoSql, они предназначены для хранения в БД (в памяти) объекты какие-то количество времени. Хранят объекты в виде HashMap. 
 	Плюс Reddis:
 		- он заточен под хранение в HashMap, и по ключу будет искать значение максимально быстро. Он может настроить время жизни объекта, т.е. можно задать что к примеру корзина покупок юзера (ключ - логин, значение - json с описанием покупок) и задать время хранения этого объекта 2 недели
@@ -2391,7 +2338,7 @@ Reddis:
 		- отказоустойчивы - т.е. если инстанс Reddis упадет, то он будет восстановлен без потерь данных
 
 
-Docker:
+# Docker:
 	Команды:
 		docker images - все образы
 		
@@ -2413,6 +2360,7 @@ Docker:
 		docker network ls - список всех сетей
 		docker system prune -af --volumes - очистка всех volumes
 		docker-compose up - поднимаем образы файла docker-compose.yml
+		docker-compose up --build - билдим заново
 		docker-compose rm - удаляем все образы
 		docker-compose down -v
 		winpty docker run -i -t node:alpine - использовать в Windows winpty для интерактивного запуска образа
@@ -2663,20 +2611,44 @@ Docker:
 
 
 
-IDEA:
-	Hotkeys:
+# IDEA:
+#### Hotkeys
 		Ctrl + Shift + U - to lower case
 		Ctrl + F12 - список методов
 		Ctrl + Alt + L - форматирование
 		Ctrl + Alt + Shift + L - диалог форматирования
 		Ctrl + D - дубль строки
-	Запуск разные профилей spring:
+#### Запуск разные профилей spring
 		Cправа вверху в раскрывающемся списке выбрать Edit configuration, в поле Environment variables ввести - SPRING_PROFILES_ACTIVE=dev (для профиля application-dev.yml)
+	
+#### Debug from idea to SAP Portal:
+		- go to Run -> Debug
+		- Select Edit Configurations
+		- Expand Template section
+		- Select "Remote"
+		- Make settings:
+			Debugger mode: Attache to remote JVM
+			Transport: Socket
+			Host: <your host>
+			Port: 50021
+			Use module classpath: <select your java module>
+		- Push button in right up "Create configuration"
+		- You will see in debug dropdown list or in Debug settings section "Remote" and there your configuration
+		- Now you can push "Debug"
+		- Check that you turned on debug on SAP Portal
 		
 		
 		
-VCS:
+		
+		
+# VCS:
 	Hotkeys:
 		Ctrl + Shift + O - Поиск метода
 		Shift + Alt + F - форматирование кода
 		Ctrl + G - переход к строке ...
+	
+# Node.js:
+	nvm use node - use current version
+	nvm use --lts - use lts version
+	nvm use 8.2.1 - use specific version
+	nvm install 16.18.0 - install node version 16.18.0
