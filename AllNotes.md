@@ -2652,3 +2652,8 @@ Specification:
 	nvm use --lts - use lts version
 	nvm use 8.2.1 - use specific version
 	nvm install 16.18.0 - install node version 16.18.0
+	
+	
+# Windows
+	ssh -L 8888:192.168.1.90:3389 root@192.168.1.90
+	
