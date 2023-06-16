@@ -1556,7 +1556,13 @@ Specification:
 				}
 			}
 			
+# JavaScript
+### Work with json
+	 pesonalizationMap = new Map(
+              Object.entries(JSON.parse(personalization.json))
+            );
 			
+	json: JSON.stringify(Object.fromEntries(pesonalizationMap)),
 			
 # SAP:
 #### JavaScript - js
@@ -2646,6 +2652,7 @@ Specification:
 		Ctrl + Shift + O - Поиск метода
 		Shift + Alt + F - форматирование кода
 		Ctrl + G - переход к строке ...
+		Shift + Alt + -> - выделение фрагментов
 	
 # Node.js:
 	nvm use node - use current version
