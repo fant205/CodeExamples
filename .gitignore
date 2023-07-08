@@ -8,3 +8,11 @@
 *.iml
 
 **/.mvn
+
+
+node_modules/
+dist/
+webpack-assets.json
+webpack-stats.json
+npm-debug.log
+*.swp
