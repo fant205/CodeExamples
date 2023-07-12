@@ -711,7 +711,6 @@ Specification:
 		mvn clean - чистка в проекте всего что было сгенерировано
 		mvn package - прогон билда, тестов, подтягивание зависимостей, если указал в pom.xml, паковка в jar файл
 		mvn install - все что и package и еще копирование в локальный репозиторий сформированного jar, и можно будет в других проектах локально юзать этот jar как либу через dependencies
-		mvn dependencies:tree - покажет в текущем проекте дерево зависимостей
 		mvn spring-boot:build-image - сделать образ java приложения
 		mvn -X - вывод полной информации о настройках программы
 
@@ -746,10 +745,13 @@ Specification:
 
 
 	mvn package - сделать jar или war, в зависимости что указано в pom.xml
-	mvn tomcat:run -запуск встроенного tomcat
+	mvn tomcat:run - запуск встроенного tomcat
 	mvn dependency:tree - вывод дерева зависимостей
+	mvn dependency:tree -Dincludes=org.apache.logging.log4j:log4j-core - Параметр includes фильтрует вывод, чтобы показать только зависимость log4-core. 
 	mvn dependency:analyze -DignoreNonCompile - вывод не используемых зависимостей
+	mvn org.owasp:dependency-check-maven:check -DfailBuildOnCVSS=7 - проверка уязвимостей в проекте (https://jeremylong.github.io/DependencyCheck/dependency-check-maven/)
 	mvn clean package tomcat:run --пакетный запуск команд
+	mvn verify - все циклы и проверка уязвимостей
 	./mvnw spring-boot:run - запуск spring boot приложения
 
 		
@@ -2345,93 +2347,115 @@ Specification:
 
 
 # Docker:
-	Команды:
-		docker images - все образы
-		
-		docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:11.1 - запустит в контейнере postgresql если его нет, то скачает его.
-		
-		docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d --network resource postgres - запуск контейнера в сети rescource
-		
-		docker run --name <containerName> -p 8080:8080 -d <imageName>:<tag/version> - запуск java приложения
-		
-		docker run --name spr -p 8080:8080 -d -e "SPRING_PROFILES_ACTIVE=dev" -e spring.datasource.url=jdbc:postgresql://postgres:5432/resource --network  resource  spring-boot-docker:0.0.1-SNAPSHOT - запуск java приложения с указанием профиля (для spring) и сети rescource
-
-		docker container ls - вывод всех контейнеров
-		docker ps - вывод активных контейнеров
-		docker ps -a - вывод всех контейнеров
-		docker exec -it postgres psql -U postgres - обращаемся в контейнер postgres к программе psql и входим в терминальную сессию 	
-		docker stop <containerName> - остановка контейнера
-		docker rm <containerName> - удалить контейнер
-		docker network create <networkName> - создаем сеть
-		docker network ls - список всех сетей
-		docker system prune -af --volumes - очистка всех volumes
-		docker-compose up - поднимаем образы файла docker-compose.yml
-		docker-compose up --build - билдим заново
-		docker-compose rm - удаляем все образы
-		docker-compose down -v
-		winpty docker run -i -t node:alpine - использовать в Windows winpty для интерактивного запуска образа
-		docker log -f <container name> - показать логи контейнера
-		docker run -v $(pwd):/var/opt/project bash:latest \bash -c "echo Hello > /var/opt/project/file.txt" - запуск баш скрипта в контейнер при запуске
-		docker exec -ti myapp /bin/sh - зайти в java контейнер (если нет /bin/bash)
+## Команды:
+	docker images - все образы
 	
+	docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:11.1 - запустит в контейнере postgresql если его нет, то скачает его.
+	
+	docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d --network resource postgres - запуск контейнера в сети rescource
+	
+	docker run --name <containerName> -p 8080:8080 -d <imageName>:<tag/version> - запуск java приложения
+	
+	docker run --name spr -p 8080:8080 -d -e "SPRING_PROFILES_ACTIVE=dev" -e spring.datasource.url=jdbc:postgresql://postgres:5432/resource --network  resource  spring-boot-docker:0.0.1-SNAPSHOT - запуск java приложения с указанием профиля (для spring) и сети rescource
 
-	Создание своих образов:
-		Командами:
+	docker container ls - вывод всех контейнеров
+	docker ps - вывод активных контейнеров
+	docker ps -a - вывод всех контейнеров
+	docker exec -it postgres psql -U postgres - обращаемся в контейнер postgres к программе psql и входим в терминальную сессию 	
+	docker stop <containerName> - остановка контейнера
+	docker rm <containerName> - удалить контейнер
+	docker network create <networkName> - создаем сеть
+	docker network ls - список всех сетей
+	docker system prune -af --volumes - очистка всех volumes
+	docker-compose up - поднимаем образы файла docker-compose.yml
+	docker-compose up --build - билдим заново
+	docker-compose rm - удаляем все образы
+	docker-compose down -v
+	winpty docker run -i -t node:alpine - использовать в Windows winpty для интерактивного запуска образа
+	docker log -f <container name> - показать логи контейнера
+	docker run -v $(pwd):/var/opt/project bash:latest \bash -c "echo Hello > /var/opt/project/file.txt" - запуск баш скрипта в контейнер при запуске
+	docker exec -ti myapp /bin/sh - зайти в java контейнер (если нет /bin/bash)
 
-			Создание своего образа с установленным Git:
-				docker run -i -t ubuntu:18.04 /bin/bash - запуск образа на основе ubuntu 18.04 и вход в ее терминал с помощью /bin/bash и (-i -t)
-				в терминале контейнера вводим: 
-					apt-get update
-					apt-get install -y git
-				проверяем что git установлен:
-					which git
-				Выходим из контейнера:
-					exit
-				Проверяем измененные файлы:
-					docker diff 'id'
-				Делаем коммит контейнера что бы создать свой новый образ:
-					docker commit 'id' containeName
+	docker run
+		-e spring.datasource.username=postgres
+		-e spring.datasource.password=postgres
+		
+### docker volume:
+	docker volume ls - вывод всех volume
+	docker volume create test-volume - создать volume c именем test-volume
+	docker volume create - создать volume с рандомным именем
+		
+	docker run 
+		--name mysql-01  - ставим имя контейнеру mysql-01
+		-v pv-mysql-data:/var/lib/mysql - указываем что нужно использовать volume pv-mysql-data в нашей файловой системе и смаунтить его в папку контейнера /var/lib/mysql. Если volume не был создан заранее, докер его создаст сам в стандартной папке всех volumes
+		-e MYSQL_ROOT_PASSWORD=my-password - указываем параметр
+		-d  - указываем что запуск в режиме detach - не задерживать терминал
+		mysql - имя образа, если его нет локально, докер скачает с докер хаба
+		Команда целиком - docker run --name mysql-01 -v pv-mysql-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=my-password -d mysql
+	 
+	docker volume inspect test-volume - описание указанного volume
+	docker volume rm  test-volume - удаление volume
+	docker volume prune - удаление не используемых volume, которые не прикреплены к работающему контейнеру
+
+	docker run -d -v /test/app:/bin/testapp ubuntu:latest - маунт конкретной папки в ОС в папку в контейнере
+	
+##### PostgreSQL:
+	docker run --name postgres-01 -v v-postgres:/var/lib/postgresql/data -d postgres - запуск PosrtgreSQL c volume
+
+### Создание своих образов:
+#### Командами в самом контейнере:
+
+		Создание своего образа с установленным Git:
+			docker run -i -t ubuntu:18.04 /bin/bash - запуск образа на основе ubuntu 18.04 и вход в ее терминал с помощью /bin/bash и (-i -t)
+			в терминале контейнера вводим: 
+				apt-get update
+				apt-get install -y git
+			проверяем что git установлен:
+				which git
+			Выходим из контейнера:
+				exit
+			Проверяем измененные файлы:
+				docker diff 'id'
+			Делаем коммит контейнера что бы создать свой новый образ:
+				docker commit 'id' containeName
 
 
-			Создание своего образа с установленной jdk 17:
-				Вводим команду:
-					docker run -i -t ubuntu:20.04 /bin/bash - запуск образа на основе ubuntu 20.04 и вход в ее терминал с помощью /bin/bash и (-i -t)
-				Мы вошли в терминал, тут вводим:
-					apt-get update
-					apt-get install -y openjdk-17-jdk
-				Проверяем версию установленной Java:
-		    		java -version
-		    	Выходим из контейнера:
-		    		exit    	
-		    	Проверяем измененные файлы:
-		    		docker diff 'id'
-		    	Делаем коммит созданного контейнера что бы создать свой образ:
-		    		docker commit 'id' yourNewContainerName
+		Создание своего образа с установленной jdk 17:
+			Вводим команду:
+				docker run -i -t ubuntu:20.04 /bin/bash - запуск образа на основе ubuntu 20.04 и вход в ее терминал с помощью /bin/bash и (-i -t)
+			Мы вошли в терминал, тут вводим:
+				apt-get update
+				apt-get install -y openjdk-17-jdk
+			Проверяем версию установленной Java:
+				java -version
+			Выходим из контейнера:
+				exit    	
+			Проверяем измененные файлы:
+				docker diff 'id'
+			Делаем коммит созданного контейнера что бы создать свой образ:
+				docker commit 'id' yourNewContainerName
 
-			Создание своего образа с установленной liberica jdk 17:
-				Вводим команду:
-					docker run -it ubuntu:20.04 /bin/bash - запуск образа на основе ubuntu 20.04 и вход в ее терминал с помощью /bin/bash и (-i -t)
-				Мы вошли в терминал, тут вводим:					
-					apt-get update
-					apt-get --assume-yes install wget
-					apt-get --assume-yes install gnupg
-					wget -q -O - https://download.bell-sw.com/pki/GPG-KEY-bellsoft | apt-key add -
-					echo "deb [arch=amd64] https://apt.bell-sw.com/ stable main" | tee /etc/apt/sources.list.d/bellsoft.list
-					apt-get update
-					apt-get --assume-yes install bellsoft-java17
-				Проверяем версию установленной Java:
-		    		java -version
-		    	Выходим из контейнера:
-		    		exit    	
-		    	Проверяем измененные файлы:
-		    		docker diff 'id'
-		    	Делаем коммит созданного контейнера что бы создать свой образ:
-		    		docker commit 'id' yourNewContainerName
+		Создание своего образа с установленной liberica jdk 17:
+			Вводим команду:
+				docker run -it ubuntu:20.04 /bin/bash - запуск образа на основе ubuntu 20.04 и вход в ее терминал с помощью /bin/bash и (-i -t)
+			Мы вошли в терминал, тут вводим:					
+				apt-get update
+				apt-get --assume-yes install wget
+				apt-get --assume-yes install gnupg
+				wget -q -O - https://download.bell-sw.com/pki/GPG-KEY-bellsoft | apt-key add -
+				echo "deb [arch=amd64] https://apt.bell-sw.com/ stable main" | tee /etc/apt/sources.list.d/bellsoft.list
+				apt-get update
+				apt-get --assume-yes install bellsoft-java17
+			Проверяем версию установленной Java:
+				java -version
+			Выходим из контейнера:
+				exit    	
+			Проверяем измененные файлы:
+				docker diff 'id'
+			Делаем коммит созданного контейнера что бы создать свой образ:
+				docker commit 'id' yourNewContainerName
 
-
-
-
-		Dockerfile:
+	#### Dockerfile:
 
 			Создание своего образа с помощью Dockerfile с установленной jdk:
 				Cоздаем в папке файл:
@@ -2618,12 +2642,15 @@ Specification:
 
 
 # IDEA:
+
 #### Hotkeys
 		Ctrl + Shift + U - to lower case
 		Ctrl + F12 - список методов
 		Ctrl + Alt + L - форматирование
 		Ctrl + Alt + Shift + L - диалог форматирования
 		Ctrl + D - дубль строки
+		Ctrl + Y - удаление строки 
+		
 #### Запуск разные профилей spring
 		Cправа вверху в раскрывающемся списке выбрать Edit configuration, в поле Environment variables ввести - SPRING_PROFILES_ACTIVE=dev (для профиля application-dev.yml)
 	
@@ -2648,7 +2675,8 @@ Specification:
 		
 		
 # VCS:
-	Hotkeys:
+
+####Hotkeys:
 		Ctrl + Shift + O - Поиск метода
 		Shift + Alt + F - форматирование кода
 		Ctrl + G - переход к строке ...
