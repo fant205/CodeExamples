@@ -641,6 +641,172 @@ Specification:
 					('user1', 'ROLE_ADMIN'),
 					('user1', 'ROLE_USER'),
 					('user2', 'ROLE_USER');
+					
+					
+					
+#### Пример настройки авторизации через БД:
+	@EnableGlobalMethodSecurity(securedEnabled = true)
+	@Configuration
+	@Profile("!ldap")
+	@RequiredArgsConstructor
+	@Slf4j
+	public class SecurityConfigDb {
+		private final JwtRequestFilter jwtRequestFilter;
+
+		@Bean
+		public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+			return authenticationConfiguration.getAuthenticationManager();
+		}
+
+		@Bean
+		public SecurityFilterChain mySecurityFilterChain(HttpSecurity http) throws Exception {
+
+			http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
+					.authorizeHttpRequests((requests) -> requests
+							.requestMatchers("/auth").permitAll()
+							.requestMatchers("/records/**").permitAll()
+							.requestMatchers("/h2-console/**").permitAll()
+							.requestMatchers("/swagger-ui/**").permitAll()
+							.requestMatchers("/v3/**").permitAll()
+							.anyRequest().authenticated())
+					.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+					.headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions(frameOptionsConfig -> frameOptionsConfig.disable())) //to make accessible h2 console, it works as frame
+					.exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+					.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+			log.info("Авторизация через бд настроена");
+
+			return http.build();
+			
+		}
+
+		@Bean
+		public BCryptPasswordEncoder passwordEncoder() {
+			return new BCryptPasswordEncoder();
+		}
+
+
+	}
+
+
+#### Пример авторазации через LDAP:
+	@EnableGlobalMethodSecurity(securedEnabled = true)
+	@Configuration
+	@Profile("ldap")
+	@RequiredArgsConstructor
+	@Slf4j
+	public class SecurityConfigLdap {
+		private final JwtRequestFilter jwtRequestFilter;
+		@Value("${ldap.context-source.userDnPatterns}")
+		private String userDnPatterns;
+		@Value("${ldap.context-source.userSearchBase}")
+		private String userSearchBase;
+		@Value("${ldap.context-source.userSearchFilter}")
+		private String userSearchFilter;
+		@Value("${ldap.context-source.groupSearchBase}")
+		private String groupSearchBase;
+		@Value("${ldap.context-source.groupSearchFilter}")
+		private String groupSearchFilter;
+		@Value("${ldap.context-source.url}")
+		private String url;
+		@Value("${ldap.context-source.userDn}")
+		private String userDn;
+		@Value("${ldap.context-source.password}")
+		private String password;
+
+		@Bean
+		public SecurityFilterChain mySecurityFilterChain(HttpSecurity http) throws Exception {
+
+			http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
+					.authorizeHttpRequests((requests) -> requests
+							.requestMatchers("/auth").permitAll()
+							.requestMatchers("/records/**").permitAll()
+							.requestMatchers("/h2-console/**").permitAll()
+							.requestMatchers("/swagger-ui/**").permitAll()
+							.requestMatchers("/v3/**").permitAll()
+							.anyRequest().authenticated())
+					.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+					.headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions(frameOptionsConfig -> frameOptionsConfig.disable())) //to make accessible h2 console, it works as frame
+					.exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+					.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+			log.info("LDAP authorization configured!");
+			return http.build();
+		}
+
+		@Bean
+		public BCryptPasswordEncoder passwordEncoder() {
+			return new BCryptPasswordEncoder();
+		}
+
+		@Bean
+		@ConfigurationProperties(prefix = "ldap.context-source")
+		public LdapContextSource getLdapContext() {
+			return new LdapContextSource();
+		}
+
+		@Bean
+		AuthenticationManager ldapAuthenticationManager(BaseLdapPathContextSource contextSource) {
+			LdapBindAuthenticationManagerFactory factory = new LdapBindAuthenticationManagerFactory(contextSource);
+			factory.setUserDnPatterns(userDnPatterns);
+			factory.setUserSearchBase(userSearchBase);
+			factory.setUserSearchFilter(userSearchFilter);
+			return factory.createAuthenticationManager();
+		}
+
+		@Bean
+		LdapAuthoritiesPopulator authorities(BaseLdapPathContextSource contextSource) {
+			DefaultLdapAuthoritiesPopulator authorities = new DefaultLdapAuthoritiesPopulator
+					(contextSource, groupSearchBase);
+			authorities.setGroupSearchFilter(groupSearchFilter);
+			return authorities;
+		}
+
+		@Bean
+		ActiveDirectoryLdapAuthenticationProvider authenticationProvider() {
+			return new ActiveDirectoryLdapAuthenticationProvider("free.dmz", url);
+		}
+
+
+	}
+	
+	yaml:
+		ldap:
+		  context-source:
+			userDnPatterns: CN={0},CN=Users,DC=test,DC=ddd
+			userSearchBase: CN=Users,DC=test,DC=ddd
+			userSearchFilter: (CN={0})
+			groupSearchBase: CN=Some-Base-Group,CN=Users,DC=test,DC=ddd
+			groupSearchFilter: member={0}
+			url: ldap://localhost:389
+			userDn: some-user
+			password: some-pass
+		  #you'll want connection polling set to true so ldapTemplate reuse the connection when searching recursively
+		  #    pooled: true
+		  use: true
+
+
+#### ldapTemplate:
+        List<String> search = ldapTemplate
+                .search(
+                        userSearchBase,
+                        "CN=" + username,
+                        (AttributesMapper<String>) attrs -> (String) attrs.get("memberOf").get());
+        log.debug("LDAP Search: {}", search.toString());
+
+        List<String> search = ldapTemplate.search(
+                userSearchBase,
+                "CN=" + username,
+                (AttributesMapper<ArrayList<String>>) attrs ->
+                {
+                    Attribute memberOf = attrs.get("memberOf");
+                    if (memberOf == null) {
+                        throw new RuntimeException("User " + username + " does not have any role in LDAP");
+                    }
+                    return (ArrayList<String>) Collections.list(attrs.get("memberOf").getAll());
+                }
+        ).get(0);
+        log.debug("User memberOf: {}", search.toString());
 
 #### Spring transactions:
 		- Когда мы ставим аннотацию Transactional, то Spring делает прокси-классы для нашего класса, где делает старт транзацкии, ее коммит или роллбек при ошибке
@@ -2455,7 +2621,7 @@ Specification:
 			Делаем коммит созданного контейнера что бы создать свой образ:
 				docker commit 'id' yourNewContainerName
 
-	#### Dockerfile:
+#### Dockerfile:
 
 			Создание своего образа с помощью Dockerfile с установленной jdk:
 				Cоздаем в папке файл:
@@ -2641,18 +2807,10 @@ Specification:
 
 
 
-# IDEA:
 
-#### Hotkeys
-		Ctrl + Shift + U - to lower case
-		Ctrl + F12 - список методов
-		Ctrl + Alt + L - форматирование
-		Ctrl + Alt + Shift + L - диалог форматирования
-		Ctrl + D - дубль строки
-		Ctrl + Y - удаление строки 
 		
-#### Запуск разные профилей spring
-		Cправа вверху в раскрывающемся списке выбрать Edit configuration, в поле Environment variables ввести - SPRING_PROFILES_ACTIVE=dev (для профиля application-dev.yml)
+#### Запуск разных профилей spring
+Cправа вверху в раскрывающемся списке выбрать Edit configuration, в поле Environment variables ввести - SPRING_PROFILES_ACTIVE=dev (для профиля application-dev.yml)
 	
 #### Debug from idea to SAP Portal:
 		- go to Run -> Debug
@@ -2674,15 +2832,66 @@ Specification:
 		
 		
 		
-# VCS:
 
-####Hotkeys:
-		Ctrl + Shift + O - Поиск метода
-		Shift + Alt + F - форматирование кода
-		Ctrl + G - переход к строке ...
-		Shift + Alt + -> - выделение фрагментов
+
+# Hotkeys:
+#### VCS:
+	Ctrl + Shift + O - Поиск метода
+	Shift + Alt + F - форматирование кода
+	Ctrl + G - переход к строке ...
+	Shift + Alt + -> - выделение фрагментов
+	
+#### IDEA:
+	Ctrl + Shift + U - to lower case
+	Ctrl + F12 - список методов
+	Ctrl + Alt + L - форматирование
+	Ctrl + Alt + Shift + L - диалог форматирования
+	Ctrl + D - дубль строки
+	Ctrl + Y - удаление строки 
 	
 # Node.js:
+
+## node
+	node --version
+	node <адрес до js файла> - выполнение программы на javascript на node js, он конвертирует это в си код и запускает
+
+## npm
+	npm - node package manager позволяет устанавливать различные библиотеки, утилиты и управлять разрабатываемым проектом.
+	
+	npm --version
+	npm version - вывод полной информации
+		
+	npm init --yes - создание package.json файла с автоматическим проставлением значений в поля.
+	npm init -y - аналогично предыдущей, просто кратко	
+	
+	npm install -g sass - установка глобально пакета sass. Глобально - доступен всем проектам
+	npm install bootstrap --save - установка на уровне пакета, флаг --save (-S) - на уровне пакет
+	npm install jquery -S - тоже самое что выше
+	npm install jquery - тоже самое что выше
+	npm install webpack --save-dev - установка на уровне пакета, необходимая лишь на этапе разработки
+	npm install webpack -D - тоже самое что выше
+	npm install webpack-cli css-loader sass-loader --save-dev - установка нескольких пакетов сразу
+	npm install <package>@<version> - установка нужной версии
+	
+	package-lock.json - содержит список всех установленных пакетов, изменять его вручную нельзя
+	
+	npm list - вывод всех установленных пакетов
+	npm list --depth 0 - зависимости текущего проекта
+	npm list -g - вывод всех установленных пакетов глобально
+	npm list -g --depth 0 - вывод всех установленных пакетов глобально первого уровня
+	
+	npm view typescript versions - вывод всех доступных версий пакета typescript
+	npm outdated - вывод устаревших версий пакетов
+	npm update -g <пакет> - обновление устаревшего пакета
+	npm uninstall popper.js - удаление указанного пакета
+	npm uninstall -g popper.js - удаление глобально
+	
+	c:/users/Login/AppData/Roaming/npm-cache/_logs - логи, иногда надо чистить их
+	
+
+	
+
+## nvm
 	nvm use node - use current version
 	nvm use --lts - use lts version
 	nvm use 8.2.1 - use specific version
@@ -2690,7 +2899,7 @@ Specification:
 	
 	
 # Windows
-	ssh -L 8888:192.168.1.90:3389 root@192.168.1.90
+	ssh -L 8888:192.168.1.99:3389 root@192.168.1.90 - проброс порта, указываем что на локальный порт 8888 поставить порт 3389 сервера 99 через сервер 90
 	
 	
 	
@@ -2700,3 +2909,9 @@ Specification:
 	npm start - запуск приложения
 	npm test - Runs the test watcher in an interactive mode. By default, runs tests related to files changed since the last commit.
 	npm run build - Builds the app for production to the build folder. It correctly bundles React in production mode and optimizes the build for the best performance. The build is minified and the filenames include the hashes. Your app is ready to be deployed.
+
+# Версионность ПО
+1.0.0 - первая версия пакета
+1.0.1 - изменение третьего числа означает исправление ошибок с обратной совместимостью
+1.1.0 - изменение второго числа означает добавление новой функциональности с обратной совместимостью
+2.0.0 - изменение первого числа означает изменение кода, возможно, без обратной совместимости.
