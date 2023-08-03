@@ -38,7 +38,7 @@
     	zip 1.zip * - зипуем все файлы в текущей папке в архив с именем 1.zip
     	zip -r archivename.zip directory_name - зипуем все внутри папки
 
-#### Git
+#### Git token
 	ssh-keygen -t ed25519 -C "komarovavl@nornick.ru" - генерируем токен
 	eval "$(ssh-agent -s)" - запускаем ssh агент
 	ssh-add ~/.ssh/id_ed25519 - добавляем в ssh агент токен
