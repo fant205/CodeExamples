@@ -116,7 +116,7 @@ Specification:
     	git -c http.sslVerify=false clone https_ссылка_из_гитлаба
     	git -c http.sslVerify=false pull origin development - push по https
     	git -c http.sslVerify=false push origin development - push по https
-
+		
 
 
 
@@ -1139,6 +1139,10 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
             @Index(name = "id_name_idx", columnList = "id, name"),
             @Index(name = "unique_name_idx", columnList = "name", unique = true)
         })
+		
+	orphanRemoval = true - удаление сироты, удаление элемента из бд, если он был убран из листа в дочернем элементе:
+		@OneToMany(mappedBy = "uer", cascade = CascadeType.ALL, orphanRemoval = true)
+		private List<BasicTechnologicalOperation> basicTechnologicalOperations;
 
     @OneToOne, @OneToMany, @ManyToOne, @ManyToMany - Виды связей
     @Column - описание колонки:
@@ -1736,11 +1740,200 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
 
 # SAP:
 
-#### JavaScript - js
+## JavaScript - js
 
-    	UI5 Code Examples:
+### SAPUI5 Code Examples:
 
-    		//BusyIndicator:
+#### FormattedText
+
+			var oLabelA = new sap.m.FormattedText({
+					  htmlText:
+						"<h3>Здесь может быть что угодно</h3>" +
+						'<p>ссылка: <a href="/irj/index.html" style="color:green;">Ссылка</a> - любая ссылка.</p>' +
+						"<p>Текст: <strong>жирный</strong> and <em>курсив</em>.</p>" +
+						"<p>Пакетный поиск по нескольким ГИД, введенным через запятую или пробел. Здесь может быть любой текст, таблицы, картинки, буллеты, абзацы, ссылки</p>" +
+						"<p>Список:</p>" +
+						"<ul><li>list item 1</li><li>list item 2<ul><li>sub item 1</li><li>sub item 2</li></ul></li></ul>" +
+						"<p>pre:</p><pre>abc    def    ghi</pre>" +
+						'<p>code: <code>var el = document.getElementById("myId");</code></p>' +
+						"<p>cite: <cite>a reference to a source</cite></p>" +
+						"<dl><dt>definition:</dt><dd>definition list of terms and descriptions</dd>",
+					});
+					oLabelA.addStyleClass("sapUiMediumMargin");
+					
+
+#### create list dinammically 
+      // var list = new sap.m.List({});
+
+        // for (let index = 0; index < 4; index++) {
+        //   var item = new sap.m.DisplayListItem({
+        //     label: "Label 1",
+        //     value: "value 1",
+        //     type: "Active",
+        //     press: function (e) {
+        //       console.log("asdf");
+        //       var value = sap.ui
+        //         .getCore()
+        //         .byId(e.getParameter("id"))
+        //         .getValue();
+        //       sap.m.URLHelper.triggerEmail(value, "Info Request");
+        //     },
+        //   });
+        //   list.addItem(item);
+        // }
+
+
+#### create column different types 
+oTable.bindColumns("/columns", function (sId, oContext) {
+          var o = oContext.getObject();
+
+          var result = null;
+          if (o.hasColor) {
+			// HTML Object
+            // result = new sap.ui.table.Column({
+            //   label: o.colName,
+            //   template: new sap.ui.core.HTML({
+            //     content:
+            //       "<div style='background-color:{" +
+            //       o.colorInModel +
+            //       "}'>{" +
+            //       o.colInModel +
+            //       "}</div>",
+            //   }),
+            //   hAlign: o.hAlign,
+            //   width: o.width,
+            // });
+
+			// Object Status Object`
+            result = new sap.ui.table.Column({
+              label: o.colName,
+              template: new sap.m.ObjectStatus({
+                text: "{" + o.colInModel + "}",
+                inverted: true,
+                active: true,
+                state: "{" + o.indication + "}",
+              }),
+
+              hAlign: o.hAlign,
+              width: o.width,
+            });
+          } else {
+            result = new sap.ui.table.Column({
+              label: o.colName,
+              template: new sap.m.Text({
+                text: "{" + o.colInModel + "}",
+                textAlign: "Begin",
+              }),
+              hAlign: o.hAlign,
+              width: o.width,
+            });
+          }
+          return result;
+        });
+
+        oTable.bindRows("/rows");
+
+#### create table dynamically
+
+    var columnData = [
+     { "colId": "Amt", "colName": "Amount", "colVisibility": true, "colPosition": 0  },
+     { "colId": "Qty", "colName": "Quantity", "colVisibility": true, "colPosition": 1 },
+     { "colId": "Unt", "colName": "Unit", "colVisibility": true, "colPosition": 2 },
+     { "colId": "OPA", "colName": "OpenPOAmount", "colVisibility": true, "colPosition": 3 },
+     { "colId": "OPQ", "colName": "OpenPOQuantity", "colVisibility": true, "colPosition": 4 }
+    ];
+
+    var rowData = [{
+        "Amount": "200",
+        "Quantity": "RF",
+        "Unit": "CV",
+        "OpenPOAmount": "5988",
+        "OpenPOQuantity": "YY",
+        "EXT_FLDS": {
+          "PRINTING_NUM": {
+            "fieldvalue": 10,
+            "fieldlabel": "Printing Number",
+            "uictrl": "sap.m.Input"
+          },
+          "COUNTRY": {
+            "fieldvalue": "Thailand",
+            "fieldlabel": "Country",
+            "uictrl": "sap.m.ComboBox"
+          }
+        }
+      },
+      {
+        "Amount": "80",
+        "Quantity": "UG",
+        "Unit": "RT",
+        "OpenPOAmount": "878",
+        "OpenPOQuantity": "RF",
+        "EXT_FLDS": {
+          "PRINTING_NUM": {
+            "fieldvalue": 11,
+            "fieldlabel": "Printing Number",
+            "uictrl": "sap.m.Input"
+          },
+          "COUNTRY": {
+            "fieldvalue": "Thailand",
+            "fieldlabel": "Country",
+            "uictrl": "sap.m.ComboBox"
+          }
+        }
+      },
+      {
+        "Amount": "789",
+        "Quantity": "GV",
+        "Unit": "ED",
+        "OpenPOAmount": "8989",
+        "OpenPOQuantity": "FGG",
+        "EXT_FLDS": {
+          "PRINTING_NUM": {
+            "fieldvalue": 12,
+            "fieldlabel": "Printing Number",
+            "uictrl": "sap.m.Input"
+          },
+          "COUNTRY": {
+            "fieldvalue": "Thailand",
+            "fieldlabel": "Country",
+            "uictrl": "sap.m.ComboBox"
+          }
+        }
+      }
+    ];
+    var oModel = new sap.ui.model.json.JSONModel();
+    oModel.setData({
+      rows: rowData,
+      columns: columnData
+    });
+    return oModel;
+  },
+  /**
+   *  Creating Dynamic table
+   */
+  createDynTable: function(that, oModel) {
+    var oTable = this.byId("reOrderTable");
+    oTable.setModel(oModel);
+    oTable.bindColumns("/columns", function(sId, oContext) {
+      var columnName = oContext.getObject().colName;
+      return new sap.ui.table.Column({
+        label: columnName,
+        template: columnName,
+      });
+    });
+    oTable.bindRows("/rows");
+  }
+
+#### action send email:
+			sap.m.URLHelper.triggerEmail(this._getVal(evt), "Info Request");
+
+#### action open site:
+			sap.m.URLHelper.redirect(this._getVal(evt), true);
+		
+		
+
+
+#### BusyIndicator:
     			sap.ui.core.BusyIndicator.show();
     			sap.ui.core.BusyIndicator.hide();
 
@@ -1793,6 +1986,76 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
     								MessageToast.show("Ошибка при получении данных таблицы");
     							}
     						});
+
+### скачать файл
+#### JS:
+$.ajax({
+	url: url,
+	cache: false,
+	xhr: function () {
+		var xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function () {
+			if (xhr.readyState == 2) {
+				if (xhr.status == 200) {
+					xhr.responseType = "blob";
+				} else {
+					xhr.responseType = "text";
+				}
+			}
+		};
+		return xhr;
+	},
+	success: function (data) {
+		//Convert the Byte Data to BLOB object.
+		var blob = new Blob([data], { type: "application/octetstream" });
+
+		//Check the Browser type and download the File.
+		var isIE = false || !!document.documentMode;
+		if (isIE) {
+			window.navigator.msSaveBlob(blob, fileName);
+		} else {
+			var url = window.URL || window.webkitURL;
+			link = url.createObjectURL(blob);
+			var a = $("<a />");
+			a.attr("download", fileName);
+			a.attr("href", link);
+			$("body").append(a);
+			a[0].click();
+			$("body").remove(a);
+		}
+	}
+});
+
+#### Java Spring:
+@ResponseStatus(HttpStatus.OK)
+@GetMapping(value = "/excel")
+public ResponseEntity<Resource> excel() throws URISyntaxException, IOException {
+	String fileName = "targetFile.xlsx";
+
+	Excel f = new Excel();
+	f.createXlsxExcelFile("УЕР Записи");
+	f.createCellByIndexRow(0, 0, "Глобальный идентификатор УЕР");
+	byte[] fileAsByteArray = f.getFileAsByteArray();
+
+	File targetFile = new File(fileName);
+	OutputStream outStream = new FileOutputStream(targetFile);
+	try {
+		outStream.write(fileAsByteArray);
+	} catch (IOException e) {
+		throw new RuntimeException(e);
+	}
+	IOUtils.closeQuietly(outStream);
+	System.out.println(targetFile.getAbsolutePath());
+
+	Path path = Paths.get(fileName);
+	ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+
+	return ResponseEntity.ok()
+			.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "targetFile.xlsx")
+			.contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+			.body(resource);
+}
+
 
 
 
@@ -2520,18 +2783,21 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
 
     docker images - все образы
 
+### Postgres:	
+	docker exec  uer-postgres-1 pg_dump -U postgres --column-inserts --data-only  postgres > inserts.sql
     docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:11.1 - запустит в контейнере postgresql если его нет, то скачает его.
-
     docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d --network resource postgres - запуск контейнера в сети rescource
+	docker exec -it postgres psql -U postgres - обращаемся в контейнер postgres к программе psql и входим в терминальную сессию
 
     docker run --name <containerName> -p 8080:8080 -d <imageName>:<tag/version> - запуск java приложения
+
 
     docker run --name spr -p 8080:8080 -d -e "SPRING_PROFILES_ACTIVE=dev" -e spring.datasource.url=jdbc:postgresql://postgres:5432/resource --network  resource  spring-boot-docker:0.0.1-SNAPSHOT - запуск java приложения с указанием профиля (для spring) и сети rescource
 
     docker container ls - вывод всех контейнеров
     docker ps - вывод активных контейнеров
     docker ps -a - вывод всех контейнеров
-    docker exec -it postgres psql -U postgres - обращаемся в контейнер postgres к программе psql и входим в терминальную сессию
+    
     docker stop <containerName> - остановка контейнера
     docker rm <containerName> - удалить контейнер
     docker network create <networkName> - создаем сеть
@@ -2844,23 +3110,7 @@ Cправа вверху в раскрывающемся списке выбра
 
 
 
-# Hotkeys:
 
-#### VCS:
-
-    Ctrl + Shift + O - Поиск метода
-    Shift + Alt + F - форматирование кода
-    Ctrl + G - переход к строке ...
-    Shift + Alt + -> - выделение фрагментов
-
-#### IDEA:
-
-    Ctrl + Shift + U - to lower case
-    Ctrl + F12 - список методов
-    Ctrl + Alt + L - форматирование
-    Ctrl + Alt + Shift + L - диалог форматирования
-    Ctrl + D - дубль строки
-    Ctrl + Y - удаление строки
 
 # Node.js:
 
@@ -2927,3 +3177,25 @@ Cправа вверху в раскрывающемся списке выбра
 	1.0.1 - изменение третьего числа означает исправление ошибок с обратной совместимостью
 	1.1.0 - изменение второго числа означает добавление новой функциональности с обратной совместимостью
 	2.0.0 - изменение первого числа означает изменение кода, возможно, без обратной совместимости.
+
+
+# Hotkeys:
+
+#### VCS:
+
+    Ctrl + Shift + O - Поиск метода
+    Shift + Alt + F - форматирование кода
+    Ctrl + G - переход к строке ...
+    Shift + Alt + -> - выделение фрагментов
+	Ctrl + Shift + K - удалить строку
+
+#### IDEA:
+
+    Ctrl + Shift + U - to lower case
+    Ctrl + F12 - список методов
+    Ctrl + Alt + L - форматирование
+    Ctrl + Alt + Shift + L - диалог форматирования
+    Ctrl + D - дубль строки
+    Ctrl + Y - удаление строки
+	Ctrl + Alt + Left - назад
+	Shift + Alt + UP - выделение слова, метода и т.д.
