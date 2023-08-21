@@ -29,7 +29,6 @@
     pgrep <имя программы> - вернет PID
     kill <PID> - закрыть программу
 
-
 #### Zip
 
     unzip file.zip -d destination_folder
@@ -45,7 +44,6 @@
     java -cp allClasses.jar Class1
     java -jar app.jar
 
-
 Список установленных Java:
 
     sudo update-alternatives --config java
@@ -60,8 +58,6 @@ sudo apt install oracle-java11-installer-local
     grep -A 1 hibernate- ~/.m2/repository/org/springframework/spring-orm/4.3.12.RELEASE/spring-orm-4.3.12.RELEASE.pom
     		spring_profiles_active=dev - profile dev (application-dev.yaml)
     		java -jar -Dspring.profiles.active=dev demo-0.0.1-SNAPSHOT.jar - запуск jar с нужным профайлом
-
-
 
 Specification:
 
@@ -81,44 +77,75 @@ Specification:
 
 # Git:
 
-.gitignore - Что бы игнорировать файл или папку, необходимо добавить его в файл .gitignore, лучше всего его разместить в корне репозитория.
-Папка \*\*\<имя папки> будет игнорироваться, где бы она не была.
-Для игнорирования, файл или папка должы быть исключены из индекса. Если файл раньше коммитился, то надо его убрать из индекса
-Пример
+    .gitignore - Что бы игнорировать файл или папку, необходимо добавить его в файл .gitignore, лучше всего его разместить в корне репозитория.
+    - Папка \*\*\<имя папки> будет игнорироваться, где бы она не была.
+    - Для игнорирования, файл или папка должы быть исключены из индекса. Если файл раньше коммитился, то надо его убрать из индекса:
+    	echo debug.log >> .gitignore
+    	git rm --cached debug.log
+    	git commit -m "Start ignoring debug.log"
 
-    echo debug.log >> .gitignore
-    git rm --cached debug.log
-    git commit -m "Start ignoring debug.log"
+    Официальный мануал https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
-Официальный мануал https://www.atlassian.com/git/tutorials/saving-changes/gitignore
+# Команды
 
-#### Команды
+	git push -u origin master - отправить закомиченные изменения на GitHub
+	git pull origin master - скачать актуальную версию с GitHub
 
-    	git push -u origin master - отправить закомиченные изменения на GitHub
-    	git pull origin master - скачать актуальную версию с GitHub
-    	git branch - список веток
-    	git branch newBranch - создать ветку newBranch
-    	git checkout -b newBranch - создать ветку и переключиться на нее
-    	git status
-    	git add . - добавить все измененные файлы в индекс
-    	git commit -m "some message"
-    	git log - расширенный список логов
-    	git log --oneline - краткий список логов репозитория
-    	git diff - просмотр изменений в файлах
-    	git remote add origin <URL SSH> - настройка удаленного соединения
-    	git remote -v - проверка удаленного соединения, нужно что бы было два - fetch & push
-    	git checkout . - o revert changes made to your working copy, do this:
-    	git restore . - Or equivalently, for git version >= 2.23:
-    	git reset - To revert changes made to the index (i.e., that you have added), do this. Warning this will reset all of your unpushed commits to master!:
-    	git revert <commit 1> <commit 2> - To revert a change that you have committed:
-    	git clean -f - To remove untracked files (e.g., new files, generated files):
-    	git clean -fd - Or untracked directories (e.g., new or automatically generated directories):
-    	git -c http.sslVerify=false clone https_ссылка_из_гитлаба
-    	git -c http.sslVerify=false pull origin development - push по https
-    	git -c http.sslVerify=false push origin development - push по https
-		
+	git branch - список веток
+	git branch newBranch - создать ветку newBranch
+	git switch branch1 - переключиться на ветку branch1
+	git checkout -b newBranch - создать ветку и переключиться на нее
+	git branch -d (--delete) - удалить ветку
+	git branch -D - удалить обособленную ветку, которая еще не слита с интеграционной
+	git branch <branch 1> <commit id1> - создать ветку на основе определенного коммита
 
+	git status
+	git add . - добавить все измененные файлы в индекс
+	git commit -m "some message"
 
+	git log - вывод списка всех коммитов
+	git log --oneline - краткий список логов репозитория
+	git log --abbrev-commit --pretty=online - краткий список логов репозитория (аналог предыдущей)
+	git log --abbrev-commit - вывод кратких ид коммитов
+	git log --oneline --all - отображение всех веток в одном логе
+	git log --oneline --all --graph - отображение лога в виде графа
+
+	git diff - разница между рабочим каталогом и индексом
+	git diff --cached - разница между индексом и базой данных объектов
+	git diff --word-diff - вывод разницы отдельных слов, а не строк
+	git diff <branch 1> <branch 2> - разница между финальными состояниями двух веток
+	git diff <commit id1> <commit id2> - разница между двумя коммитами
+	git diff <branch 1> - сравнение ветки с рабочим каталогом, при этом рабочий каталог будто на 2 месте в аргументах
+	
+	git restore file1 - вернет в рабочий каталог версию из индекса
+	git restore —staged file1 - копирует содержимое файла из бд объектов в индекс
+
+	git rm file1 - удалит файл из рабочего каталога и из индекса, останется только сделать коммит. Если просто удалить файл мышкой, то надо будет делать git add и только потом коммит
+	git rm -r folder1 - удаление папки рекурсивно (удалит все внутри)
+
+	git mv file1 file2 - переименует файл в рабочем каталоге и индексе. Принцип работы как у git rm. Эта команда так же может переместить файл
+
+	git commit —amend -m ‘fix2’ - изменит сообщение коммита. Гит копирует из бд объектов все в индекс и создает полную копию предыдущего коммита с теми же тегами и содержимым, но новым сообщением. Старого коммита не будет видно и в последствии гит его удалит.  При выполнении индекс должен быть чист, иначе добавятся новые изменения в коммит.
+
+	git branch -m (—move) branch2 - переименует текущую ветку в branch2
+	git branch -m branch1 branch2 - переименует ветку 1 в 2
+
+	git diff HEAD-1 HEAD - покажет разницу между предыдущим коммитом и текущим
+		HEAD^1 или HEAD^2 - указать коммит первого или второго родителя (у коммитов слияния 2 родителя)
+		HEAD^1~2 - взять у первого родителя второго предка
+	
+	git remote add origin <URL SSH> - настройка удаленного соединения
+	git remote -v - проверка удаленного соединения, нужно что бы было два - fetch & push
+	git checkout . - o revert changes made to your working copy, do this:
+	git restore . - Or equivalently, for git version >= 2.23:
+	git reset - To revert changes made to the index (i.e., that you have added), do this. Warning this will reset all of your unpushed commits to master!:
+	git revert <commit 1> <commit 2> - To revert a change that you have committed:
+	git clean -f - To remove untracked files (e.g., new files, generated files):
+	git clean -fd - Or untracked directories (e.g., new or automatically generated directories):
+	
+	git -c http.sslVerify=false clone https_ссылка_из_гитлаба
+	git -c http.sslVerify=false pull origin development - push по https
+	git -c http.sslVerify=false push origin development - push по https
 
 # MongoDB
 
@@ -215,7 +242,6 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
     	LocalDateTime now = LocalDateTime.now();
     	LocalDateTime date = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, now.getSecond() + offsetDays);
     	return new Timestamp(date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
-
 
 #### Logging
 
@@ -637,9 +663,6 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
     				('user1', 'ROLE_USER'),
     				('user2', 'ROLE_USER');
 
-
-
-
 #### Пример настройки авторизации через БД:
 
     @EnableGlobalMethodSecurity(securedEnabled = true)
@@ -838,7 +861,6 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
     	<properties>
     		<java.version>11</java.version>
     	</properties>
-
 
 #### Spring Boot Maven plugin:
 
@@ -1139,10 +1161,10 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
             @Index(name = "id_name_idx", columnList = "id, name"),
             @Index(name = "unique_name_idx", columnList = "name", unique = true)
         })
-		
-	orphanRemoval = true - удаление сироты, удаление элемента из бд, если он был убран из листа в дочернем элементе:
-		@OneToMany(mappedBy = "uer", cascade = CascadeType.ALL, orphanRemoval = true)
-		private List<BasicTechnologicalOperation> basicTechnologicalOperations;
+
+    orphanRemoval = true - удаление сироты, удаление элемента из бд, если он был убран из листа в дочернем элементе:
+    	@OneToMany(mappedBy = "uer", cascade = CascadeType.ALL, orphanRemoval = true)
+    	private List<BasicTechnologicalOperation> basicTechnologicalOperations;
 
     @OneToOne, @OneToMany, @ManyToOne, @ManyToMany - Виды связей
     @Column - описание колонки:
@@ -1726,7 +1748,6 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
     			}
     		}
 
-
 # JavaScript
 
 ### Work with json
@@ -1737,32 +1758,54 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
 
     json: JSON.stringify(Object.fromEntries(pesonalizationMap)),
 
-
 # SAP:
 
 ## JavaScript - js
 
 ### SAPUI5 Code Examples:
 
+
+#### Create simple project
+
+Links:
+ - https://github.com/SAP/openui5-sample-app
+ - https://sap.github.io/ui5-tooling/stable/pages/GettingStarted/
+
+
+npm install --global @ui5/cli
+npm install --save-dev @ui5/cli
+
+
+git clone https://github.com/SAP/openui5-sample-app.git - копируем заготовку себе
+cd openui5-sample-app - заходим
+npm install - загружаем все пакет из зависимостей
+ui5 use sapui5@latest - переключить на использование sapui5 
+ui5 use openui5@latest - переключить на использование openui5
+ui5 serve -o index.html - запускаем сервер
+ui5 add sap.ui.core sap.m sap.ui.table themelib_sap_fiori_3 - добавить библиотеку
+
+
+
+
 #### FormattedText
 
-			var oLabelA = new sap.m.FormattedText({
-					  htmlText:
-						"<h3>Здесь может быть что угодно</h3>" +
-						'<p>ссылка: <a href="/irj/index.html" style="color:green;">Ссылка</a> - любая ссылка.</p>' +
-						"<p>Текст: <strong>жирный</strong> and <em>курсив</em>.</p>" +
-						"<p>Пакетный поиск по нескольким ГИД, введенным через запятую или пробел. Здесь может быть любой текст, таблицы, картинки, буллеты, абзацы, ссылки</p>" +
-						"<p>Список:</p>" +
-						"<ul><li>list item 1</li><li>list item 2<ul><li>sub item 1</li><li>sub item 2</li></ul></li></ul>" +
-						"<p>pre:</p><pre>abc    def    ghi</pre>" +
-						'<p>code: <code>var el = document.getElementById("myId");</code></p>' +
-						"<p>cite: <cite>a reference to a source</cite></p>" +
-						"<dl><dt>definition:</dt><dd>definition list of terms and descriptions</dd>",
-					});
-					oLabelA.addStyleClass("sapUiMediumMargin");
-					
+    		var oLabelA = new sap.m.FormattedText({
+    				  htmlText:
+    					"<h3>Здесь может быть что угодно</h3>" +
+    					'<p>ссылка: <a href="/irj/index.html" style="color:green;">Ссылка</a> - любая ссылка.</p>' +
+    					"<p>Текст: <strong>жирный</strong> and <em>курсив</em>.</p>" +
+    					"<p>Пакетный поиск по нескольким ГИД, введенным через запятую или пробел. Здесь может быть любой текст, таблицы, картинки, буллеты, абзацы, ссылки</p>" +
+    					"<p>Список:</p>" +
+    					"<ul><li>list item 1</li><li>list item 2<ul><li>sub item 1</li><li>sub item 2</li></ul></li></ul>" +
+    					"<p>pre:</p><pre>abc    def    ghi</pre>" +
+    					'<p>code: <code>var el = document.getElementById("myId");</code></p>' +
+    					"<p>cite: <cite>a reference to a source</cite></p>" +
+    					"<dl><dt>definition:</dt><dd>definition list of terms and descriptions</dd>",
+    				});
+    				oLabelA.addStyleClass("sapUiMediumMargin");
 
-#### create list dinammically 
+#### create list dinammically
+
       // var list = new sap.m.List({});
 
         // for (let index = 0; index < 4; index++) {
@@ -1782,14 +1825,14 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
         //   list.addItem(item);
         // }
 
+#### create column different types
 
-#### create column different types 
 oTable.bindColumns("/columns", function (sId, oContext) {
-          var o = oContext.getObject();
+var o = oContext.getObject();
 
           var result = null;
           if (o.hasColor) {
-			// HTML Object
+    		// HTML Object
             // result = new sap.ui.table.Column({
             //   label: o.colName,
             //   template: new sap.ui.core.HTML({
@@ -1804,7 +1847,7 @@ oTable.bindColumns("/columns", function (sId, oContext) {
             //   width: o.width,
             // });
 
-			// Object Status Object`
+    		// Object Status Object`
             result = new sap.ui.table.Column({
               label: o.colName,
               template: new sap.m.ObjectStatus({
@@ -1907,33 +1950,35 @@ oTable.bindColumns("/columns", function (sId, oContext) {
       columns: columnData
     });
     return oModel;
-  },
-  /**
-   *  Creating Dynamic table
-   */
+
+},
+/\*\*
+
+- Creating Dynamic table
+  \*/
   createDynTable: function(that, oModel) {
-    var oTable = this.byId("reOrderTable");
-    oTable.setModel(oModel);
-    oTable.bindColumns("/columns", function(sId, oContext) {
-      var columnName = oContext.getObject().colName;
-      return new sap.ui.table.Column({
-        label: columnName,
-        template: columnName,
-      });
-    });
-    oTable.bindRows("/rows");
+  var oTable = this.byId("reOrderTable");
+  oTable.setModel(oModel);
+  oTable.bindColumns("/columns", function(sId, oContext) {
+  var columnName = oContext.getObject().colName;
+  return new sap.ui.table.Column({
+  label: columnName,
+  template: columnName,
+  });
+  });
+  oTable.bindRows("/rows");
   }
 
 #### action send email:
-			sap.m.URLHelper.triggerEmail(this._getVal(evt), "Info Request");
+
+    		sap.m.URLHelper.triggerEmail(this._getVal(evt), "Info Request");
 
 #### action open site:
-			sap.m.URLHelper.redirect(this._getVal(evt), true);
-		
-		
 
+    		sap.m.URLHelper.redirect(this._getVal(evt), true);
 
 #### BusyIndicator:
+
     			sap.ui.core.BusyIndicator.show();
     			sap.ui.core.BusyIndicator.hide();
 
@@ -1988,77 +2033,78 @@ oTable.bindColumns("/columns", function (sId, oContext) {
     						});
 
 ### скачать файл
-#### JS:
-$.ajax({
-	url: url,
-	cache: false,
-	xhr: function () {
-		var xhr = new XMLHttpRequest();
-		xhr.onreadystatechange = function () {
-			if (xhr.readyState == 2) {
-				if (xhr.status == 200) {
-					xhr.responseType = "blob";
-				} else {
-					xhr.responseType = "text";
-				}
-			}
-		};
-		return xhr;
-	},
-	success: function (data) {
-		//Convert the Byte Data to BLOB object.
-		var blob = new Blob([data], { type: "application/octetstream" });
 
-		//Check the Browser type and download the File.
-		var isIE = false || !!document.documentMode;
-		if (isIE) {
-			window.navigator.msSaveBlob(blob, fileName);
-		} else {
-			var url = window.URL || window.webkitURL;
-			link = url.createObjectURL(blob);
-			var a = $("<a />");
-			a.attr("download", fileName);
-			a.attr("href", link);
-			$("body").append(a);
-			a[0].click();
-			$("body").remove(a);
-		}
-	}
+#### JS:
+
+$.ajax({
+url: url,
+cache: false,
+xhr: function () {
+var xhr = new XMLHttpRequest();
+xhr.onreadystatechange = function () {
+if (xhr.readyState == 2) {
+if (xhr.status == 200) {
+xhr.responseType = "blob";
+} else {
+xhr.responseType = "text";
+}
+}
+};
+return xhr;
+},
+success: function (data) {
+//Convert the Byte Data to BLOB object.
+var blob = new Blob([data], { type: "application/octetstream" });
+
+    	//Check the Browser type and download the File.
+    	var isIE = false || !!document.documentMode;
+    	if (isIE) {
+    		window.navigator.msSaveBlob(blob, fileName);
+    	} else {
+    		var url = window.URL || window.webkitURL;
+    		link = url.createObjectURL(blob);
+    		var a = $("<a />");
+    		a.attr("download", fileName);
+    		a.attr("href", link);
+    		$("body").append(a);
+    		a[0].click();
+    		$("body").remove(a);
+    	}
+    }
+
 });
 
 #### Java Spring:
+
 @ResponseStatus(HttpStatus.OK)
 @GetMapping(value = "/excel")
 public ResponseEntity<Resource> excel() throws URISyntaxException, IOException {
-	String fileName = "targetFile.xlsx";
+String fileName = "targetFile.xlsx";
 
-	Excel f = new Excel();
-	f.createXlsxExcelFile("УЕР Записи");
-	f.createCellByIndexRow(0, 0, "Глобальный идентификатор УЕР");
-	byte[] fileAsByteArray = f.getFileAsByteArray();
+    Excel f = new Excel();
+    f.createXlsxExcelFile("УЕР Записи");
+    f.createCellByIndexRow(0, 0, "Глобальный идентификатор УЕР");
+    byte[] fileAsByteArray = f.getFileAsByteArray();
 
-	File targetFile = new File(fileName);
-	OutputStream outStream = new FileOutputStream(targetFile);
-	try {
-		outStream.write(fileAsByteArray);
-	} catch (IOException e) {
-		throw new RuntimeException(e);
-	}
-	IOUtils.closeQuietly(outStream);
-	System.out.println(targetFile.getAbsolutePath());
+    File targetFile = new File(fileName);
+    OutputStream outStream = new FileOutputStream(targetFile);
+    try {
+    	outStream.write(fileAsByteArray);
+    } catch (IOException e) {
+    	throw new RuntimeException(e);
+    }
+    IOUtils.closeQuietly(outStream);
+    System.out.println(targetFile.getAbsolutePath());
 
-	Path path = Paths.get(fileName);
-	ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+    Path path = Paths.get(fileName);
+    ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
 
-	return ResponseEntity.ok()
-			.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "targetFile.xlsx")
-			.contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
-			.body(resource);
+    return ResponseEntity.ok()
+    		.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "targetFile.xlsx")
+    		.contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+    		.body(resource);
+
 }
-
-
-
-
 
     		//DateFormat:
     			var options = { year: 'numeric', month: 'long' };
@@ -2594,11 +2640,6 @@ public ResponseEntity<Resource> excel() throws URISyntaxException, IOException {
     					formatter: '.formatter.jpd'
     				}"/>
 
-
-
-
-
-
 # SQL Server:
 
     --Полнотекстовый поиск
@@ -2783,11 +2824,12 @@ public ResponseEntity<Resource> excel() throws URISyntaxException, IOException {
 
     docker images - все образы
 
-### Postgres:	
-	docker exec  uer-postgres-1 pg_dump -U postgres --column-inserts --data-only  postgres > inserts.sql
+### Postgres:
+
+    docker exec  uer-postgres-1 pg_dump -U postgres --column-inserts --data-only  postgres > inserts.sql
     docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:11.1 - запустит в контейнере postgresql если его нет, то скачает его.
     docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d --network resource postgres - запуск контейнера в сети rescource
-	docker exec -it postgres psql -U postgres - обращаемся в контейнер postgres к программе psql и входим в терминальную сессию
+    docker exec -it postgres psql -U postgres - обращаемся в контейнер postgres к программе psql и входим в терминальную сессию
 
     docker run --name <containerName> -p 8080:8080 -d <imageName>:<tag/version> - запуск java приложения
 
@@ -2797,7 +2839,7 @@ public ResponseEntity<Resource> excel() throws URISyntaxException, IOException {
     docker container ls - вывод всех контейнеров
     docker ps - вывод активных контейнеров
     docker ps -a - вывод всех контейнеров
-    
+
     docker stop <containerName> - остановка контейнера
     docker rm <containerName> - удалить контейнер
     docker network create <networkName> - создаем сеть
@@ -2815,7 +2857,6 @@ public ResponseEntity<Resource> excel() throws URISyntaxException, IOException {
     docker run
     	-e spring.datasource.username=postgres
     	-e spring.datasource.password=postgres
-
 
 ### docker volume:
 
@@ -3076,14 +3117,6 @@ public ResponseEntity<Resource> excel() throws URISyntaxException, IOException {
     	    ports:
     	      - "6379:6379"
 
-
-
-
-
-
-
-
-
 #### Запуск разных профилей spring
 
 Cправа вверху в раскрывающемся списке выбрать Edit configuration, в поле Environment variables ввести - SPRING_PROFILES_ACTIVE=dev (для профиля application-dev.yml)
@@ -3105,13 +3138,6 @@ Cправа вверху в раскрывающемся списке выбра
     	- Now you can push "Debug"
     	- Check that you turned on debug on SAP Portal
 
-
-
-
-
-
-
-
 # Node.js:
 
 ## node
@@ -3129,6 +3155,7 @@ Cправа вверху в раскрывающемся списке выбра
     npm init --yes - создание package.json файла с автоматическим проставлением значений в поля.
     npm init -y - аналогично предыдущей, просто кратко
 
+	npm install - целиком восстановит содрежимое папки node_modules на основе сведений файла package.json
     npm install -g sass - установка глобально пакета sass. Глобально - доступен всем проектам
     npm install bootstrap --save - установка на уровне пакета, флаг --save (-S) - на уровне пакет
     npm install jquery -S - тоже самое что выше
@@ -3139,9 +3166,12 @@ Cправа вверху в раскрывающемся списке выбра
     npm install <package>@<version> - установка нужной версии
 
     package-lock.json - содержит список всех установленных пакетов, изменять его вручную нельзя
+	
+	npm run <script name> - запуск скрипта указанного в файле package.json в разделе scripts
 
     npm list - вывод всех установленных пакетов
     npm list --depth 0 - зависимости текущего проекта
+	npm list --depth 2 - зависимости на 2 уровня глубиной
     npm list -g - вывод всех установленных пакетов глобально
     npm list -g --depth 0 - вывод всех установленных пакетов глобально первого уровня
 
@@ -3173,11 +3203,11 @@ Cправа вверху в раскрывающемся списке выбра
     npm run build - Builds the app for production to the build folder. It correctly bundles React in production mode and optimizes the build for the best performance. The build is minified and the filenames include the hashes. Your app is ready to be deployed.
 
 # Версионность ПО
-	1.0.0 - первая версия пакета
-	1.0.1 - изменение третьего числа означает исправление ошибок с обратной совместимостью
-	1.1.0 - изменение второго числа означает добавление новой функциональности с обратной совместимостью
-	2.0.0 - изменение первого числа означает изменение кода, возможно, без обратной совместимости.
 
+    1.0.0 - первая версия пакета
+    1.0.1 - изменение третьего числа означает исправление ошибок с обратной совместимостью
+    1.1.0 - изменение второго числа означает добавление новой функциональности с обратной совместимостью
+    2.0.0 - изменение первого числа означает изменение кода, возможно, без обратной совместимости.
 
 # Hotkeys:
 
@@ -3187,7 +3217,7 @@ Cправа вверху в раскрывающемся списке выбра
     Shift + Alt + F - форматирование кода
     Ctrl + G - переход к строке ...
     Shift + Alt + -> - выделение фрагментов
-	Ctrl + Shift + K - удалить строку
+    Ctrl + Shift + K - удалить строку
 
 #### IDEA:
 
@@ -3197,5 +3227,5 @@ Cправа вверху в раскрывающемся списке выбра
     Ctrl + Alt + Shift + L - диалог форматирования
     Ctrl + D - дубль строки
     Ctrl + Y - удаление строки
-	Ctrl + Alt + Left - назад
-	Shift + Alt + UP - выделение слова, метода и т.д.
+    Ctrl + Alt + Left - назад
+    Shift + Alt + UP - выделение слова, метода и т.д.
