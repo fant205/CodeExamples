@@ -10,6 +10,8 @@
     pscp -P 22 file_name.txt login@111.22.33.44:/folder
     du -sh ./Загрузки/* - подсчет размера всех папок в папке загрузки
     du -sh * - подсчет всех папок внутри текущей папки
+	hostnamectl - узнать параметры ОС
+	ssh login@hostname - подключение к linus по ssh
 
 #### File operations:
 
@@ -94,10 +96,17 @@ Specification:
 	git branch - список веток
 	git branch newBranch - создать ветку newBranch
 	git switch branch1 - переключиться на ветку branch1
+	git checkout commitId1 - переключиться на указанный коммит
 	git checkout -b newBranch - создать ветку и переключиться на нее
 	git branch -d (--delete) - удалить ветку
 	git branch -D - удалить обособленную ветку, которая еще не слита с интеграционной
 	git branch <branch 1> <commit id1> - создать ветку на основе определенного коммита
+	git branch -m (—move) branch2 - переименует текущую ветку в branch2
+	git branch -m branch1 branch2 - переименует ветку 1 в 2
+	git branch -v - вывод информации о локальных ветках
+	git branch -vv - очень подробное описание веток + все ветки слежения
+	git branch -a - флаг -all выводит все ветки - локальные + слежения
+	git switch b1 - переключение на ветку b1. Если вас нет локальной ветки b1, но такая есть в ветках слежения, то git автоматом создаст локальную ветку b1 и историю коммитов в ней и можно в ней дальше работать
 
 	git status
 	git add . - добавить все измененные файлы в индекс
@@ -122,13 +131,11 @@ Specification:
 
 	git rm file1 - удалит файл из рабочего каталога и из индекса, останется только сделать коммит. Если просто удалить файл мышкой, то надо будет делать git add и только потом коммит
 	git rm -r folder1 - удаление папки рекурсивно (удалит все внутри)
+	git rm --cached debug.log - удалить из индекса файл
 
 	git mv file1 file2 - переименует файл в рабочем каталоге и индексе. Принцип работы как у git rm. Эта команда так же может переместить файл
 
 	git commit —amend -m ‘fix2’ - изменит сообщение коммита. Гит копирует из бд объектов все в индекс и создает полную копию предыдущего коммита с теми же тегами и содержимым, но новым сообщением. Старого коммита не будет видно и в последствии гит его удалит.  При выполнении индекс должен быть чист, иначе добавятся новые изменения в коммит.
-
-	git branch -m (—move) branch2 - переименует текущую ветку в branch2
-	git branch -m branch1 branch2 - переименует ветку 1 в 2
 
 	git diff HEAD-1 HEAD - покажет разницу между предыдущим коммитом и текущим
 		HEAD^1 или HEAD^2 - указать коммит первого или второго родителя (у коммитов слияния 2 родителя)
@@ -143,10 +150,6 @@ Specification:
 	git revert commitId1 - сформирует антикоммит для commitId1 и дальше предложит ввести сообщение нового антикоммита
 
 	git push -u origin b1 - флаг -u это —set-upstream указание создать в удаленном репозитории ветку b1
-	git branch -v - вывод информации о локальных ветках
-	git branch -vv - очень подробное описание веток + все ветки слежения
-	git branch -a - флаг -all выводит все ветки - локальные + слежения
-	git switch b1 - переключение на ветку b1. Если вас нет локальной ветки b1, но такая есть в ветках слежения, то git автоматом создаст локальную ветку b1 и историю коммитов в ней и можно в ней дальше работать
 	git fetch - обновляет все ветки слежения, вытаскивает в них всю историю коммитов
 	git fetch -p - обновит ветки на актуальные, удаляя ветки слежения, которые были удалены на сервере, останется удалить ветки локально
 	git push -d origin b1 - удалить ветку на сервере
@@ -186,6 +189,15 @@ Specification:
 	git -c http.sslVerify=false clone https_ссылка_из_гитлаба
 	git -c http.sslVerify=false pull origin development - push по https
 	git -c http.sslVerify=false push origin development - push по https
+	
+## Сценарии работы:
+
+### Если версию в удаленном репозитории впереди нежели твоя локальная:
+	git fetch - вытащит из удаленного репозитория все ветки слежения и будет ясно как ты отстал
+	git branch -a - покажет все ветки и локальные и слежения
+	git switch <имя удаленной ветки без origin> - переключишься на удаленную ветку и она станет локальной и можно глянуть что в ней, если это вообще нужно
+	git merge origin/branch1 - делаешь merge с удаленной веткой (если она еще не локальная) и после этого решаем merge и можно push
+	
 
 # MongoDB
 
@@ -1235,275 +1247,285 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
 
 # SQL
 
-#### PostgreSQL
+## PostgreSQL
 
-    	SQL глубинные смыслы:
-    		Процедуры используются для:
-    		- для реализации сложной серверной логики обработки данных, например в банковских системах.
-    		- для доступа к данным в виде отчетов
-    		- для трансформации, очистки, валидации данных на сервере
-    		Плохое использование:
-    		- для CRUD не стоит
+###SQL глубинные смыслы:
+	Процедуры используются для:
+	- для реализации сложной серверной логики обработки данных, например в банковских системах.
+	- для доступа к данным в виде отчетов
+	- для трансформации, очистки, валидации данных на сервере
+	Плохое использование:
+	- для CRUD не стоит
+
+	Триггеры обычно используются для:
+	- Логирования изменений
+	- Лучше ими не злоупотреблять и вынести эту логику типа автор изменения или дата изменения явно в код.
+
+	Индексы:
+	- Для задействования индекса необходимо искать по первой части строки, то есть заменить
+		like '%Ny%'
+		на
+		like 'Ny%'
+
+
+###psql:
+	\c - connection
+	\q - quit
+	\? - help
+	\dt - tables list
+	\d tableName - table description
+	\h - help
+	\ create table - command description
+
+
+###Types:
+	id serial primary key,
+	field boolean not null default false,
+	clarification_mu varchar(300),
+	creation_date timestamp,
+	record_status int,
+	is_actual smallint null,
+	constraint fk_mu foreign key (mu) references mu(id),
+		
+###Indexes:
+	create unique index unique_gid_is_actual on uer (gid, is_actual) where (gid is not null and is_actual = 1);
+
+###SQL:
+
+	USE geodata;
+
+	select * from _countries;
+
+	--Таблица _coutries
+		--удалить колонки
+		ALTER TABLE _countries
+			DROP COLUMN title_en,
+
+
+
+		--изменение поля title_ru
+			--изменить тип колонки
+				ALTER TABLE _countries ALTER COLUMN title_ru SET DATA TYPE VARCHAR(150);
+
+			--сделать NOT NULL
+				ALTER TABLE _countries ALTER COLUMN title_ru SET NOT NULL;
+
+			--переименовать колонку
+				ALTER TABLE _countries RENAME COLUMN title_ru TO title;
+
+			--индекс
+				create index idx_countries_title on _countries (title);
+
+			--Для Postgres, что бы сделать автоинкремент пришлось поискать в интернете
+				CREATE SEQUENCE _countries_seq;
+				ALTER TABLE _countries ALTER COLUMN id SET DEFAULT nextval('_countries_seq');
+				ALTER TABLE _countries ALTER COLUMN id SET NOT NULL;
+				ALTER SEQUENCE _countries_seq OWNED BY _countries.id;
+				SELECT setval('_countries_seq', (SELECT max(id) FROM _countries));
+
+			-- PRIMARY KEY;
+				alter table _countries add primary key (id);
+
+			-- FOREIGN KEY;
+				alter table _regions add foreign key (country_id) references _countries (id);
+
+
 
-    		Триггеры обычно используются для:
-    		- Логирования изменений
-    		- Лучше ими не злоупотреблять и вынести эту логику типа автор изменения или дата изменения явно в код.
-
-    		Индексы:
-    		- Для задействования индекса необходимо искать по первой части строки, то есть заменить
-    			like '%Ny%'
-    			на
-    			like 'Ny%'
-
-
-    	psql:
-    		\c - connection
-    		\q - quit
-    		\? - help
-    		\dt - tables list
-    		\d tableName - table description
-    		\h - help
-    		\ create table - command description
-
-
-
-
-    	SQL:
-
-    		USE geodata;
-
-    		select * from _countries;
-
-    		--Таблица _coutries
-    			--удалить колонки
-    			ALTER TABLE _countries
-    				DROP COLUMN title_en,
-
-
-
-    			--изменение поля title_ru
-    				--изменить тип колонки
-    					ALTER TABLE _countries ALTER COLUMN title_ru SET DATA TYPE VARCHAR(150);
-
-    				--сделать NOT NULL
-    					ALTER TABLE _countries ALTER COLUMN title_ru SET NOT NULL;
-
-    				--переименовать колонку
-    					ALTER TABLE _countries RENAME COLUMN title_ru TO title;
-
-    				--индекс
-    					create index idx_countries_title on _countries (title);
-
-    				--Для Postgres, что бы сделать автоинкремент пришлось поискать в интернете
-    					CREATE SEQUENCE _countries_seq;
-    					ALTER TABLE _countries ALTER COLUMN id SET DEFAULT nextval('_countries_seq');
-    					ALTER TABLE _countries ALTER COLUMN id SET NOT NULL;
-    					ALTER SEQUENCE _countries_seq OWNED BY _countries.id;
-    					SELECT setval('_countries_seq', (SELECT max(id) FROM _countries));
-
-    				-- PRIMARY KEY;
-    					alter table _countries add primary key (id);
-
-    				-- FOREIGN KEY;
-    					alter table _regions add foreign key (country_id) references _countries (id);
-
-
-
-    		--Создание пользователя для geodata:
-    			CREATE ROLE user_group;
-    			CREATE ROLE user_db WITH LOGIN ENCRYPTED PASSWORD 'passdb';
-    			GRANT user_group TO user_db;
-    			GRANT CONNECT ON DATABASE geodata TO user_group;
-    			grant all privileges on database geodata to user_db;
-
-
-
-    		--Создание таблицы:
-    			--Main table:
-    				create table users (
-    					id serial primary key, --serial указывает автонумерацию
-    					login text NOT NULL UNIQUE,
-    					password text NOT NULL,
-    					nickname text NOT NULL UNIQUE
-    				);
-    			--Зависимая:
-    				create table likes (
-    					id serial primary key,
-    					create_stamp timestamp,
-    					from_id integer,
-    					to_id integer,
-    					active smallint,
-    					foreign key (from_id) references users (id),
-    					foreign key (to_id) references users (id)
-    				);
-
-
-    		--Изменение таблицы
-    				alter table likes
-    				add column obj_type integer, 	--Добавить колонку
-    				add foreign key (obj_type)		--Добавить внешний ключ
-    					references obj_types (id);
-
-    		--Удаление элементов таблицы
-    			Alter table users
-    			drop constraint users_pkey;
-
-
-    		--Импорт данных:
-    			Insert into users (name)
-    				values 	('Вася'),
-    						('Маша'),
-    						('Катя');
-
-    			--дочерняя таблицаы
-    			Insert into likes (create_stamp, from_id, to_id, active)
-    				values
-    					(current_timestamp, 2, 1, 1),
-    					(current_timestamp, 3, 1, 1),
-    					(current_timestamp, 1, 2, 1),
-    					(current_timestamp, 4, 3, 1),
-    					(current_timestamp, 4, 5, 1);
-
-    		--Join
-
-    			--С помощью джоина вычитаю одну выборку из другой. в итоге остаеются 2 и 3)
-    				select users.id, users.name
-    				from (
-    					select distinct(from_id) from likes where to_id in (1,2)
-    				) as t1
-    				left join (
-    					select distinct(from_id) from likes where to_id = 3 order by from_id
-    				) as t2
-    				on t2.from_id = t1.from_id
-    				left join users
-    				on users.id = t1.from_id
-    				where t2.from_id is null; -- с помощью этого where делаем вычитание одного множества из другого
-
-
-    		--Функуция
-    			--есть входные и выходные параметры:
-    				CREATE OR REPLACE FUNCTION  getManagerName(in f1 text, in f2 text, out f3 text)
-    				AS $$
-
-    					select 'return result'
-
-    				$$
-    				LANGUAGE SQL;
-
-    				--test
-    					SELECT * FROM getManagerName('f1', 'f2');
-
-    			--функция ничего не возвращает:
-    				CREATE OR REPLACE FUNCTION  shareFile(in fileName text, in filePath text, in ownerUser text, in targerUser text)
-    				RETURNS void
-    				AS $$
-
-    					select 'geg'
-
-    				$$
-    				LANGUAGE SQL;
-
-    				--test
-    					SELECT * FROM shareFile('fileName', 'filePath', 'ownerUser', 'targerUser');
-
-
-
-    		--Хранимая процедура
-    			CREATE OR REPLACE PROCEDURE shareFile2(
-    			"fileName" text,
-    			"filePath" text,
-    			"ownerName" text,
-    			"targetUserName" text)
-    			LANGUAGE 'plpgsql'
-    			AS $BODY$
-    			Declare
-    				ownerId int;
-    				targetUserId int;
-    				fileId int;
-    			Begin
-
-
-    				--search owner id
-    				select id into ownerId from users where nickname = "ownerName";
-
-    				--search targerUser id
-    				select id into targetUserId from users where nickname = "targetUserName";
-
-    				--save file to table
-    				insert into files (file_name, file_path, owner_id)
-    					values ("fileName", "filePath", ownerId);
-
-    				--search file id
-    				select id into fileId from files where files.file_name = "fileName" and files.file_path = "filePath" and files.owner_id = ownerId;
-
-    				--save info to share table
-    				insert into files_share (file_id, target_user_id)
-    					values (fileId, targetUserId);
-
-
-    			end
-    			$BODY$;
-
-    			--полномочия на вызов
-    				ALTER PROCEDURE shareFile2(text, text, text, text) OWNER TO fnrtuqrj;
-
-    			--пример вызова
-    				CALL shareFile2('file4', 'file1Path2', 'test', 'test2')
-
-    			--пример вызова в Java:
-    				public static void main(String[] args) throws SQLException {
-    				try (Connection connection1 = DriverManager.getConnection(
-    						"jdbc:postgresql://tyke.db.elephantsql.com:5432/fnrtuqrj",
-    						"fnrtuqrj",
-    						"NLpOUejgCpyCN9POcNC7XlDtSK3h4Hw6")) {
-
-    					String preparedSql = " call shareFile2(?,?,?,?)";
-    					try (CallableStatement cstmt = connection1.prepareCall(preparedSql)) {
-    						cstmt.setString(1, "fileName111");
-    						cstmt.setString(2, "filePath111");
-    						cstmt.setString(3, "test");
-    						cstmt.setString(4, "test2");
-    						cstmt.execute();
-    					}
-    				}
-
-
-
-
-    	Admin commands:
-    		sudo service postgresql status
-    		sudo service postgresql stop
-    		sudo service postgresql start
-
-    	Сonnect к PosrtgreSQL через программу терминал psql:
-    		sudo -u postgres psql - здесь -u это указание юзера, логин posrgres, и сама программа psql
-
-    	Получить структуру БД в SQL:
-    		sudo -u postgres pg_dump --schema-only --no-owner GeekBrainsDBLessons > create_the_tables.sql
-    		  --комменты
-    			пишем сначала sudo -u postgres - этим говорим, что запуск программы pg_dump будет из под УЗ postgres
-
-    	psql:
-    		\d - список таблиц
-    		\d <table name> - структура таблицы
-    		\h - список всех команд SQL
-    		\h CREATE TABLE - выводит описание команды CREATE TABLE
-    		\l - db list
-    		\c - к какой бд сейчас подключены
-    		\? - справка
-    		chcp 1251 - установка русской раскладки
-
-    	Загрузка файла sql:
-    		sudo cp <path to file.sql> </usr/lib/postgresql/9.3/bin/postgres> - копируем файл в папку Postgres что бы были полномочия на чтение
-    		realpath file.sql - узнаем реальный путь до файла
-    		psql -h localhost -U postgres -d employees -f <path_to_file.sql> - импорт файла
-
-    	Создание пользователя для geodata:
-    		CREATE ROLE user_group;
-    		CREATE ROLE user_db WITH LOGIN ENCRYPTED PASSWORD 'passdb';
-    		GRANT user_group TO user_db;
-    		GRANT CONNECT ON DATABASE geodata TO user_group;
-    		grant all privileges on database geodata to user_db;
+	--Создание пользователя для geodata:
+		CREATE ROLE user_group;
+		CREATE ROLE user_db WITH LOGIN ENCRYPTED PASSWORD 'passdb';
+		GRANT user_group TO user_db;
+		GRANT CONNECT ON DATABASE geodata TO user_group;
+		grant all privileges on database geodata to user_db;
+
+
+
+	--Создание таблицы:
+		--Main table:
+			create table users (
+				id serial primary key, --serial указывает автонумерацию
+				login text NOT NULL UNIQUE,
+				password text NOT NULL,
+				nickname text NOT NULL UNIQUE
+			);
+		--Зависимая:
+			create table likes (
+				id serial primary key,
+				create_stamp timestamp,
+				from_id integer,
+				to_id integer,
+				active smallint,
+				foreign key (from_id) references users (id),
+				foreign key (to_id) references users (id)
+			);
+
+
+	--Изменение таблицы
+			alter table likes
+			add column obj_type integer, 	--Добавить колонку
+			add foreign key (obj_type)		--Добавить внешний ключ
+				references obj_types (id);
+
+	--Удаление элементов таблицы
+		Alter table users
+		drop constraint users_pkey;
+
+
+	--Импорт данных:
+		Insert into users (name)
+			values 	('Вася'),
+					('Маша'),
+					('Катя');
+
+		--дочерняя таблицаы
+		Insert into likes (create_stamp, from_id, to_id, active)
+			values
+				(current_timestamp, 2, 1, 1),
+				(current_timestamp, 3, 1, 1),
+				(current_timestamp, 1, 2, 1),
+				(current_timestamp, 4, 3, 1),
+				(current_timestamp, 4, 5, 1);
+
+	--Join
+
+		--С помощью джоина вычитаю одну выборку из другой. в итоге остаеются 2 и 3)
+			select users.id, users.name
+			from (
+				select distinct(from_id) from likes where to_id in (1,2)
+			) as t1
+			left join (
+				select distinct(from_id) from likes where to_id = 3 order by from_id
+			) as t2
+			on t2.from_id = t1.from_id
+			left join users
+			on users.id = t1.from_id
+			where t2.from_id is null; -- с помощью этого where делаем вычитание одного множества из другого
+
+
+	--Функуция
+		--есть входные и выходные параметры:
+			CREATE OR REPLACE FUNCTION  getManagerName(in f1 text, in f2 text, out f3 text)
+			AS $$
+
+				select 'return result'
+
+			$$
+			LANGUAGE SQL;
+
+			--test
+				SELECT * FROM getManagerName('f1', 'f2');
+
+		--функция ничего не возвращает:
+			CREATE OR REPLACE FUNCTION  shareFile(in fileName text, in filePath text, in ownerUser text, in targerUser text)
+			RETURNS void
+			AS $$
+
+				select 'geg'
+
+			$$
+			LANGUAGE SQL;
+
+			--test
+				SELECT * FROM shareFile('fileName', 'filePath', 'ownerUser', 'targerUser');
+
+
+
+	--Хранимая процедура
+		CREATE OR REPLACE PROCEDURE shareFile2(
+		"fileName" text,
+		"filePath" text,
+		"ownerName" text,
+		"targetUserName" text)
+		LANGUAGE 'plpgsql'
+		AS $BODY$
+		Declare
+			ownerId int;
+			targetUserId int;
+			fileId int;
+		Begin
+
+
+			--search owner id
+			select id into ownerId from users where nickname = "ownerName";
+
+			--search targerUser id
+			select id into targetUserId from users where nickname = "targetUserName";
+
+			--save file to table
+			insert into files (file_name, file_path, owner_id)
+				values ("fileName", "filePath", ownerId);
+
+			--search file id
+			select id into fileId from files where files.file_name = "fileName" and files.file_path = "filePath" and files.owner_id = ownerId;
+
+			--save info to share table
+			insert into files_share (file_id, target_user_id)
+				values (fileId, targetUserId);
+
+
+		end
+		$BODY$;
+
+		--полномочия на вызов
+			ALTER PROCEDURE shareFile2(text, text, text, text) OWNER TO fnrtuqrj;
+
+		--пример вызова
+			CALL shareFile2('file4', 'file1Path2', 'test', 'test2')
+
+		--пример вызова в Java:
+			public static void main(String[] args) throws SQLException {
+			try (Connection connection1 = DriverManager.getConnection(
+					"jdbc:postgresql://tyke.db.elephantsql.com:5432/fnrtuqrj",
+					"fnrtuqrj",
+					"NLpOUejgCpyCN9POcNC7XlDtSK3h4Hw6")) {
+
+				String preparedSql = " call shareFile2(?,?,?,?)";
+				try (CallableStatement cstmt = connection1.prepareCall(preparedSql)) {
+					cstmt.setString(1, "fileName111");
+					cstmt.setString(2, "filePath111");
+					cstmt.setString(3, "test");
+					cstmt.setString(4, "test2");
+					cstmt.execute();
+				}
+			}
+
+
+
+
+	Admin commands:
+		sudo service postgresql status
+		sudo service postgresql stop
+		sudo service postgresql start
+
+	Сonnect к PosrtgreSQL через программу терминал psql:
+		sudo -u postgres psql - здесь -u это указание юзера, логин posrgres, и сама программа psql
+
+	Получить структуру БД в SQL:
+		sudo -u postgres pg_dump --schema-only --no-owner GeekBrainsDBLessons > create_the_tables.sql
+		  --комменты
+			пишем сначала sudo -u postgres - этим говорим, что запуск программы pg_dump будет из под УЗ postgres
+
+	psql:
+		\d - список таблиц
+		\d <table name> - структура таблицы
+		\h - список всех команд SQL
+		\h CREATE TABLE - выводит описание команды CREATE TABLE
+		\l - db list
+		\c - к какой бд сейчас подключены
+		\? - справка
+		chcp 1251 - установка русской раскладки
+
+	Загрузка файла sql:
+		sudo cp <path to file.sql> </usr/lib/postgresql/9.3/bin/postgres> - копируем файл в папку Postgres что бы были полномочия на чтение
+		realpath file.sql - узнаем реальный путь до файла
+		psql -h localhost -U postgres -d employees -f <path_to_file.sql> - импорт файла
+
+	Создание пользователя для geodata:
+		CREATE ROLE user_group;
+		CREATE ROLE user_db WITH LOGIN ENCRYPTED PASSWORD 'passdb';
+		GRANT user_group TO user_db;
+		GRANT CONNECT ON DATABASE geodata TO user_group;
+		grant all privileges on database geodata to user_db;
 
 
     Пример даты '2022-10-06 10:23:37.043'
@@ -1984,30 +2006,25 @@ var o = oContext.getObject();
         }
       }
     ];
+	
     var oModel = new sap.ui.model.json.JSONModel();
     oModel.setData({
       rows: rowData,
       columns: columnData
     });
-    return oModel;
-
-},
-/\*\*
-
-- Creating Dynamic table
-  \*/
-  createDynTable: function(that, oModel) {
-  var oTable = this.byId("reOrderTable");
-  oTable.setModel(oModel);
-  oTable.bindColumns("/columns", function(sId, oContext) {
-  var columnName = oContext.getObject().colName;
-  return new sap.ui.table.Column({
-  label: columnName,
-  template: columnName,
-  });
-  });
-  oTable.bindRows("/rows");
-  }
+  
+	  
+	var oTable = this.byId("reOrderTable");
+	oTable.setModel(oModel);
+	oTable.bindColumns("/columns", function(sId, oContext) {
+	var columnName = oContext.getObject().colName;
+	return new sap.ui.table.Column({
+	label: columnName,
+	template: columnName,
+	});
+	});
+	oTable.bindRows("/rows");
+	
 
 #### action send email:
 
