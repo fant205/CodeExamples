@@ -2685,17 +2685,16 @@ String fileName = "targetFile.xlsx";
 
 # SQL Server MSSQL MS SQL:
 
-
+## CREATE TABLE:
+create table User(
+	id int identity (1,1) not null primary key,
+	name nvarchar(200),
+	old int,
+	descr nvarchar(1000),
+	CONSTRAINT uq_deadlines_name unique (name)
+);
+ 
 ## ALTER TABLE:
-
-	create table User(
-		id int identity (1,1) not null primary key,
-		name nvarchar(200),
-		old int,
-		descr nvarchar(1000),
-		CONSTRAINT uq_deadlines_name unique (name)
-	);
-
 	alter table ProjectCategory
 	add	codeCategory nvarchar(50) not null default 'XXX',
 		creationDate datetime not null default '2022-10-06 10:23:37.043',
@@ -2712,7 +2711,7 @@ String fileName = "targetFile.xlsx";
  	alter table User
 	drop constraint KeyName;
 
-    	UPDATE Sales_Import
+	UPDATE Sales_Import
 	SET Sales_Import.AccountNumber = RAN.AccountNumber
 	FROM Sales_Import SI
 	INNER JOIN RetrieveAccountNumber RAN
