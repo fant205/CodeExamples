@@ -2736,30 +2736,31 @@ String fileName = "targetFile.xlsx";
 	@source_schema = N'dbo', 
 	@source_name   = N'Uer', 
 	@role_name     = NULL 
+ 
 ## TRIGGER
 
---create
-CREATE TRIGGER User_INSERT
-ON User
-AFTER INSERT
-AS
-BEGIN
-	UPDATE User
-	set modificationDate = CURRENT_TIMESTAMP,
-	creationDate = CURRENT_TIMESTAMP
-	where id = (select id from INSERTED);
-END
+	--create
+	CREATE TRIGGER User_INSERT
+	ON User
+	AFTER INSERT
+	AS
+	BEGIN
+		UPDATE User
+		set modificationDate = CURRENT_TIMESTAMP,
+		creationDate = CURRENT_TIMESTAMP
+		where id = (select id from INSERTED);
+	END
  
---update
-CREATE TRIGGER User_UPDATE
-ON User
-AFTER UPDATE
-AS
-BEGIN
-	UPDATE User
-	set modificationDate = CURRENT_TIMESTAMP
-	where id = (select id from INSERTED);
-END
+	--update
+	CREATE TRIGGER User_UPDATE
+	ON User
+	AFTER UPDATE
+	AS
+	BEGIN
+		UPDATE User
+		set modificationDate = CURRENT_TIMESTAMP
+		where id = (select id from INSERTED);
+	END
       
 
     --Полнотекстовый поиск
