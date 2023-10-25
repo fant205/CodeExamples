@@ -1514,27 +1514,7 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
 
     Пример даты '2022-10-06 10:23:37.043'
 
-    SQL Server:
-
-    	ALTER TABLE:
-    		alter table ProjectCategory
-    		add	codeCategory nvarchar(50) not null default 'XXX',
-    			creationDate datetime not null default '2022-10-06 10:23:37.043',
-    			modificationDate datetime not null default '2022-10-06 10:23:37.043',
-    			creationUser nvarchar (50) not null default 'XXX',
-    			modificationUser nvarchar (50) not null default 'XXX'
-
-
-    	UPDATE
-    		Sales_Import
-    	SET
-    		Sales_Import.AccountNumber = RAN.AccountNumber
-    	FROM
-    		Sales_Import SI
-    	INNER JOIN
-    		RetrieveAccountNumber RAN
-    	ON
-    		SI.LeadID = RAN.LeadID;
+    
 
 # Пример задач по Java:
 
@@ -2686,7 +2666,28 @@ String fileName = "targetFile.xlsx";
     					formatter: '.formatter.jpd'
     				}"/>
 
-# SQL Server:
+# SQL Server MSSQL MS SQL:
+
+
+    	ALTER TABLE:
+    		alter table ProjectCategory
+    		add	codeCategory nvarchar(50) not null default 'XXX',
+    			creationDate datetime not null default '2022-10-06 10:23:37.043',
+    			modificationDate datetime not null default '2022-10-06 10:23:37.043',
+    			creationUser nvarchar (50) not null default 'XXX',
+    			modificationUser nvarchar (50) not null default 'XXX'
+
+
+    	UPDATE
+    		Sales_Import
+    	SET
+    		Sales_Import.AccountNumber = RAN.AccountNumber
+    	FROM
+    		Sales_Import SI
+    	INNER JOIN
+    		RetrieveAccountNumber RAN
+    	ON
+    		SI.LeadID = RAN.LeadID;
 
     --Полнотекстовый поиск
     	--Настройка
