@@ -2704,25 +2704,55 @@ String fileName = "targetFile.xlsx";
  	alter table User
 	drop constraint KeyName;
 
-
-    	UPDATE
-    		Sales_Import
-    	SET
-    		Sales_Import.AccountNumber = RAN.AccountNumber
-    	FROM
-    		Sales_Import SI
-    	INNER JOIN
-    		RetrieveAccountNumber RAN
-    	ON
-    		SI.LeadID = RAN.LeadID;
+    	UPDATE Sales_Import
+	SET Sales_Import.AccountNumber = RAN.AccountNumber
+	FROM Sales_Import SI
+	INNER JOIN RetrieveAccountNumber RAN
+	ON SI.LeadID = RAN.LeadID;
 
 
 ## Change Tracking - История изменений
+	--turn on cdc - change data capture
+	--1
+	SELECT [name], database_id, is_cdc_enabled  
+	FROM sys.databases   
+	
+	--2
+	EXEC sys.sp_cdc_enable_db 
+	
+	--3
+	SELECT [name], is_tracked_by_cdc  
+	FROM sys.tables
+	
+	--4
 	EXEC sys.sp_cdc_enable_table 
 	@source_schema = N'dbo', 
-	@source_name   = N'Request', 
+	@source_name   = N'Uer', 
 	@role_name     = NULL 
+## TRIGGER
 
+--create
+CREATE TRIGGER User_INSERT
+ON User
+AFTER INSERT
+AS
+BEGIN
+	UPDATE User
+	set modificationDate = CURRENT_TIMESTAMP,
+	creationDate = CURRENT_TIMESTAMP
+	where id = (select id from INSERTED);
+END
+ 
+--update
+CREATE TRIGGER User_UPDATE
+ON User
+AFTER UPDATE
+AS
+BEGIN
+	UPDATE User
+	set modificationDate = CURRENT_TIMESTAMP
+	where id = (select id from INSERTED);
+END
       
 
     --Полнотекстовый поиск
