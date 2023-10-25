@@ -2686,13 +2686,13 @@ String fileName = "targetFile.xlsx";
 # SQL Server MSSQL MS SQL:
 
 ## CREATE TABLE:
-create table User(
-	id int identity (1,1) not null primary key,
-	name nvarchar(200),
-	old int,
-	descr nvarchar(1000),
-	CONSTRAINT uq_deadlines_name unique (name)
-);
+	create table User(
+		id int identity (1,1) not null primary key,
+		name nvarchar(200),
+		old int,
+		descr nvarchar(1000),
+		CONSTRAINT uq_deadlines_name unique (name)
+	);
  
 ## ALTER TABLE:
 	alter table ProjectCategory
