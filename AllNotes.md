@@ -2686,13 +2686,17 @@ String fileName = "targetFile.xlsx";
 # SQL Server MSSQL MS SQL:
 
 
-    	ALTER TABLE:
-    		alter table ProjectCategory
-    		add	codeCategory nvarchar(50) not null default 'XXX',
-    			creationDate datetime not null default '2022-10-06 10:23:37.043',
-    			modificationDate datetime not null default '2022-10-06 10:23:37.043',
-    			creationUser nvarchar (50) not null default 'XXX',
-    			modificationUser nvarchar (50) not null default 'XXX'
+## ALTER TABLE:
+alter table ProjectCategory
+add	codeCategory nvarchar(50) not null default 'XXX',
+	creationDate datetime not null default '2022-10-06 10:23:37.043',
+	modificationDate datetime not null default '2022-10-06 10:23:37.043',
+	creationUser nvarchar (50) not null default 'XXX',
+	modificationUser nvarchar (50) not null default 'XXX'
+
+       
+alter table Mu
+add constraint UC_Mu_muName unique (muName);
 
 
     	UPDATE
