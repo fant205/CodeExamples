@@ -2029,6 +2029,11 @@ var o = oContext.getObject();
     		//Ajax:
     			GET:
     				var url = "/nornick.ru~nsi~uer~wm/uer/resumeRequest";
+
+				var query = {
+					actuality: 1
+				}
+ 
     				sap.ui.core.BusyIndicator.show();
     				$.ajax({
     						url: url,
