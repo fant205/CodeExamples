@@ -1551,6 +1551,29 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
     ^(.{6}) - первые 6 символов строки, если заменять на $1, - то в конце строки поставит запятую
 
 # SAP:
+sap.application.global.properties - example:
+
+## The first name of the employee.
+#% type = STRING
+employee.firstName = firstName
+
+## The family name of the employee.
+#% type = STRING
+employee.familyName = familyName
+
+## The password of the employee.
+#! This property will be stored encrypted and can be changed online #! via SAP NetWeaver Administrator.
+#? secure = true; onlinemodifiable = true
+#% type = STRING;
+employee.password = initialPassword
+
+## The unique ID of the cluster element.
+#! The identification number of the cluster element. The ID is 
+#! unique for the cluster. Do not modify this property. Assigned at
+#! installation time.
+#? parameterized = true; computed = true; 
+#% type = LONG; range = [1-2147483647]
+element.clusterId = ${INSTANCE_ID}50 + ${NODE_INDEX}
 
     Java:
     	Шаблоны кода:
