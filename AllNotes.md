@@ -1275,7 +1275,8 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
 
 
 ###psql:
-	\c - connection
+	\l - список баз данных
+	\c - connection	
 	\q - quit
 	\? - help
 	\dt - tables list
@@ -2999,7 +3000,7 @@ String fileName = "targetFile.xlsx";
     docker-compose rm - удаляем все образы
     docker-compose down -v
     winpty docker run -i -t node:alpine - использовать в Windows winpty для интерактивного запуска образа
-    docker log -f <container name> - показать логи контейнера
+    docker logs -f <container name> - показать логи контейнера
     docker run -v $(pwd):/var/opt/project bash:latest \bash -c "echo Hello > /var/opt/project/file.txt" - запуск баш скрипта в контейнер при запуске
     docker exec -ti myapp /bin/sh - зайти в java контейнер (если нет /bin/bash)
 
