@@ -95,7 +95,7 @@
 
     Официальный мануал https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
-#Команды
+## Команды
 
 	git push -u origin master - отправить закомиченные изменения на GitHub
 	git pull origin master - скачать актуальную версию с GitHub
