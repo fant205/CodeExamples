@@ -52,13 +52,20 @@ class TodoList extends Component {
           <form onSubmit={this.addItem}>
             <input
               ref={(a) => (this._inputElement = a)}
-              placeholder="введит задачу"
+              placeholder="введите задачу"
             ></input>
             <button type="submin">ok</button>
           </form>
         </div>
         <TodoItems entries={this.state.items} delete={this.deleteItem} />
-      </div>
+        <table>
+          <tr>
+            <td>
+              Hi hi hi
+            </td>
+          </tr>
+        </table>
+      </div >
     );
   }
 }

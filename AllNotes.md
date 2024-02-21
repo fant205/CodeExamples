@@ -1,7 +1,9 @@
 ﻿# Linux
 
-#### Общие
+## Общие
 
+    lscpu - вывод инфо о процессорах
+    free -h - вывод инфо о RAM
     lsb_release -dc - Версия ОС
     sudo systemctl disable apache2 - Отключение по умолчанию сервера из списка автостарта
     ls -la \target - просмотр содержимого нужной папки
@@ -13,7 +15,7 @@
 	hostnamectl - узнать параметры ОС
 	ssh login@hostname - подключение к linus по ssh
 
-#### File operations:
+## File operations:
 
     mv <source> <targer>
     mv dist1/* dist2 - все файлы из папки 1 переедут в папку 2
@@ -23,7 +25,7 @@
     du -hs - размер текущей папки
     du -hs * - размер файлов и папок в текущей папке
 
-#### Процессы:
+## Процессы:
 
     ps -eF - список процессов
     ps -efH - список деревом
@@ -31,13 +33,12 @@
     pgrep <имя программы> - вернет PID
     kill <PID> - закрыть программу
 
-#### Zip
+## Zip
 
     unzip file.zip -d destination_folder
     unzip file.zip
-
-    	zip 1.zip * - зипуем все файлы в текущей папке в архив с именем 1.zip
-    	zip -r archivename.zip directory_name - зипуем все внутри папки
+   	zip 1.zip * - зипишем все файлы в текущей папке в архив с именем 1.zip
+   	zip -r archivename.zip directory_name - зипуем все внутри папки
 
 #### Git token
 	ssh-keygen -t ed25519 -C "komarovavl@nornick.ru" - генерируем токен
@@ -47,41 +48,41 @@
 
 # Java
 
-Запуск jar
+## Запуск jar
 
     java -cp allClasses.jar Class1
     java -jar app.jar
 
-Список установленных Java:
+## Список установленных Java:
 
     sudo update-alternatives --config java
 
-Установка oracle Java:
-sudo apt install oracle-java11-installer-local
+## Установка oracle Java:
+    sudo apt install oracle-java11-installer-local
 
-#### Spring:
+# Spring:
 
-Версии Spring - совместимость библиотек
+## Версии Spring - совместимость библиотек
 
     grep -A 1 hibernate- ~/.m2/repository/org/springframework/spring-orm/4.3.12.RELEASE/spring-orm-4.3.12.RELEASE.pom
-    		spring_profiles_active=dev - profile dev (application-dev.yaml)
-    		java -jar -Dspring.profiles.active=dev demo-0.0.1-SNAPSHOT.jar - запуск jar с нужным профайлом
+    spring_profiles_active=dev - профайл profile dev (application-dev.yaml)
+    java -jar -Dspring.profiles.active=dev demo-0.0.1-SNAPSHOT.jar - запуск jar с нужным профайлом
 
-Specification:
+## Specification:
 
-    			public static Specification<Uer> equalMu(String value) {
-    				return (root, query, criteriaBuilder) -> {
-    					Join<Mu, Uer> mu = root.join("mu");
-    					return criteriaBuilder.equal(mu.get("symbol"), value);
-    			};
+    public static Specification<Uer> equalMu(String value) {
+        return (root, query, criteriaBuilder) -> {
+            Join<Mu, Uer> mu = root.join("mu");
+            return criteriaBuilder.equal(mu.get("symbol"), value);
+    };
 
-    			public static Specification<Uer> equalMu(String value) {
-    				return ((root, query, criteriaBuilder) -> {
-    				  Mu o = new Mu();
-    					o.setSymbol(value);
-    					return criteriaBuilder.equal(root.get("mu"), o);
-    			   });
-    			}
+    public static Specification<Uer> equalMu(String value) {
+        return ((root, query, criteriaBuilder) -> {
+          Mu o = new Mu();
+            o.setSymbol(value);
+            return criteriaBuilder.equal(root.get("mu"), o);
+       });
+    }
 
 # Git:
 
@@ -94,7 +95,7 @@ Specification:
 
     Официальный мануал https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
-# Команды
+#Команды
 
 	git push -u origin master - отправить закомиченные изменения на GitHub
 	git pull origin master - скачать актуальную версию с GitHub
@@ -155,7 +156,7 @@ Specification:
 
 	git revert commitId1 - сформирует антикоммит для commitId1 и дальше предложит ввести сообщение нового антикоммита
 
-	git push -u origin b1 - флаг -u это —set-upstream указание создать в удаленном репозитории ветку b1
+	git push -u origin b1 - флаг -u это —set-upstream - указание создать в удаленном репозитории ветку b1
 	git fetch - обновляет все ветки слежения, вытаскивает в них всю историю коммитов
 	git fetch -p - обновит ветки на актуальные, удаляя ветки слежения, которые были удалены на сервере, останется удалить ветки локально
 	git push -d origin b1 - удалить ветку на сервере
@@ -205,9 +206,8 @@ Specification:
 	git merge origin/branch1 - делаешь merge с удаленной веткой (если она еще не локальная) и после этого решаем merge и можно push
 	
 
-# MongoDB
-
-    mongo - управляющая программа
+# MongoDB:
+    mongo - управляющая программа    
     mongo -u <user> -p <pass> --authenticationDatabase admin
     mongoimport --db restaurants --collection MyCollection --file primer-dataset.json - 		импорт файла в бд (запросы надо делать через db.<collection>.<оператор>)
     show dbs - все бд
@@ -1541,7 +1541,16 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
 
 # Пример задач по Java:
 
-    Полноценное клиент-серверное приложение + второе приложение, которое общается с первым через брокер сообщений. Я использовала Spring MVC, Spring Security, Spring Data, для маппинга классов в бд и обратно Hibernate, базу данных MySQL, брокер сообщений RabbitMq, WebSocket, контейнер сервлетов Tomcat, Log4j для логирования, Java Mail для отправки сообщений на email из приложения. Для UI части использовала шаблонизатор страничек Thymeleaf. Для тестирования JUnit и Mockito. Получилось довольно сложное и интересное приложение - онлайн магазин с раздельным функционалом для клиентов и админа. С корзиной товаров, оформлением заказа, фильтрацией каталога товаров и прочим. Для админа - возможность добавления товаров, работа с заказами, изменения статусов оплаты, доставки и прочее, а также различные метрики, например - валовая выручка магаза за выбранный период времени. Вторым приложением был рекламный стенд с категориями-бестселлерами магазина, стенд обновлялся в режиме реального времени через брокер сообщений и вебсокеты, когда происходили покупки на основном сайте магазина.
+    Полноценное клиент-серверное приложение + второе приложение, которое общается с первым через брокер сообщений. 
+    Я использовала Spring MVC, Spring Security, Spring Data, для маппинга классов в бд и обратно Hibernate, 
+    базу данных MySQL, брокер сообщений RabbitMq, WebSocket, контейнер сервлетов Tomcat, Log4j для логирования, 
+    Java Mail для отправки сообщений на email из приложения. Для UI части использовала шаблонизатор страничек Thymeleaf.
+    Для тестирования JUnit и Mockito. Получилось довольно сложное и интересное приложение - онлайн магазин с раздельным 
+    функционалом для клиентов и админа. С корзиной товаров, оформлением заказа, фильтрацией каталога товаров и прочим. 
+    Для админа - возможность добавления товаров, работа с заказами, изменения статусов оплаты, доставки и прочее, 
+    а также различные метрики, например - валовая выручка магаза за выбранный период времени. Вторым приложением 
+    был рекламный стенд с категориями-бестселлерами магазина, стенд обновлялся в режиме реального времени через брокер 
+    сообщений и вебсокеты, когда происходили покупки на основном сайте магазина.
 
 # Regexp - Регулярные выражения:
 
@@ -1822,13 +1831,194 @@ element.clusterId = ${INSTANCE_ID}50 + ${NODE_INDEX}
 
 # JavaScript
 
+## JavaScript Type
+    number
+    string
+    boolean
+    null
+    undefined
+    object
+    
+
 ### Work with json
 
-     pesonalizationMap = new Map(
-              Object.entries(JSON.parse(personalization.json))
-            );
+    pesonalizationMap = new Map(
+        Object.entries(JSON.parse(personalization.json))
+    );
 
     json: JSON.stringify(Object.fromEntries(pesonalizationMap)),
+    
+    
+# TypeScript
+    npm i -g typescript - установка TypeScript
+    tsc -v - вывод версии
+    set-executionpolicy remotesigned - разрешить выполнение сценариев
+    set-executionpolicy restricted - запретить выполнение сценариев
+    tsc --init - инициализация проекта
+   
+## Типы TypeScript:    
+    let age: number = 10;
+    
+    let price: number = 111_222_333;
+    let course: string = "Course";
+    let flag: boolean = false;    
+    
+    let price = 111_222_333;
+    let course = "Course";
+    let flag = false;       
+    
+    все из JS плюс:
+        any
+        unknown
+        never
+        enum
+        tuple
+    
+    let level - будет считать это типом any
+    let array: number[] = [1,2,3];
+    
+### Tuple
+    let user: [number, string] = [1, 'Ivan'];
+    
+### Enum       
+    const enum Size {Small = 1, Medium, Large }; //const даст более оптимальный код
+    let mySize: Size = Size.Medium;
+    console.log(mySize);
+    
+### Functions
+    "noImplicitReturns": true - запрещает не явный возврат результата в функциях
+    "noUnusedLocals": true - запрещает наличие не используемых переменных внутри функции
+    "noUnusedParameters": true - запрещает наличие входных переменных, которые не используются в функции
+    
+    //TypeScript автоматически поймет что функция возвращает number
+    function test(a: number){
+        return a;
+    }
+    //Явно указываем что возвращает number
+    function test(a: number): number{
+        return a;
+    }
+    //функция с параметром опционально - taxYear?
+    function calculateTax(income: number, taxYear?: number): number {
+        if((taxYear || 2022) < 2022){
+            return income * 1.2;
+        }
+        return income * 1.3;
+    }
+    //функция со значением по умолчанию для параметра
+    function calculateTax(income: number, taxYear = 2022): number {
+        if((taxYear || 2022) < 2022){
+            return income * 1.2;
+        }
+        return income * 1.3;
+    }
+    
+### Objects
+#### Example 1
+    let employee = { id: 1 };
+    
+#### Example 2 опциональный параметр name?
+    let employee: {
+      id: number;
+      name?: string; 
+    } = { id: 1 };
+    employee.name = "Test employee";
+
+#### Example 3 Readonly field id
+    let employee: {
+      readonly id: number;
+      name?: string;
+    } = { id: 1 };
+    
+#### Example 4 Type aliases
+    type Employee = {
+      readonly id: number;
+      name: string;
+      retire: (data: Date) => void;
+    };
+
+    let employee: Employee = {
+      id: 1,
+      name: "John Smith",
+      retire: (data: Date) => {
+        console.log(data);
+      },
+    };
+    
+### Union Types
+    function kgToLbs(weight: number | string): number {
+      if (typeof weight === "number") {
+        // weight - видится как number
+        return weight * 2.2;
+      } else {
+        // weight - видится как string
+        return parseInt(weight) * 2.2;
+      }
+    }
+
+### Intersaction Types
+    type Draggable = {
+      drag: () => void;
+    };
+
+    type Resizable = {
+      resize: () => void;
+    };
+
+    //Объект представляет из себя сумму двух объектов и можно обращаться к любому свойству одного из двух объектов
+    type UIWidget = Draggable & Resizable;
+
+    let textBox: UIWidget = {
+      drag: () => {},
+      resize: () => {},
+    };
+
+### Literal Type
+    type Quantity = 50 | 100;
+    let quantity: Quantity = 100;
+    type Metric = "cm" | "inch";
+
+
+### Nullable Types
+    function greet(name: string | null | undefined) {
+      if (name) {
+        console.log(name.toUpperCase());
+      } else {
+        console.log("Hola!");
+      }
+    }
+    
+    //Если в определении функции не указать union тип null или undefined, то TS запретит вызов такой функции, так как входной параметр должен быть string. Это можно отключить "strictNullChecks": false,
+    greet(null);
+    greet(undefined);
+    greet("test");
+
+
+### Optional Chaining
+    type Customer = {
+      birthday: Date;
+    };
+
+    function getCustomer(id: number): Customer | null | undefined {
+      return id === 0 ? null : { birthday: new Date() };
+    }
+
+    let customer = getCustomer(1);
+    //Optional property access operator - мы указали ? что бы подчеркнуть что параметр может быть null или undefined
+    console.log(customer?.birthday);
+
+## Шаблонные строки    
+    var param = "Hello world!";
+    console.log(`This is=${param}`);
+
+    
+## tsconfig.json
+        "target": "es2016" - свойство содержит версию JS
+        "rootDir": "./src" - место для sources
+        "outDir": "./dist"
+        "removeComments": true
+        "noEmitOnError": true
+        "sourceMap": true
 
 # SAP:
 
@@ -2050,8 +2240,34 @@ var o = oContext.getObject();
     			sap.ui.core.BusyIndicator.hide();
 
 
-    		//Ajax:
-    			GET:
+### Ajax:
+#### Fetch POST:
+			
+	onUpdate: async function () {
+		console.log("onUpdate");
+
+		//validate on backend
+		var request = that.getView().getModel("uer").getData();
+		var url = prefix + "/uer/validateOnBackend";
+		const response = await fetch(url, {
+			method: "POST",
+			cache: "no-cache",
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": "Bearer " + token,
+			},
+			body: JSON.stringify(request),
+		});
+		const result = await response.json();
+
+		if (result.status === "ERROR") {
+			msgDialogs.error(result.msg);
+			return;
+		}
+	}
+			
+			
+#### GET:
     				var url = "/nornick.ru~nsi~uer~wm/uer/resumeRequest";
 
 				var query = {
@@ -3348,6 +3564,7 @@ Cправа вверху в раскрывающемся списке выбра
 
     ## Базовые команды
     npx create-react-app my-app - создать приложение my-app
+    npm install - загрузка всех нужных пакетов
     npm start - запуск приложения
     npm test - Runs the test watcher in an interactive mode. By default, runs tests related to files changed since the last commit.
     npm run build - Builds the app for production to the build folder. It correctly bundles React in production mode and optimizes the build for the best performance. The build is minified and the filenames include the hashes. Your app is ready to be deployed.
