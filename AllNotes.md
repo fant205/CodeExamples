@@ -12,9 +12,10 @@
     pscp -P 22 file_name.txt login@111.22.33.44:/folder
     du -sh ./Загрузки/* - подсчет размера всех папок в папке загрузки
     du -sh * - подсчет всех папок внутри текущей папки
-	hostnamectl - узнать параметры ОС
-	ssh login@hostname - подключение к linus по ssh
+    hostnamectl - узнать параметры ОС
+    ssh login@hostname - подключение к linus по ssh
     ssh -i <path/id_rsa> admin@ip - подключение с помощью локального публичного ключа шифрования. Его нужно добавить на сервер (админы это делают)
+    sudo su - дать себе права админа
 
 ## File operations:
 
@@ -38,8 +39,8 @@
 
     unzip file.zip -d destination_folder
     unzip file.zip
-   	zip 1.zip * - зипишем все файлы в текущей папке в архив с именем 1.zip
-   	zip -r archivename.zip directory_name - зипуем все внутри папки
+    zip 1.zip * - зипишем все файлы в текущей папке в архив с именем 1.zip
+    zip -r archivename.zip directory_name - зипуем все внутри папки
 
 ## Git token
     ssh-keygen -t ed25519 -C "komarovavl@nornick.ru" - генерируем токен
@@ -108,6 +109,7 @@
     git checkout -b newBranch - создать ветку и переключиться на нее
     git branch -d (--delete) - удалить ветку
     git branch -D - удалить обособленную ветку, которая еще не слита с интеграционной
+    git push origin -d newBranch - удалить удаленную ветку
     git branch <branch 1> <commit id1> - создать ветку на основе определенного коммита
     git branch -m (—move) branch2 - переименует текущую ветку в branch2
     git branch -m branch1 branch2 - переименует ветку 1 в 2
@@ -1531,6 +1533,17 @@ System.out.println(String.format("%05d", 1));//заполнить нулями �
 		sudo cp <path to file.sql> </usr/lib/postgresql/9.3/bin/postgres> - копируем файл в папку Postgres что бы были полномочия на чтение
 		realpath file.sql - узнаем реальный путь до файла
 		psql -h localhost -U postgres -d employees -f <path_to_file.sql> - импорт файла
+        
+    Выгрузка файла в sql (Export to sql query):
+        docker exec -t backend-postgres-1 pg_dump -a --column-inserts -U postgres >> sqlfile.sql
+        docker exec -t backend-postgres-1 pg_dump --data-only --column-inserts -U postgres >> sqlfile.sql - тоже самое
+        docker exec -t backend-postgres-1 pg_dump -a --column-inserts -t my_table -U postgres >> sqlfile.sql - с указанием конкретной таблицы для вырузки my_table        
+        docker exec -t backend-postgres-1 pg_dump -a --column-inserts --exclude-table-data=mu -U postgres >> sqlfile.sql - исключение таблицы
+        
+        
+        
+        
+
 
 	Создание пользователя для geodata:
 		CREATE ROLE user_group;
@@ -3197,7 +3210,7 @@ String fileName = "targetFile.xlsx";
 
 ### Postgres:
 
-    docker exec  uer-postgres-1 pg_dump -U postgres --column-inserts --data-only  postgres > inserts.sql
+    docker exec uer-postgres-1 pg_dump -U postgres --column-inserts --data-only  postgres > inserts.sql
     docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:11.1 - запустит в контейнере postgresql если его нет, то скачает его.
     docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d --network resource postgres - запуск контейнера в сети rescource
     docker exec -it postgres psql -U postgres - обращаемся в контейнер postgres к программе psql и входим в терминальную сессию
