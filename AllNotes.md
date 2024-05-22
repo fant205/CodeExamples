@@ -126,7 +126,7 @@
     LocalDateTime date = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, now.getSecond() + offsetDays);
     return new Timestamp(date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
 
-## Logging
+## SAP Logging
 
     log.debugT(method, "Xml for Import manager: {0}", new Object[] { importXmlName });
 
@@ -815,7 +815,7 @@ UserService, который будет искать юзера, его паро�
 ## Команды
 
     git push -u origin master - отправить закомиченные изменения на GitHub
-    git pull origin master - скачать актуальную версию с GitHub
+    git pull origin master - скачать актуальную версию с GitHub (лучше использовать сначала git fetch что бы вытащить актуальную информацию о всех ветках, и потом git merge в нужную ветку). Git pull - делает сразу merge.
 
     git branch - список веток
     git branch newBranch - создать ветку newBranch
@@ -922,7 +922,7 @@ UserService, который будет искать юзера, его паро�
     git fetch - вытащит из удаленного репозитория все ветки слежения и будет ясно как ты отстал
     git branch -a - покажет все ветки и локальные и слежения
     git switch <имя удаленной ветки без origin> - переключишься на удаленную ветку и она станет локальной и можно глянуть что в ней, если это вообще нужно
-    git merge branch1 - делаем merge в текущую ветку из указанной branch1:
+    git merge branch1 - (сначала лучше сделать git fetch, что бы получить всю информацию о ветках и потом делать merge) делаем merge в текущую ветку из указанной branch1:
         - Если в новой ветке есть изменения в файлах (или посто добавили файлы), в которых в текущей ветке изменений не было, то git сделает авто слияние и новый коммит.
         - Если в новой ветке есть изменения в файлах, и в текущей ветке есть изменения в этих же файлах, то git сделает новый коммит для внесения изменений файлов 
         и конфликт слияния, и нужно самому изменить файлы в текущей ветке и потом сделать коммит.
@@ -1599,8 +1599,46 @@ employee.password = initialPassword
 #? parameterized = true; computed = true;
 #% type = LONG; range = [1-2147483647]
 element.clusterId = ${INSTANCE_ID}50 + ${NODE_INDEX}
+    
 
     Java:
+    
+        JPA: 
+            Пример запроса к дочернему полю:
+                SELECT o, o.uer.gid FROM Request o
+            Запрос с IN:
+               SELECT o FROM Request o WHERE o.requestStatus.code in ( :requestStatus0,:requestStatus1,:requestStatus2,:requestStatus3 )
+            Примеры сортировки по дочерним полям:
+                SELECT o, o.uer.gid FROM Request o ORDER BY o.uer.gid ASC
+                SELECT o, o.userAuthor.fio FROM Request o ORDER BY o.userAuthor.fio ASC
+                SELECT o FROM Request o ORDER BY o.id ASC
+
+            Когда поле поиска коллекция соединение один ко многим:
+                SELECT o FROM Request o JOIN o.requestProcessor rp WHERE  UPPER(rp.user_id.fio) LIKE :requestProcessor ORDER BY o.id DESC   
+                
+                
+        Transaction:
+            UserTransaction ut = null;
+            try {
+                ut = (UserTransaction) InitialContext.doLookup("java:comp/UserTransaction");
+                ut.begin(); 
+                //Рабочий код
+                ut.commit();
+                return result;
+            } catch (Exception e) {
+                log.errorT("Ошибка!");
+                ExceptionHelper.printStackTrace(e, log);
+                try {
+                       ut.rollback();
+                       throw new RuntimeException(e);
+                } catch (Exception e1) {
+                    log.errorT("Ошибка при откате транзакции!");
+                    ExceptionHelper.printStackTrace(e1, log);
+                    throw new RuntimeException(e1);
+                }
+            }
+        
+        
     	Шаблоны кода:
 
     	//MultiTupleValue by values
@@ -1687,7 +1725,7 @@ element.clusterId = ${INSTANCE_ID}50 + ${NODE_INDEX}
 
 
 
-    	//jpa sql
+    	//SAP JPA JPQL
     		SELECT COUNT(t) FROM MaterialEntity t WHERE t.id IN (SELECT u.material.id FROM AreasEntity u WHERE(u.name = :name1));
 
 
@@ -2237,24 +2275,24 @@ var o = oContext.getObject();
     });
   
 	  
-	var oTable = this.byId("reOrderTable");
-	oTable.setModel(oModel);
-	oTable.bindColumns("/columns", function(sId, oContext) {
-	var columnName = oContext.getObject().colName;
-	return new sap.ui.table.Column({
-	label: columnName,
-	template: columnName,
-	});
-	});
-	oTable.bindRows("/rows");
+    var oTable = this.byId("reOrderTable");
+    oTable.setModel(oModel);
+    oTable.bindColumns("/columns", function(sId, oContext) {
+    var columnName = oContext.getObject().colName;
+    return new sap.ui.table.Column({
+    label: columnName,
+    template: columnName,
+    });
+    });
+    oTable.bindRows("/rows");
 
 #### action send email:
 
-    		sap.m.URLHelper.triggerEmail(this._getVal(evt), "Info Request");
+    sap.m.URLHelper.triggerEmail(this._getVal(evt), "Info Request");
 
 #### action open site:
 
-    		sap.m.URLHelper.redirect(this._getVal(evt), true);
+    sap.m.URLHelper.redirect(this._getVal(evt), true);
 
 #### BusyIndicator:
 
@@ -2952,6 +2990,8 @@ String fileName = "targetFile.xlsx";
 
 # SQL Server MSSQL MS SQL:
 
+    - п.к.м на БД -> Задачи -> Сформировать скрипты - Далее - Выбрать отдельные объеты базы данных (выбрать нужную таблицу) - Далее - Нажать Дополнительно - Тип данных для внесения в скрипт (Поставить нужное) - Далее - Готово
+
 ## CREATE TABLE:
 
 	create table User(
@@ -3587,8 +3627,9 @@ SPRING_PROFILES_ACTIVE=dev (для профиля application-dev.yml)
 
 # React:
 
-    ## Базовые команды
-    npx create-react-app my-app - создать приложение my-app
+    ## Базовые команды    
+    npx create-react-app my-app - создать приложение react my-app
+    npm init - инициализация простого базового js проекта
     npm install - загрузка всех нужных пакетов
     npm start - запуск приложения
     npm test - Runs the test watcher in an interactive mode. By default, runs tests related to files changed since the last commit.
