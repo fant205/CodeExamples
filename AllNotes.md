@@ -824,6 +824,7 @@ UserService, который будет искать юзера, его паро�
     git checkout -b newBranch - создать ветку и переключиться на нее
     git branch -d (--delete) - удалить ветку
     git branch -D - удалить обособленную ветку, которая еще не слита с интеграционной
+    git fetch -p - обновит ветки на актуальные, удаляя ветки слежения, которые были удалены на сервере, останется удалить ветки локально
     git push origin -d newBranch - удалить удаленную ветку
     git branch <branch 1> <commit id1> - создать ветку на основе определенного коммита
     git branch -m (—move) branch2 - переименует текущую ветку в branch2
@@ -873,11 +874,14 @@ UserService, который будет искать юзера, его паро�
     git reset —hard commitId1 - вернет данные из бд объектов из предыдущего коммита в индекс и рабочий каталог. В итоге все выглядит будто последнего коммита вообще не было
 
     git revert commitId1 - сформирует антикоммит для commitId1 и дальше предложит ввести сообщение нового антикоммита
-
-    git push -u origin b1 - флаг -u это —set-upstream - указание создать в удаленном репозитории ветку b1
+    
     git fetch - обновляет все ветки слежения, вытаскивает в них всю историю коммитов
     git fetch -p - обновит ветки на актуальные, удаляя ветки слежения, которые были удалены на сервере, останется удалить ветки локально
+	git push -u origin b1 - флаг -u это —set-upstream - указание создать в удаленном репозитории ветку b1
     git push -d origin b1 - удалить ветку на сервере
+	git push origin --tags
+	
+	git tag v1.0.0 - сделать тег, который будет всегда, его не удалить. это именованная ссылка на коммит, так же как ветка
 
     git blame text.txt - покажет изменения в файле в последнем коммите
     git blame commitId1 text.txt - покажет изменения в файле в указанном коммите
@@ -969,6 +973,51 @@ UserService, который будет искать юзера, его паро�
     	Central - Центральный (https://mvnrepository.com), если в локальном не нашли, ищем в центральном, если нашли, то копирование в локальный, если не нашли, то идем в remote
     	Remote - Удаленный, это репозиторий в какой-либо компании, внутри нее, и там есть какие-то свои наработки. Можно в maven настроить как Remote какой то сервер компании, и maven будет работать с ним. Если нашли в remote, то копирование в локальный, если нет, то ошибка что такой библиотеки нет
 
+	Свой Repository:
+		Либо указать в pom.xml проекта:
+			<project>
+			...
+			  <repositories>
+				<repository>
+				  <id>my-repo1</id>
+				  <name>your custom repo</name>
+				  <url>http://jarsm2.dyndns.dk</url>
+				</repository>
+				<repository>
+				  <id>my-repo2</id>
+				  <name>your custom repo</name>
+				  <url>http://jarsm2.dyndns.dk</url>
+				</repository>
+			  </repositories>
+			...
+			</project>
+			
+		Либо указать в ${user.home}/.m2/settings.xml or ${maven.home}/conf/settings.xml:
+			<settings>
+			 ...
+			 <profiles>
+			   ...
+			   <profile>
+				 <id>myprofile</id>
+				 <repositories>
+				   <repository>
+					 <id>my-repo2</id>
+					 <name>your custom repo</name>
+					 <url>http://jarsm2.dyndns.dk</url>
+				   </repository>
+				 </repositories>
+			   </profile>
+			   ...
+			 </profiles>
+			 
+			 <activeProfiles>
+			   <activeProfile>myprofile</activeProfile>
+			 </activeProfiles>
+			 ...
+			</settings>
+			
+			можно не указывать в pom.xml activeProfiles, а при запуске указать mvn -Pmyprofile package
+
 
     Полезные зависимости:
     	//Дает готовые решения для частых простых задач
@@ -990,11 +1039,40 @@ UserService, который будет искать юзера, его паро�
     settings.xml:
     	${maven.home}/conf/settings.xml - maven home можно узнать командой mvn -v
     	${user.home}/.m2/settings.xml
+		
+		<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+			<servers>
+				<server>
+					<id>nexus-internal</id>
+					<username>${env.ARTIFACTORY_USERNAME}</username>
+					<password>${env.ARTIFACTORY_PASSWORD}</password>
+				 </server>
+			</servers>
+			<mirrors>
+				<mirror>
+					<id>nexus-internal</id>
+					<name>nexus-internal</name>
+					<url>${env.REPOSITORY_URL}</url>
+					<mirrorOf>*</mirrorOf>
+				</mirror>
+			</mirrors>
+			<profiles>
+				<profile>
+				<id>definedInM2SettingsXML</id>
+				<activation>
+					<activeByDefault>true</activeByDefault>
+				</activation>
+				</profile>
+			</profiles>
+		</settings>
 
 
 
 
     mvn package - сделать jar или war, в зависимости что указано в pom.xml
+	mvn package -U - force update
+	mvn -Pmyprofile package - указать профайл для команды package
     mvn tomcat:run - запуск встроенного tomcat
     mvn dependency:tree - вывод дерева зависимостей
     mvn dependency:tree -Dincludes=org.apache.logging.log4j:log4j-core - Параметр includes фильтрует вывод, чтобы показать только зависимость log4-core.
@@ -1719,9 +1797,22 @@ element.clusterId = ${INSTANCE_ID}50 + ${NODE_INDEX}
     	//deploy without NWDS
     	1. Login with sidadm on SAP NetWeaver WebAs server
     	2. Go to following directory /usr/sap/SID/InstanceNo/j2ee/deployment/scripts
-    	3. Find deploy.csh \ deploy.bat
-    	4. Execute following command to deploy - it will show you how to execute command.
-    	5. Example of deploy command: deploy username:password@host:port file_location
+    	3. Find deploy.csh \ deploy.bat 
+    	4. Execute in cmd command "deploy" - it will show you how to execute command:    	
+					
+			Usage: deploy <user>:<password>@<host>:<port> <archive> [-no_start]
+
+			Parameters:
+			  <user>      - User with administrators' rights.
+			  <password>  - Password for this user.
+			  <host>      - Target AS Java host.
+			  <port>      - Target P4 port.
+			  <archive>   - Path to archive.
+			  [-no_start] - Deployed modules are not started.
+			 
+			Examples:
+			deploy <user>:<password>@localhost:50004 /EARs/MyEar.ear
+			deploy <user>:<password>@their_host:50804 /EJBs/OurEJB.jar -no_start
 
 
 
@@ -3256,10 +3347,11 @@ String fileName = "targetFile.xlsx";
 
 ### Postgres:
 
-    docker exec uer-postgres-1 pg_dump -U postgres --column-inserts --data-only  postgres > inserts.sql
+    
     docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:11.1 - запустит в контейнере postgresql если его нет, то скачает его.
     docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d --network resource postgres - запуск контейнера в сети rescource
     docker exec -it postgres psql -U postgres - обращаемся в контейнер postgres к программе psql и входим в терминальную сессию
+	docker exec uer-postgres-1 pg_dump -U postgres --column-inserts --data-only  postgres > inserts.sql - выгрузкав файл
 
     docker run --name <containerName> -p 8080:8080 -d <imageName>:<tag/version> - запуск java приложения
 
@@ -3631,9 +3723,32 @@ SPRING_PROFILES_ACTIVE=dev (для профиля application-dev.yml)
     npx create-react-app my-app - создать приложение react my-app
     npm init - инициализация простого базового js проекта
     npm install - загрузка всех нужных пакетов
+    npm install react-dom - установка конкретной зависимости
+    npm install react-dom@1.0.1 - установка конкретной зависимости с указанием версии    
     npm start - запуск приложения
     npm test - Runs the test watcher in an interactive mode. By default, runs tests related to files changed since the last commit.
     npm run build - Builds the app for production to the build folder. It correctly bundles React in production mode and optimizes the build for the best performance. The build is minified and the filenames include the hashes. Your app is ready to be deployed.
+	
+	## React API
+	//Класс
+	export class LikeButton extends React.Component {
+		render() {
+			return (
+				<button onClick={this.props.onClick}>
+					Like
+				</button>
+			)
+		}
+	}
+
+	//Функциональный компонент
+	export const LikeButton = (props) => {
+		return (
+			<button onClick={this.props.onClick}>
+				Like
+			</button>
+		);
+	};
 
 # Версионность ПО
 
