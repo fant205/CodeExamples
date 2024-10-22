@@ -52,10 +52,11 @@
 
 # Java
 
-## Запуск jar
+## Общее
 
     java -cp allClasses.jar Class1
     java -jar app.jar
+    -Xmx4096m - установить в Eclipse в Run Configurations на вкладке Arguments в разделе VM arguments
 
 ## Установка oracle Java:
 
