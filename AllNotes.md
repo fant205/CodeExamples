@@ -22,8 +22,8 @@
 
     mv <source> <targer>
     mv dist1/* dist2 - все файлы из папки 1 переедут в папку 2
-    cp -r /home/alexey/Downloads/dump/dump . - скопировать папку 1 в текущую папку
-    cp -r /home/alexey/Downloads/dump/dump/* . - скопировать все файлы из папки 1 в текущую папку
+    cp -r /home/user/Downloads/dump/dump . - скопировать папку 1 в текущую папку
+    cp -r /home/user/Downloads/dump/dump/* . - скопировать все файлы из папки 1 в текущую папку
     readlink -f _countries.sql или realpath _countries.sql - путь до файла
     du -hs - размер текущей папки
     du -hs * - размер файлов и папок в текущей папке
@@ -45,7 +45,7 @@
 
 ## Git token
 
-    ssh-keygen -t ed25519 -C "komarovavl@nornick.ru" - генерируем токен
+    ssh-keygen -t ed25519 -C "you@email.ru" - генерируем токен
     eval "$(ssh-agent -s)" - запускаем ssh агент
     ssh-add ~/.ssh/id_ed25519 - добавляем в ssh агент токен
     clip < ~/.ssh/id_ed25519.pub - копируем в буфер токен
@@ -103,7 +103,7 @@
 ## string format
 
     //10 это кол-во пустых мест в строке
-    System.out.println(String.format("%-10s Hi", "Alex"));
+    System.out.println(String.format("%-10s Hi", "Jalex"));
     //Результат:Alex Hi
     
     System.out.println(String.format("%-10.5s Hi", "ABCDEFGHIK"));
@@ -981,7 +981,7 @@ UserService, который будет искать юзера, его паро�
 
     keytool -import -alias example -keystore  /path/to/cacerts -file example.der - команда импорта сертификата в Java хранилище
     keytool - Утилита находится ...\jdk_folder\bin
-    keytool -delete -alias sms01199.npr.nornick.ru -keystore  C:\Work\Soft\jdk1.8.0_171\jre\lib\security\cacerts - удалить сертификат из keystore
+    keytool -delete -alias somehost -keystore  C:\Work\Soft\jdk1.8.0_171\jre\lib\security\cacerts - удалить сертификат из keystore
 
 # Chrome:
 
@@ -2453,7 +2453,7 @@ var o = oContext.getObject();
 
 #### GET:
 
-    				var url = "/nornick.ru~nsi~uer~wm/uer/resumeRequest";
+    				var url = "/uer/resumeRequest";
 
 				var query = {
 					actuality: 1
@@ -2624,7 +2624,7 @@ String fileName = "targetFile.xlsx";
 
     			//namespace
     			data-sap-ui-resourceroots='{
-    						"sap.cc": "/nornick.ru~nsi~uer~prt/app"
+    						"sap.cc": "/app.com~test~prt/app"
     						}'>
 
     		//suggestion field
@@ -2947,7 +2947,7 @@ String fileName = "targetFile.xlsx";
     			src="/sapui5/resources/sap-ui-core.js"
     			src="/sapui5-1.71/resources/sap-ui-core.js"
     			src="https://sapui5.hana.ondemand.com/1.71.40/resources/sap-ui-core.js"
-    			/nornick.ru~nsi~uer~prt/app/index.html
+    			/test.com~test~prt/app/index.html
 
 
     		//Navigation and Routind SAP Router
@@ -3313,7 +3313,7 @@ String fileName = "targetFile.xlsx";
     	);
 
     	insert into RecordStatus (statusName, creationDate, modificationDate, creationAuthor, modificationAuthor)
-    	values (N'Черновик', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'komarovavl', 'komarovavl'),
+    	values (N'Черновик', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'testuser', 'testuser'),
 
     	create table [dbo].[UER](
     		id int IDENTITY(1,1) NOT NULL PRIMARY KEY,
