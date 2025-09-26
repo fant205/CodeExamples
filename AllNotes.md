@@ -1881,7 +1881,8 @@ element.clusterId = ${INSTANCE_ID}50 + ${NODE_INDEX}
 
 
 
-
+		@PersistenceContext(unitName = "ru.alex.test")
+		private EntityManager em;
 
 
 
